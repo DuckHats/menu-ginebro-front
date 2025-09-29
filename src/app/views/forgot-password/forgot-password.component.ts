@@ -90,7 +90,7 @@ export class ForgotPasswordComponent {
       next: () => {
         this.isSubmitting = false;
         this.alertService.show('success', 'Contrasenya restablerta correctament', '', 3000);
-        this.router.navigate([NavigationConfig.LOGIN]);
+        this.router.navigateByUrl(NavigationConfig.LOGOUT);
       },
       error: () => {
         this.isSubmitting = false;
