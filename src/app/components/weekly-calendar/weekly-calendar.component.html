@@ -1,4 +1,4 @@
-<section class="flex flex-col gap-4 p-6 w-full max-w-[600px] box-border mx-auto sm:p-4 font-[Inter]">
+<section class="flex flex-col gap-4 p-6 w-full max-w-[600px] box-border mx-auto sm:p-4 ">
   <!-- Header -->
   <header class="flex items-center justify-between h-[36px] m-0 p-0">
     <button
@@ -39,7 +39,7 @@
     [attr.aria-selected]="day.isSelected"
   >
     <span
-      class="block text-[10px] font-medium leading-[16px] text-center mb-[6px] font-[Inter] sm:text-[9px]"
+      class="block text-[10px] font-medium leading-[16px] text-center mb-[6px]  sm:text-[9px]"
       [ngClass]="{
         'text-white font-bold': day.isSelected,
         'text-[#009ca6]': !day.isSelected && day.isHighlighted,
@@ -49,7 +49,7 @@
       {{ day.dayName }}
     </span>
     <span
-      class="block text-[15px] leading-[28px] text-center font-[Inter] sm:text-[14px]"
+      class="block text-[15px] leading-[28px] text-center  sm:text-[14px]"
       [ngClass]="{
         'text-white font-bold': day.isSelected,
         'text-[#009ca6]': !day.isSelected && day.isHighlighted,
