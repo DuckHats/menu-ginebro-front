@@ -39,7 +39,7 @@ export class OrdersService {
   }
 
   createOrder(order: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/`, order, { headers: this.getHeaders() })
+    return this.http.post(`${this.apiUrl}`, order, { headers: this.getHeaders() })
       .pipe(catchError(this.handleError));
   }
 
