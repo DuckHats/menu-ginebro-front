@@ -54,7 +54,6 @@ export class OrdersDashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.admintype = this.studentService.getLocalStudent()?.user_type_id || 1;
-    console.log('Admin type:', this.admintype);
     this.loadAllData();
   }
 
@@ -90,8 +89,6 @@ export class OrdersDashboardComponent implements OnInit {
       this.menusService.getByDate(date).toPromise()
         .then((res: any) => {
           const dishes = res.data?.dishes || [];
-          console.log('Date:', date);
-          console.log('Dishes:', dishes);
 
           const parsedMenus: MenuItem[] = dishes.map((dish: any) => {
             let name = 'N/A';
@@ -113,7 +110,6 @@ export class OrdersDashboardComponent implements OnInit {
             };
           });
 
-          console.log('Parsed Menus:', parsedMenus);
           return { date, menus: parsedMenus };
         })
         .catch((err) => {
@@ -155,7 +151,6 @@ export class OrdersDashboardComponent implements OnInit {
           orders = orders.flat();
         }
         this.orders = orders;
-        console.log('Orders:', this.orders);
         this.loadingOrders = false;
       },
       error: (err) => {
@@ -168,7 +163,6 @@ export class OrdersDashboardComponent implements OnInit {
   loadUsers(): void {
     this.usersService.getAll().subscribe({
       next: (users: any) => {
-        console.log('Users:', users);
         this.students = users.data.map((user: any) => ({
           id: user.id,
           name: user.name,
@@ -335,29 +329,29 @@ export class OrdersDashboardComponent implements OnInit {
   }
 
   importData(json: any): void {
-  if (!json) return;
-  if (this.importType === 'menus') {
-    this.menusService.import(json).subscribe({
-      next: () => {
-        this.alertService.show('success', 'Menús importats correctament', '', 3000);
-        this.loadMenusWeek();
-      },
-      error: (error: Error) => {
-        this.alertService.show('error', 'Error durant la importació dels menús', '', 3000);
-      }
-    });
-  } else {
-    this.studentService.import(json).subscribe({
-      next: () => {
-        this.alertService.show('success', 'Usuaris importats correctament', '', 3000);
-        this.loadUsers();
-      },
-      error: (error: Error) => {
-        this.alertService.show('error', 'Error durant la importació dels usuaris', '', 3000);
-      }
-    });
+    if (!json) return;
+    if (this.importType === 'menus') {
+      this.menusService.import(json).subscribe({
+        next: () => {
+          this.alertService.show('success', 'Menús importats correctament', '', 3000);
+          this.loadMenusWeek();
+        },
+        error: (error: Error) => {
+          this.alertService.show('error', 'Error durant la importació dels menús', '', 3000);
+        }
+      });
+    } else {
+      this.studentService.import(json).subscribe({
+        next: () => {
+          this.alertService.show('success', 'Usuaris importats correctament', '', 3000);
+          this.loadUsers();
+        },
+        error: (error: Error) => {
+          this.alertService.show('error', 'Error durant la importació dels usuaris', '', 3000);
+        }
+      });
+    }
+    this.showImportPopup = false; // Cierra el popup si usas el modal antiguo
   }
-  this.showImportPopup = false; // Cierra el popup si usas el modal antiguo
-}
 
 }

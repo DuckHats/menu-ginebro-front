@@ -5,6 +5,7 @@ import { Order, MenuItem } from '../../interfaces/order-history';
 import { OrdersService } from '../../Services/Orders/orders.service';
 import { Router } from '@angular/router';
 import { StudentService } from '../../Services/User/user.service';
+import { NavigationConfig } from '../../environments/navigation.config';
 
 @Component({
   selector: 'app-order-history',
@@ -21,12 +22,12 @@ export class OrderHistoryComponent implements OnInit {
 
   orders: Order[] = [];
   userId: number = 1;
-  
+
   constructor(private ordersService: OrdersService,
     private router: Router,
     private studentService: StudentService
-  ) {}
-  
+  ) { }
+
   ngOnInit(): void {
     this.userId = this.studentService.getLocalStudent()?.id || 1;
     this.loadOrders();
@@ -66,6 +67,6 @@ export class OrderHistoryComponent implements OnInit {
   }
 
   goToHomePage(): void {
-    this.router.navigate(['/home']);
+    this.router.navigate(["/" + NavigationConfig.HOME]);
   }
 }

@@ -60,17 +60,6 @@ export class GroupsService {
       .pipe(catchError(this.handleError));
   }
 
-  uploadImage(id: number, file: File, fieldName: string): Observable<any> {
-    const formData = new FormData();
-    formData.append(fieldName, file);
-
-    const url = `${this.apiUrl}/${id}/upload-image`;
-
-    return this.http.post(url, formData, {
-      headers: this.getHeaders(),
-    }).pipe(catchError(this.handleError));
-  }
-
   private handleError(error: any) {
     console.error('GroupService error:', error);
     return throwError(() => error);
