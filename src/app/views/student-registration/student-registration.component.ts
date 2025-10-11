@@ -21,6 +21,7 @@ import { PasswordStrengthComponent } from "../../components/password-strength/pa
 export class StudentRegistrationComponent {
   step = 1;
   isSubmitting = false;
+  passwordValid = false;
 
   emailForm: FormGroup;
   registerForm: FormGroup;
@@ -76,11 +77,17 @@ export class StudentRegistrationComponent {
 
 
   onSubmit(): void {
+    this.registerForm.markAllAsTouched();
+    if (!this.passwordValid) {
+      this.alertService.show('warning', 'La contrasenya no compleix els requisits.', '');
+      return;
+    }
+
     if (this.registerForm.invalid) {
-      this.registerForm.markAllAsTouched();
       this.alertService.show('warning', 'Tots els camps són obligatoris', '');
       return;
     }
+
     this.isSubmitting = true;
     const payload = {
       ...this.registerForm.getRawValue(),

@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
-
+import { Component, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 
 @Component({
   selector: 'app-password-strength',
@@ -11,6 +10,8 @@ import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 })
 export class PasswordStrengthComponent implements OnChanges {
   @Input() password = '';
+  @Output() strengthChange = new EventEmitter<boolean>();
+
   strength = {
     level: 0,
     percent: 0,
@@ -27,11 +28,12 @@ export class PasswordStrengthComponent implements OnChanges {
   }
 
   evaluateStrength() {
-    const pass = this.password;
+    const pass = this.password || '';
     const hasMinLength = pass.length >= 8;
     const hasUpper = /[A-Z]/.test(pass);
     const hasNumber = /\d/.test(pass);
     let level = 0;
+
     if (hasMinLength) level++;
     if (hasUpper) level++;
     if (hasNumber) level++;
@@ -44,5 +46,7 @@ export class PasswordStrengthComponent implements OnChanges {
       hasUpper,
       hasNumber
     };
+
+    this.strengthChange.emit(level === 3);
   }
 }
