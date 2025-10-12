@@ -36,7 +36,6 @@ export class OrderHistoryComponent implements OnInit {
   loadOrders(): void {
     this.ordersService.getByUser(this.userId).subscribe({
       next: (response) => {
-        console.log('Orders loaded:', response);
         this.orders = (response.data || []).map((order: Order) => {
           const menuItems: MenuItem[] = [];
           const type = order.orderType?.name?.toLowerCase() || '';
