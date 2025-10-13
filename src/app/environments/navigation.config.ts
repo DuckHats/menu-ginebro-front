@@ -6,6 +6,7 @@ export const NavigationConfig = {
 
     HOME: '',
     ADMIN: 'admin',
+    MENU: 'menu-selection',
 
     PROFILE: 'profile',
 };

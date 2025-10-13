@@ -34,6 +34,6 @@ export class WelcomeScreenComponent implements OnInit {
   }
 
   onSelectMenu(): void {
-    this.router.navigate(["/" + NavigationConfig.HOME]);
+    this.router.navigate(["/" + NavigationConfig.MENU]);
   }
 }
