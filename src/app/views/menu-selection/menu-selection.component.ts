@@ -79,8 +79,8 @@ export default class MenuSelectionComponent implements OnInit {
         });
 
         const typeMap: Record<number, string> = {
-          1: 'Primer Plato',
-          2: 'Segundo Plato',
+          1: 'Primer Plat',
+          2: 'Segont Plat',
           3: 'Postre',
         };
 
@@ -124,10 +124,13 @@ export default class MenuSelectionComponent implements OnInit {
       return;
     }
 
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const selectedDateCopy = new Date(this.selectedDate);
-    selectedDateCopy.setHours(0, 0, 0, 0);
+    const toLocalMidnight = (d: Date | string | number): Date => {
+      const dt = new Date(d);
+      return new Date(dt.getFullYear(), dt.getMonth(), dt.getDate());
+    };
+
+    const today = toLocalMidnight(new Date());
+    const selectedDateCopy = toLocalMidnight(this.selectedDate);
 
     if (selectedDateCopy <= today) {
       this.alertService.show('error', 'No pots fer comandes per a avui ni dies anteriors.', '');
@@ -143,12 +146,12 @@ export default class MenuSelectionComponent implements OnInit {
 
     const order_type_id = selectedMenuType.id;
 
-    const option1 = this.menuSections.find(s => s.title === 'Primer Plato')?.options.find(o => o.selected)?.name || '';
-    const option2 = this.menuSections.find(s => s.title === 'Segundo Plato')?.options.find(o => o.selected)?.name || '';
+    const option1 = this.menuSections.find(s => s.title === 'Primer Plat')?.options.find(o => o.selected)?.name || '';
+    const option2 = this.menuSections.find(s => s.title === 'Segont Plat')?.options.find(o => o.selected)?.name || '';
     const option3 = this.menuSections.find(s => s.title === 'Postre')?.options.find(o => o.selected)?.name || '';
 
     const allergies = '';
-    const order_date = this.selectedDate.toISOString().split('T')[0];
+    const order_date = selectedDateCopy.toISOString().split('T')[0]; // ara order_date reflectirà la DATA LOCAL correcta
 
     const payload = {
       order_date,
@@ -184,7 +187,6 @@ export default class MenuSelectionComponent implements OnInit {
     });
   }
 
-
   hasSelectedMenuType(): boolean {
     return this.menuTypes.some((type) => type.selected);
   }
@@ -203,12 +205,12 @@ export default class MenuSelectionComponent implements OnInit {
     } else if (selected.includes('Primer plat')) {
       return this.menuSections.filter(
         (section) =>
-          section.title === 'Primer Plato' || section.title === 'Postre'
+          section.title === 'Primer Plat' || section.title === 'Postre'
       );
     } else if (selected.includes('Segon plat')) {
       return this.menuSections.filter(
         (section) =>
-          section.title === 'Segundo Plato' || section.title === 'Postre'
+          section.title === 'Segont Plat' || section.title === 'Postre'
       );
     } else {
       return [];
