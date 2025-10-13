@@ -340,7 +340,7 @@ Para soporte técnico o preguntas:
 
 ## 📄 Licencia
 
-Ver el archivo `LICENSE` para más detalles.
+Ver el archivo `LICENSE.md` para más detalles.
 
 ---
 
