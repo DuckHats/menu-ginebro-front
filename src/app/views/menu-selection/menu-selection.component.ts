@@ -120,7 +120,24 @@ export default class MenuSelectionComponent implements OnInit {
   confirmSelection(): void {
     const selectedMenuType = this.menuTypes.find((type) => type.selected);
     if (!selectedMenuType) {
-      alert('Selecciona un tipus de menú');
+      this.alertService.show('error', 'Selecciona un tipus de menú.', '');
+      return;
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const selectedDateCopy = new Date(this.selectedDate);
+    selectedDateCopy.setHours(0, 0, 0, 0);
+
+    if (selectedDateCopy <= today) {
+      this.alertService.show('error', 'No pots fer comandes per a avui ni dies anteriors.', '');
+      return;
+    }
+
+    const sections = this.filteredMenuSections();
+    const missingSelection = sections.some(section => !section.options.some(option => option.selected));
+    if (missingSelection) {
+      this.alertService.show('error', 'Si us plau, selecciona totes les opcions obligatòries del menú.', '');
       return;
     }
 
@@ -131,7 +148,6 @@ export default class MenuSelectionComponent implements OnInit {
     const option3 = this.menuSections.find(s => s.title === 'Postre')?.options.find(o => o.selected)?.name || '';
 
     const allergies = '';
-
     const order_date = this.selectedDate.toISOString().split('T')[0];
 
     const payload = {
@@ -167,6 +183,7 @@ export default class MenuSelectionComponent implements OnInit {
       }
     });
   }
+
 
   hasSelectedMenuType(): boolean {
     return this.menuTypes.some((type) => type.selected);
