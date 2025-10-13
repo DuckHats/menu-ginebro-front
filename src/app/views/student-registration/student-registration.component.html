@@ -24,8 +24,10 @@
         <span *ngIf="!isSubmitting">Enviar codi</span>
         <span *ngIf="isSubmitting">Enviant...</span>
       </button>
-      <div *ngIf="emailForm.get('email')?.touched && emailForm.get('email')?.errors" class="text-sm text-red-500 font-normal">
-        <small class="text-danger" *ngIf="emailForm.get('email') && emailForm.get('email')?.errors?.['required']">El correu és obligatori.</small>
+      <div *ngIf="emailForm.get('email')?.touched && emailForm.get('email')?.errors"
+        class="text-sm text-red-500 font-normal">
+        <small class="text-danger" *ngIf="emailForm.get('email') && emailForm.get('email')?.errors?.['required']">El
+          correu és obligatori.</small>
         <small class="text-danger" *ngIf="emailForm.get('email')?.errors?.['email']">Format de correu no vàlid.</small>
         <small class="text-danger" *ngIf="emailForm.get('email')?.errors?.['ginebroEmail']">Només es permeten correus
           ginebro.cat.</small>
@@ -55,7 +57,7 @@
       <div class="flex flex-col gap-1">
         <label for="verification_code" class="text-gray-700 text-xs font-medium">Codi de verificació</label>
         <div class="relative">
-            <app-otp-input (codeChange)="registerForm.get('verification_code')?.setValue($event)"></app-otp-input>
+          <app-otp-input (codeChange)="registerForm.get('verification_code')?.setValue($event)"></app-otp-input>
         </div>
       </div>
 
@@ -68,9 +70,8 @@
         </div>
       </div>
 
-      <div class="flex flex-col gap-1">
-          <app-password-strength [password]="passwordValue"></app-password-strength>
-      </div>
+      <app-password-strength [password]="passwordValue" (strengthChange)="passwordValid = $event">
+      </app-password-strength>
 
       <div class="flex flex-col gap-1">
         <label for="password_confirmation" class="text-gray-700 text-xs font-medium">Confirma la Contrasenya</label>
@@ -82,7 +83,8 @@
         </div>
       </div>
 
-      <small class="text-red-500" *ngIf="registerForm.errors?.['passwordsMismatch']">Les contrasenyes no coincideixen.</small>
+      <small class="text-red-500" *ngIf="registerForm.errors?.['passwordsMismatch']">Les contrasenyes no
+        coincideixen.</small>
 
       <button type="submit"
         class="w-full h-10 bg-[#009ca6] text-white text-sm font-medium rounded-md flex items-center justify-center gap-2 hover:bg-[#00838f] transition"
