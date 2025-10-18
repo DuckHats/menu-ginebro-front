@@ -26,6 +26,7 @@ export class ForgotPasswordComponent {
   emailForm: FormGroup;
   resetForm: FormGroup;
   isSubmitting = false;
+  passwordValid = false;
 
   constructor(
     private fb: FormBuilder,
@@ -70,20 +71,22 @@ export class ForgotPasswordComponent {
 
   resetPassword(): void {
     this.resetForm.updateValueAndValidity();
+    this.resetForm.markAllAsTouched();
+
+    if (!this.passwordValid) {
+      this.alertService.show('warning', 'La contrasenya no compleix els requisits.', '', 3000);
+      return;
+    }
 
     if (this.resetForm.invalid) {
-      this.resetForm.markAllAsTouched();
-
       const errors = this.resetForm.errors;
       if (errors?.['passwordsMismatch']) {
         this.alertService.show('warning', 'Les contrasenyes no coincideixen.', '', 3000);
       } else {
         this.alertService.show('warning', 'Revisa tots els camps del formulari.', '', 3000);
       }
-
       return;
     }
-
     this.isSubmitting = true;
 
     this.authService.resetPassword(this.resetForm.value).subscribe({
