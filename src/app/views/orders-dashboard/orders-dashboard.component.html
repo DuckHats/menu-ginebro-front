@@ -1,28 +1,35 @@
 <section class="p-5 font-sans">
   <nav class="border-b border-gray-200 mb-6" aria-label="Dashboard views">
     <ul class="flex gap-8 list-none p-0 m-0">
+
       <li>
-        <button class="py-3 text-gray-500 font-medium border-b-2 border-transparent hover:text-cyan-600"
-          [ngClass]="{ 'text-cyan-600 border-cyan-500': activeTab === 'ordres' }" (click)="setActiveTab('ordres')"
-          role="tab" type="button">
+        <button class="py-3 font-medium border-b-2 border-transparent hover:text-cyan-600" [ngClass]="{
+          'text-cyan-600 border-cyan-500 font-bold': activeTab === 'ordres',
+          'text-gray-500': activeTab !== 'ordres'
+        }" (click)="setActiveTab('ordres')" role="tab" type="button">
           Ordres
         </button>
       </li>
+
       <li>
-        <button class="py-3 text-gray-500 font-medium border-b-2 border-transparent hover:text-cyan-600"
-          [ngClass]="{ 'text-cyan-600 border-cyan-500': activeTab === 'menus' }" (click)="setActiveTab('menus')"
-          role="tab" type="button">
+        <button class="py-3 font-medium border-b-2 border-transparent hover:text-cyan-600" [ngClass]="{
+          'text-cyan-600 border-cyan-500 font-bold': activeTab === 'menus',
+          'text-gray-500': activeTab !== 'menus'
+        }" (click)="setActiveTab('menus')" role="tab" type="button">
           Menus
         </button>
       </li>
+
       <li>
-        <button *ngIf="admintype === 1"
-          class="py-3 text-gray-500 font-medium border-b-2 border-transparent hover:text-cyan-600"
-          [ngClass]="{ 'text-cyan-600 border-cyan-500': activeTab === 'usuaris' }" (click)="setActiveTab('usuaris')"
-          role="tab" type="button">
+        <button *ngIf="admintype === 1" class="py-3 font-medium border-b-2 border-transparent hover:text-cyan-600"
+          [ngClass]="{
+          'text-cyan-600 border-cyan-500 font-bold': activeTab === 'usuaris',
+          'text-gray-500': activeTab !== 'usuaris'
+        }" (click)="setActiveTab('usuaris')" role="tab" type="button">
           Usuaris
         </button>
       </li>
+
     </ul>
   </nav>
 
