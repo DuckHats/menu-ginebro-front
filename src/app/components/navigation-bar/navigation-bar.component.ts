@@ -1,8 +1,8 @@
 import { Component } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { Router } from "@angular/router";
+import { Router, NavigationEnd } from "@angular/router";
 import { MatIconModule } from '@angular/material/icon';
-
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: "app-navigation-bar",
@@ -19,22 +19,30 @@ export class NavigationBarComponent {
   constructor(private router: Router) { }
 
   ngOnInit() {
-    const currentUrl = this.router.url;
-    if (currentUrl.includes('food')) {
+    this.isAdmin = localStorage.getItem('isAdmin') === 'true';
+
+    this.updateActiveTab(this.router.url);
+
+    this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe((event: any) => {
+        this.updateActiveTab(event.urlAfterRedirects);
+      });
+  }
+
+  updateActiveTab(url: string) {
+    if (url.includes('food')) {
       this.activeTab = 'food';
-    } else if (currentUrl.includes('history')) {
+    } else if (url.includes('history')) {
       this.activeTab = 'history';
-    } else if (currentUrl.includes('admin')) {
+    } else if (url.includes('admin')) {
       this.activeTab = 'admin';
-    } else if (currentUrl.includes('profile')) {
+    } else {
       this.activeTab = 'profile';
     }
-
-    this.isAdmin = localStorage.getItem('isAdmin') === 'true';
   }
 
   navigate(tab: typeof this.activeTab) {
-    this.activeTab = tab;
     this.router.navigate([`/${tab}`]);
   }
 
