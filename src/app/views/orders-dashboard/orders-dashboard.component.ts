@@ -260,8 +260,6 @@ export class OrdersDashboardComponent implements OnInit {
     const today = new Date();
     const next = new Date(current);
 
-    if (offset > 0 && next > today) return;
-
     this.selectedDate = current.toISOString().split('T')[0];
     this.loadOrders(this.selectedDate);
   }
