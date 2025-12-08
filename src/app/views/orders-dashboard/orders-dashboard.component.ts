@@ -256,10 +256,6 @@ export class OrdersDashboardComponent implements OnInit {
   changeDay(offset: number): void {
     const current = new Date(this.selectedDate);
     current.setDate(current.getDate() + offset);
-
-    const today = new Date();
-    const next = new Date(current);
-
     this.selectedDate = current.toISOString().split('T')[0];
     this.loadOrders(this.selectedDate);
   }
