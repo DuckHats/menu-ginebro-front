@@ -26,25 +26,16 @@
       <div class="border-t border-[#e0e0e0] pt-3">
         <h3 class="text-md font-bold mb-2 text-[#009ca6]">Al·lèrgies</h3>
         
-        <div *ngIf="successMessage" class="bg-green-100 text-green-700 p-2 rounded mb-2 text-sm">
-            {{ successMessage }}
-        </div>
-        <div *ngIf="errorMessage" class="bg-red-100 text-red-700 p-2 rounded mb-2 text-sm">
-            {{ errorMessage }}
-        </div>
-
         <form [formGroup]="profileForm" (ngSubmit)="saveAllergies()">
             <div class="mb-3">
-                <label class="block text-sm font-semibold text-[#333] mb-1">Comunes:</label>
-                <div class="grid grid-cols-2 gap-2">
-                    <div *ngFor="let allergy of allergies" class="flex items-center">
-                        <input type="checkbox" [id]="'allergy-' + allergy.id" 
-                               [checked]="selectedAllergyIds.has(allergy.id)" 
-                               (change)="toggleAllergy(allergy.id)" 
-                               class="mr-2 h-4 w-4 text-[#009ca6] focus:ring-[#009ca6] border-gray-300 rounded">
-                        <label [for]="'allergy-' + allergy.id" class="text-sm text-gray-700">{{ allergy.name }}</label>
-                    </div>
-                </div>
+                <mat-form-field appearance="outline" class="w-full">
+                    <mat-label>Comunes</mat-label>
+                    <mat-select formControlName="allergies" multiple>
+                        <mat-option *ngFor="let allergy of allergies" [value]="allergy.id">
+                            {{ allergy.name }}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
             </div>
 
             <div class="mb-3">
