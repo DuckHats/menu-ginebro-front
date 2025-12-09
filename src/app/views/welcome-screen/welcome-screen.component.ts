@@ -5,7 +5,9 @@ import { SchoolMealInfoComponent } from '../../components/school-meal-info/schoo
 import { ActionButtonComponent } from '../../components/action-button/action-button.component';
 import { Student } from '../../interfaces/student';
 import { Router } from '@angular/router';
-import { NavigationConfig } from '../../environments/navigation.config';
+import { NavigationConfig } from '../../config/navigation.config';
+import { AppConstants } from '../../config/app-constants.config';
+import { ConsoleMessages } from '../../config/console-messages.config';
 
 @Component({
   selector: 'app-welcome-screen',
@@ -22,18 +24,18 @@ import { NavigationConfig } from '../../environments/navigation.config';
 export class WelcomeScreenComponent implements OnInit {
   student!: Student;
 
-  constructor(private router: Router) { }
+  constructor(private router: Router) {}
 
   ngOnInit() {
-    const storedStudent = localStorage.getItem('user');
+    const storedStudent = localStorage.getItem(AppConstants.STORAGE_KEYS.USER);
     if (storedStudent) {
       this.student = JSON.parse(storedStudent);
     } else {
-      console.error('Student not found in localStorage');
+      console.error(ConsoleMessages.ERRORS.STUDENT_NOT_FOUND);
     }
   }
 
   onSelectMenu(): void {
-    this.router.navigate(["/" + NavigationConfig.MENU]);
+    this.router.navigate(['/' + NavigationConfig.MENU]);
   }
 }

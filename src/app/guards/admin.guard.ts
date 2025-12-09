@@ -1,21 +1,25 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
+import {
+  CanActivate,
+  ActivatedRouteSnapshot,
+  RouterStateSnapshot,
+  Router,
+} from '@angular/router';
 import { Observable } from 'rxjs';
 import { AuthService } from '../Services/Auth/auth.service';
-import { NavigationConfig } from '../environments/navigation.config';
+import { NavigationConfig } from '../config/navigation.config';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AdminGuard implements CanActivate {
-
-  constructor(private authService: AuthService, private router: Router) { }
+  constructor(private authService: AuthService, private router: Router) {}
 
   canActivate(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Observable<boolean> | Promise<boolean> | boolean {
-    return new Observable(observer => {
+    return new Observable((observer) => {
       this.authService.checkIfAdmin().subscribe(
         (isAdmin) => {
           if (isAdmin) {
@@ -26,7 +30,7 @@ export class AdminGuard implements CanActivate {
           }
         },
         (error) => {
-          this.router.navigate(["/" + NavigationConfig.LOGIN]);
+          this.router.navigate(['/' + NavigationConfig.LOGIN]);
           observer.next(false);
         }
       );

@@ -1,27 +1,41 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  ReactiveFormsModule,
+} from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../Services/Auth/auth.service';
 import { AlertService } from '../../Services/Alert/alert.service';
 import { Router } from '@angular/router';
-import { NavigationConfig } from '../../environments/navigation.config';
+import { NavigationConfig } from '../../config/navigation.config';
 import { IconComponent } from '../../components/icon/icon.component';
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
-import { OtpInputComponent } from "../../components/otp-input/otp-input.component";
-import { PasswordStrengthComponent } from "../../components/password-strength/password-strength.component";
-
+import { OtpInputComponent } from '../../components/otp-input/otp-input.component';
+import { PasswordStrengthComponent } from '../../components/password-strength/password-strength.component';
+import { Messages } from '../../config/messages.config';
+import { AppConstants } from '../../config/app-constants.config';
+import { UILabels } from '../../config/ui-labels.config';
 
 @Component({
   selector: 'app-student-registration',
   templateUrl: './student-registration.component.html',
   styleUrls: ['./student-registration.component.css'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, IconComponent, OtpInputComponent, PasswordStrengthComponent],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    IconComponent,
+    OtpInputComponent,
+    PasswordStrengthComponent,
+  ],
 })
 export class StudentRegistrationComponent {
   step = 1;
   isSubmitting = false;
   passwordValid = false;
+  UILabels = UILabels;
 
   emailForm: FormGroup;
   registerForm: FormGroup;
@@ -33,13 +47,19 @@ export class StudentRegistrationComponent {
     private router: Router
   ) {
     this.emailForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email, this.ginebroEmailValidator]],
+      email: [
+        '',
+        [Validators.required, Validators.email, this.ginebroEmailValidator],
+      ],
     });
 
     this.registerForm = this.fb.group({
       name: ['', Validators.required],
       last_name: ['', Validators.required],
-      email: [{ value: '', disabled: true }, [Validators.required, Validators.email, this.ginebroEmailValidator]],
+      email: [
+        { value: '', disabled: true },
+        [Validators.required, Validators.email, this.ginebroEmailValidator],
+      ],
       verification_code: ['', [Validators.required, Validators.minLength(4)]],
       password: ['', Validators.required],
       password_confirmation: ['', Validators.required],
@@ -51,9 +71,17 @@ export class StudentRegistrationComponent {
       this.emailForm.markAllAsTouched();
 
       if (this.emailForm.get('email')?.errors?.['ginebroEmail']) {
-        this.alertService.show('error', 'El correu ha de ser del domini @ginebro.cat.', '');
+        this.alertService.show(
+          'error',
+          Messages.VALIDATION.GINEBRO_EMAIL_REQUIRED,
+          ''
+        );
       } else {
-        this.alertService.show('warning', 'Introdueix un correu vàlid.', '');
+        this.alertService.show(
+          'warning',
+          Messages.VALIDATION.VALID_EMAIL_REQUIRED,
+          ''
+        );
       }
 
       return;
@@ -63,51 +91,74 @@ export class StudentRegistrationComponent {
     this.authService.sendRegisterCode(this.emailForm.value.email).subscribe({
       next: () => {
         this.isSubmitting = false;
-        this.alertService.show('success', 'Codi enviat al teu correu.', '');
+        this.alertService.show('success', Messages.REGISTRATION.CODE_SENT, '');
         this.registerForm.get('email')?.setValue(this.emailForm.value.email);
         this.step = 2;
       },
       error: (err) => {
         this.isSubmitting = false;
-        this.alertService.show('error', 'No s\'ha pogut enviar el codi.', '');
+        this.alertService.show(
+          'error',
+          Messages.REGISTRATION.CODE_SEND_ERROR,
+          ''
+        );
         console.error(err);
-      }
+      },
     });
   }
-
 
   onSubmit(): void {
     this.registerForm.markAllAsTouched();
     if (!this.passwordValid) {
-      this.alertService.show('warning', 'La contrasenya no compleix els requisits.', '');
+      this.alertService.show(
+        'warning',
+        Messages.VALIDATION.PASSWORD_REQUIREMENTS,
+        ''
+      );
       return;
     }
 
     if (this.registerForm.invalid) {
-      this.alertService.show('warning', 'Tots els camps són obligatoris', '');
+      this.alertService.show(
+        'warning',
+        Messages.VALIDATION.REQUIRED_FIELDS,
+        ''
+      );
       return;
     }
 
     this.isSubmitting = true;
     const payload = {
       ...this.registerForm.getRawValue(),
-      verification_code: +this.registerForm.get('verification_code')?.value // Assegura que sigui número
+      verification_code: +this.registerForm.get('verification_code')?.value, // Assegura que sigui número
     };
     this.authService.completeRegister(payload).subscribe({
       next: (response) => {
         if (response.status === 201 || response.status === 200) {
-          this.alertService.show('success', 'Registre completat', 'Benvingut!');
+          this.alertService.show(
+            'success',
+            Messages.REGISTRATION.REGISTRATION_COMPLETE,
+            Messages.REGISTRATION.REGISTRATION_WELCOME
+          );
           this.router.navigate([NavigationConfig.LOGIN]);
         } else {
-          this.alertService.show('error', 'Error de registre', 'Revisa les dades.');
+          this.alertService.show(
+            'error',
+            Messages.REGISTRATION.REGISTRATION_ERROR,
+            Messages.REGISTRATION.REGISTRATION_REVIEW
+          );
         }
         this.isSubmitting = false;
       },
       error: (err) => {
-        this.alertService.show('error', 'Error', 'No s’ha pogut completar el registre.');
+        this.alertService.show(
+          'error',
+          Messages.GENERIC.ERROR,
+          Messages.REGISTRATION.REGISTRATION_FAILED
+        );
         console.error(err);
         this.isSubmitting = false;
-      }
+      },
     });
   }
 
@@ -115,9 +166,13 @@ export class StudentRegistrationComponent {
     this.router.navigate([NavigationConfig.LOGIN]);
   }
 
-  private ginebroEmailValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
+  private ginebroEmailValidator: ValidatorFn = (
+    control: AbstractControl
+  ): ValidationErrors | null => {
     const value = control.value || '';
-    return value.endsWith('@ginebro.cat') ? null : { ginebroEmail: true };
+    return value.endsWith(AppConstants.EMAIL_DOMAINS.GINEBRO)
+      ? null
+      : { ginebroEmail: true };
   };
 
   get passwordValue() {
