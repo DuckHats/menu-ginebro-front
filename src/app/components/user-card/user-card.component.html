@@ -9,7 +9,7 @@
           <!-- <span class="px-[2px]"></span>
           <span>{{ middleName }}</span> -->
           <span class="px-[2px]"></span>
-          <span>{{ student.lastName }}</span>
+          <span>{{ student.last_name }}</span>
         </p>
       </div>
       <!-- <p class="user-role">Estudiante</p> User type label -->
@@ -20,6 +20,45 @@
       <!-- Datos -->
       <div>
         <p class="text-sm font-semibold text-[#333]">📧 Email: <span class="font-normal">{{ student.email }}</span></p>
+      </div>
+
+      <!-- Allergies Section -->
+      <div class="border-t border-[#e0e0e0] pt-3">
+        <h3 class="text-md font-bold mb-2 text-[#009ca6]">Al·lèrgies</h3>
+        
+        <div *ngIf="successMessage" class="bg-green-100 text-green-700 p-2 rounded mb-2 text-sm">
+            {{ successMessage }}
+        </div>
+        <div *ngIf="errorMessage" class="bg-red-100 text-red-700 p-2 rounded mb-2 text-sm">
+            {{ errorMessage }}
+        </div>
+
+        <form [formGroup]="profileForm" (ngSubmit)="saveAllergies()">
+            <div class="mb-3">
+                <label class="block text-sm font-semibold text-[#333] mb-1">Comunes:</label>
+                <div class="grid grid-cols-2 gap-2">
+                    <div *ngFor="let allergy of allergies" class="flex items-center">
+                        <input type="checkbox" [id]="'allergy-' + allergy.id" 
+                               [checked]="selectedAllergyIds.has(allergy.id)" 
+                               (change)="toggleAllergy(allergy.id)" 
+                               class="mr-2 h-4 w-4 text-[#009ca6] focus:ring-[#009ca6] border-gray-300 rounded">
+                        <label [for]="'allergy-' + allergy.id" class="text-sm text-gray-700">{{ allergy.name }}</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="block text-sm font-semibold text-[#333] mb-1">Altres (separades per comes):</label>
+                <input type="text" formControlName="custom_allergies" 
+                       class="w-full p-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-[#009ca6]" 
+                       placeholder="Ex: Maduixes, Kiwi">
+            </div>
+
+            <button type="submit" 
+                    class="w-full bg-[#009ca6] text-white font-bold py-2 px-4 rounded hover:bg-[#00858e] transition text-sm">
+                Guardar Al·lèrgies
+            </button>
+        </form>
       </div>
 
       <!-- Ajustes -->

@@ -7,7 +7,7 @@ import { UsersService } from '../../Services/Admin/users/users.service';
 import { OrdersService } from '../../Services/Orders/orders.service';
 import { MenusService } from '../../Services/Menus/menu.service';
 import { AlertService } from '../../Services/Alert/alert.service';
-import { StudentService } from '../../Services/User/user.service';
+import { UserService } from '../../Services/User/user.service';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { BulkUploadModalComponent } from '../../components/bulk-upload-modal/bulk-upload-modal.component';
 
@@ -48,12 +48,12 @@ export class OrdersDashboardComponent implements OnInit {
     private ordersService: OrdersService,
     private menusService: MenusService,
     private alertService: AlertService,
-    private studentService: StudentService,
+    private userService: UserService,
     private dialog: MatDialog
   ) { }
 
   ngOnInit(): void {
-    this.admintype = this.studentService.getLocalStudent()?.user_type_id || 1;
+    this.admintype = this.userService.getLocalUser()?.user_type_id || 1;
     this.loadAllData();
   }
 
@@ -161,7 +161,7 @@ export class OrdersDashboardComponent implements OnInit {
   }
 
   loadUsers(): void {
-    this.usersService.getAll().subscribe({
+    this.userService.getUsers().subscribe({
       next: (users: any) => {
         this.students = users.data.map((user: any) => ({
           id: user.id,
@@ -210,7 +210,7 @@ export class OrdersDashboardComponent implements OnInit {
   }
 
   exportUserData(): void {
-    this.studentService.export(this.selectedExportFormat).subscribe({
+    this.userService.export(this.selectedExportFormat).subscribe({
       next: (response) => {
         const blob = new Blob([response.body], { type: response.body.type });
         const a = document.createElement('a');
@@ -308,7 +308,7 @@ export class OrdersDashboardComponent implements OnInit {
             }
           });
         } else {
-          this.studentService.import(result).subscribe({
+          this.userService.import(result).subscribe({
             next: () => {
               this.alertService.show('success', 'Usuaris importats correctament', '', 3000);
               this.loadUsers();
@@ -335,7 +335,7 @@ export class OrdersDashboardComponent implements OnInit {
         }
       });
     } else {
-      this.studentService.import(json).subscribe({
+      this.userService.import(json).subscribe({
         next: () => {
           this.alertService.show('success', 'Usuaris importats correctament', '', 3000);
           this.loadUsers();

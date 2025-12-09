@@ -1,41 +1,64 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, catchError, map, of, throwError } from 'rxjs';
-import { Student } from '../../interfaces/student';
+import { User } from '../../interfaces/user';
 import { API_CONFIG } from '../../environments/api.config';
 
 @Injectable({
   providedIn: 'root',
 })
-export class StudentService {
+export class UserService {
   private localStorageKey = 'user';
   private baseUrl = `${API_CONFIG.baseUrl}/users`;
-  private cachedStudent: Student | null = null;
+  private cachedUser: User | null = null;
 
   constructor(private http: HttpClient) { }
   private getHeaders(): HttpHeaders {
     const token = localStorage.getItem('token') || '';
     return new HttpHeaders({ Authorization: `Bearer ${token}` });
   }
-  getStudentById(id: number): Observable<Student> {
-    if (this.cachedStudent) {
-      return of(this.cachedStudent);
+
+  getUsers(): Observable<any> {
+    const headers = this.getHeaders();
+    return this.http.get<{ status: number; data: User[] }>(this.baseUrl, { headers });
+  }
+
+  getUserById(id: number): Observable<User> {
+    if (this.cachedUser && this.cachedUser.id === id) {
+      return of(this.cachedUser);
     }
 
-    const token = localStorage.getItem('token');
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    const headers = this.getHeaders();
 
     return this.http
-      .get<{ status: number; data: Student }>(`${this.baseUrl}/${id}`, {
+      .get<{ status: number; data: User }>(`${this.baseUrl}/${id}`, {
         headers,
       })
       .pipe(
         map((response) => {
           const user = response.data;
-          this.saveStudent(user);
+          this.saveUser(user);
           return user;
         })
       );
+  }
+
+  me(): Observable<User> {
+      const headers = this.getHeaders();
+      return this.http.get<{data: User}>(`${this.baseUrl}/me`, {headers})
+          .pipe(map(res => {
+              this.saveUser(res.data);
+              return res.data;
+          }));
+  }
+
+  updateUser(id: number, data: any): Observable<User> {
+      const headers = this.getHeaders();
+      return this.http.put<{data: User}>(`${this.baseUrl}/${id}`, data, {headers})
+          .pipe(map(res => {
+              this.saveUser(res.data);
+              return res.data;
+          }));
   }
 
   export(format: string): Observable<any> {
@@ -50,14 +73,14 @@ export class StudentService {
       .pipe(catchError(this.handleError));
   }
 
-  getLocalStudent(): Student | null {
-    if (this.cachedStudent) return this.cachedStudent;
+  getLocalUser(): User | null {
+    if (this.cachedUser) return this.cachedUser;
 
     const userJson = localStorage.getItem(this.localStorageKey);
     if (userJson) {
       try {
         const parsed = JSON.parse(userJson);
-        this.cachedStudent = parsed;
+        this.cachedUser = parsed;
         return parsed;
       } catch {
         return null;
@@ -67,22 +90,22 @@ export class StudentService {
     return null;
   }
 
-  saveStudent(user: Student): void {
-    this.cachedStudent = user;
+  saveUser(user: User): void {
+    this.cachedUser = user;
     localStorage.setItem(this.localStorageKey, JSON.stringify(user));
   }
 
-  clearStudent(): void {
-    this.cachedStudent = null;
+  clearUser(): void {
+    this.cachedUser = null;
     localStorage.removeItem(this.localStorageKey);
   }
 
   isLoggedIn(): boolean {
-    return !!this.getLocalStudent();
+    return !!this.getLocalUser();
   }
 
-  getStudentId(): number | null {
-    return this.getLocalStudent()?.id ?? null;
+  getUserId(): number | null {
+    return this.getLocalUser()?.id ?? null;
   }
 
   isAdmin(): boolean {
@@ -94,7 +117,7 @@ export class StudentService {
   }
 
   private handleError(error: any) {
-    console.error('StudentService error:', error);
+    console.error('UserService error:', error);
     return throwError(() => error);
   }
 }

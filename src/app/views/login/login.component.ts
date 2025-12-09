@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../Services/Auth/auth.service';
-import { StudentService } from '../../Services/User/user.service';
+import { UserService } from '../../Services/User/user.service';
 import { ErrorMessages } from '../../environments/errors.config';
 import { AlertService } from '../../Services/Alert/alert.service';
 import { NavigationConfig } from '../../environments/navigation.config';
@@ -28,7 +28,7 @@ export class LoginComponent {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private studentService: StudentService,
+    private userService: UserService,
     private router: Router,
     private alertService: AlertService
   ) {
@@ -55,7 +55,7 @@ export class LoginComponent {
 
             localStorage.setItem('token', token);
 
-            this.studentService.getStudentById(userId).subscribe({
+            this.userService.me().subscribe({
               next: (fullUser) => {
                 this.authService.checkIfAdmin().subscribe(
                   (isAdmin) => {

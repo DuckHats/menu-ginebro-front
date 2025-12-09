@@ -12,6 +12,7 @@ import { StudentRegistrationComponent } from './views/student-registration/stude
 import { PublicGuard } from './guards/public.guard';
 
 
+
 export const routes: Routes = [
   { path: 'login', component: LoginComponent, canActivate: [PublicGuard] },
   { path: 'forgotpassword', component: ForgotPasswordComponent, canActivate: [PublicGuard] },

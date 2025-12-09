@@ -4,7 +4,7 @@ import { OrderCardComponent } from '../../components/order-card/order-card.compo
 import { Order, MenuItem } from '../../interfaces/order-history';
 import { OrdersService } from '../../Services/Orders/orders.service';
 import { Router } from '@angular/router';
-import { StudentService } from '../../Services/User/user.service';
+import { UserService } from '../../Services/User/user.service';
 import { NavigationConfig } from '../../environments/navigation.config';
 
 @Component({
@@ -25,12 +25,21 @@ export class OrderHistoryComponent implements OnInit {
 
   constructor(private ordersService: OrdersService,
     private router: Router,
-    private studentService: StudentService
+    private userService: UserService
   ) { }
 
   ngOnInit(): void {
-    this.userId = this.studentService.getLocalStudent()?.id || 1;
-    this.loadOrders();
+    this.userService.me().subscribe({
+      next: (user) => {
+        this.userId = user?.id || 1;
+        this.loadOrders();
+      },
+      error: (err) => {
+        console.error('Error getting user info:', err);
+        this.userId = 1; // Fallback to default or handle error appropriately
+        this.loadOrders(); // Still attempt to load orders, perhaps with default user or empty
+      }
+    });
   }
 
   loadOrders(): void {
