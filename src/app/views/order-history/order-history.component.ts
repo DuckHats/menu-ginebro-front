@@ -4,8 +4,8 @@ import { OrderCardComponent } from '../../components/order-card/order-card.compo
 import { Order, MenuItem } from '../../interfaces/order-history';
 import { OrdersService } from '../../Services/Orders/orders.service';
 import { Router } from '@angular/router';
-import { StudentService } from '../../Services/User/user.service';
-import { NavigationConfig } from '../../environments/navigation.config';
+import { UserService } from '../../Services/User/user.service';
+import { NavigationConfig } from '../../config/navigation.config';
 
 @Component({
   selector: 'app-order-history',
@@ -23,14 +23,24 @@ export class OrderHistoryComponent implements OnInit {
   orders: Order[] = [];
   userId: number = 1;
 
-  constructor(private ordersService: OrdersService,
+  constructor(
+    private ordersService: OrdersService,
     private router: Router,
-    private studentService: StudentService
-  ) { }
+    private userService: UserService
+  ) {}
 
   ngOnInit(): void {
-    this.userId = this.studentService.getLocalStudent()?.id || 1;
-    this.loadOrders();
+    this.userService.me().subscribe({
+      next: (user) => {
+        this.userId = user?.id || 1;
+        this.loadOrders();
+      },
+      error: (err) => {
+        console.error('Error getting user info:', err);
+        this.userId = 1; // Fallback to default or handle error appropriately
+        this.loadOrders(); // Still attempt to load orders, perhaps with default user or empty
+      },
+    });
   }
 
   loadOrders(): void {
@@ -42,13 +52,22 @@ export class OrderHistoryComponent implements OnInit {
 
           if (order.orderDetail) {
             if (type.includes('primer')) {
-              menuItems.push({ type: 'Primer Plat', name: order.orderDetail.option1 });
+              menuItems.push({
+                type: 'Primer Plat',
+                name: order.orderDetail.option1,
+              });
             }
             if (type.includes('segon') || type.includes('segundo')) {
-              menuItems.push({ type: 'Segon Plat', name: order.orderDetail.option2 });
+              menuItems.push({
+                type: 'Segon Plat',
+                name: order.orderDetail.option2,
+              });
             }
             if (type.includes('postre')) {
-              menuItems.push({ type: 'Postre', name: order.orderDetail.option3 });
+              menuItems.push({
+                type: 'Postre',
+                name: order.orderDetail.option3,
+              });
             }
           }
 
@@ -66,6 +85,6 @@ export class OrderHistoryComponent implements OnInit {
   }
 
   goToHomePage(): void {
-    this.router.navigate(["/" + NavigationConfig.HOME]);
+    this.router.navigate(['/' + NavigationConfig.HOME]);
   }
 }

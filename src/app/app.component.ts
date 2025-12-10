@@ -4,8 +4,8 @@ import { CommonModule } from '@angular/common';
 
 import { NavigationBarComponent } from './components/navigation-bar/navigation-bar.component';
 import { AlertContainerComponent } from './components/alert-container/alert-container.component';
-import { FooterComponent } from "./components/footer/footer.component";
-import { NavigationConfig } from './environments/navigation.config';
+import { FooterComponent } from './components/footer/footer.component';
+import { NavigationConfig } from './config/navigation.config';
 
 @Component({
   selector: 'app-root',
@@ -14,13 +14,12 @@ import { NavigationConfig } from './environments/navigation.config';
     RouterOutlet,
     AlertContainerComponent,
     CommonModule,
-    FooterComponent
+    FooterComponent,
   ],
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
 })
 export class AppComponent {
-
   showNav = true;
   title = 'testMenu1';
 

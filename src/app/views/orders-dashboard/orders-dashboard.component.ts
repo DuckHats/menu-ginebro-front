@@ -1,15 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';  // <-- import FormsModule here
+import { FormsModule } from '@angular/forms'; // <-- import FormsModule here
 import { Student } from '../../interfaces/student';
 import { Order, MenuItem } from '../../interfaces/order-history';
 import { UsersService } from '../../Services/Admin/users/users.service';
 import { OrdersService } from '../../Services/Orders/orders.service';
 import { MenusService } from '../../Services/Menus/menu.service';
 import { AlertService } from '../../Services/Alert/alert.service';
-import { StudentService } from '../../Services/User/user.service';
+import { UserService } from '../../Services/User/user.service';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { BulkUploadModalComponent } from '../../components/bulk-upload-modal/bulk-upload-modal.component';
+import { Messages } from '../../config/messages.config';
+import { AppConstants } from '../../config/app-constants.config';
+import { ConsoleMessages } from '../../config/console-messages.config';
 
 @Component({
   selector: 'app-orders-dashboard',
@@ -36,24 +39,19 @@ export class OrdersDashboardComponent implements OnInit {
   selectedFile: File | null = null;
 
   // Status options for the select dropdown
-  statusOptions = [
-    { value: 1, label: 'Pendent' },
-    { value: 2, label: 'En preparació' },
-    { value: 3, label: 'Entregat' },
-    { value: 4, label: 'No recollit' }
-  ];
+  statusOptions = AppConstants.ORDER_STATUS_OPTIONS;
 
   constructor(
     private usersService: UsersService,
     private ordersService: OrdersService,
     private menusService: MenusService,
     private alertService: AlertService,
-    private studentService: StudentService,
+    private userService: UserService,
     private dialog: MatDialog
-  ) { }
+  ) {}
 
   ngOnInit(): void {
-    this.admintype = this.studentService.getLocalStudent()?.user_type_id || 1;
+    this.admintype = this.userService.getLocalUser()?.user_type_id || 1;
     this.loadAllData();
   }
 
@@ -86,7 +84,9 @@ export class OrdersDashboardComponent implements OnInit {
     });
 
     const menuPromises = datesOfWeek.map((date) =>
-      this.menusService.getByDate(date).toPromise()
+      this.menusService
+        .getByDate(date)
+        .toPromise()
         .then((res: any) => {
           const dishes = res.data?.dishes || [];
 
@@ -98,15 +98,22 @@ export class OrdersDashboardComponent implements OnInit {
               if (typeof options === 'string') {
                 options = JSON.parse(options);
               }
-              name = Array.isArray(options) && options.length > 0 ? options[0] : 'N/A';
+              name =
+                Array.isArray(options) && options.length > 0
+                  ? options[0]
+                  : 'N/A';
             } catch (e) {
-              console.error(`Error parsing options for dish ID ${dish.id}:`, dish.options, e);
+              console.error(
+                ConsoleMessages.ERRORS.PARSING_OPTIONS(dish.id),
+                dish.options,
+                e
+              );
             }
 
             return {
               type: this.getDishType(dish.dish_type_id),
               name,
-              date
+              date,
             };
           });
 
@@ -114,32 +121,27 @@ export class OrdersDashboardComponent implements OnInit {
         })
         .catch((err) => {
           if (err.status === 404) {
-            console.error(`No menu found for date: ${date}`);
+            console.error(ConsoleMessages.ERRORS.NO_MENU_FOR_DATE(date));
           } else {
-            console.error(`Error fetching menu for date ${date}:`, err);
+            console.error(
+              ConsoleMessages.ERRORS.FETCHING_MENU_FOR_DATE(date),
+              err
+            );
           }
           return { date, menus: [] };
         })
     );
 
-    Promise.all(menuPromises)
-      .then((results) => {
-        this.weeklyMenus = results;
-      });
+    Promise.all(menuPromises).then((results) => {
+      this.weeklyMenus = results;
+    });
   }
 
-
   getDishType(id: number): string {
-    switch (id) {
-      case 1:
-        return 'Primer Plat';
-      case 2:
-        return 'Segundo Plat';
-      case 3:
-        return 'Postre';
-      default:
-        return 'Altre';
-    }
+    return (
+      AppConstants.DISH_TYPES[id as keyof typeof AppConstants.DISH_TYPES] ||
+      'Altre'
+    );
   }
 
   loadOrders(date: string): void {
@@ -154,14 +156,14 @@ export class OrdersDashboardComponent implements OnInit {
         this.loadingOrders = false;
       },
       error: (err) => {
-        console.error('Failed to fetch orders', err);
+        console.error(ConsoleMessages.ERRORS.FETCHING_ORDERS, err);
         this.loadingOrders = false;
       },
     });
   }
 
   loadUsers(): void {
-    this.usersService.getAll().subscribe({
+    this.userService.getUsers().subscribe({
       next: (users: any) => {
         this.students = users.data.map((user: any) => ({
           id: user.id,
@@ -172,7 +174,7 @@ export class OrdersDashboardComponent implements OnInit {
         }));
       },
       error: (err) => {
-        console.error('Error loading users:', err);
+        console.error(ConsoleMessages.ERRORS.LOADING_USERS, err);
       },
     });
   }
@@ -188,8 +190,13 @@ export class OrdersDashboardComponent implements OnInit {
         window.URL.revokeObjectURL(a.href);
       },
       error: (err) => {
-        this.alertService.show('error', 'Error durant l\'exportació de dades.', '', 3000);
-      }
+        this.alertService.show(
+          'error',
+          Messages.IMPORT_EXPORT.EXPORT_ERROR,
+          '',
+          3000
+        );
+      },
     });
   }
 
@@ -204,13 +211,18 @@ export class OrdersDashboardComponent implements OnInit {
         window.URL.revokeObjectURL(a.href);
       },
       error: (err) => {
-        this.alertService.show('error', 'Error durant l\'exportació de dades.', '', 3000);
-      }
+        this.alertService.show(
+          'error',
+          Messages.IMPORT_EXPORT.EXPORT_ERROR,
+          '',
+          3000
+        );
+      },
     });
   }
 
   exportUserData(): void {
-    this.studentService.export(this.selectedExportFormat).subscribe({
+    this.userService.export(this.selectedExportFormat).subscribe({
       next: (response) => {
         const blob = new Blob([response.body], { type: response.body.type });
         const a = document.createElement('a');
@@ -220,11 +232,15 @@ export class OrdersDashboardComponent implements OnInit {
         window.URL.revokeObjectURL(a.href);
       },
       error: (err) => {
-        this.alertService.show('error', 'Error durant l\'exportació de dades.', '', 3000);
-      }
+        this.alertService.show(
+          'error',
+          Messages.IMPORT_EXPORT.EXPORT_ERROR,
+          '',
+          3000
+        );
+      },
     });
   }
-
 
   onDateChange(event: Event): void {
     const input = event.target as HTMLInputElement;
@@ -237,12 +253,20 @@ export class OrdersDashboardComponent implements OnInit {
   onStatusChange(order: Order): void {
     this.ordersService.updateStatus(order.id, order.orderStatus.id).subscribe({
       next: () => {
-        this.alertService.show('success', 'Estat de la comanda modificada correctament.', '');
+        this.alertService.show(
+          'success',
+          Messages.ORDERS.STATUS_UPDATE_SUCCESS,
+          ''
+        );
         this.loadOrders(this.selectedDate);
       },
       error: (err) => {
-        this.alertService.show('error', 'Error en actualitzar l\'estat de la comanda.', '');
-      }
+        this.alertService.show(
+          'error',
+          Messages.ORDERS.STATUS_UPDATE_ERROR,
+          ''
+        );
+      },
     });
   }
 
@@ -271,17 +295,13 @@ export class OrdersDashboardComponent implements OnInit {
         student.status = isActive ? 0 : 1;
         this.alertService.show(
           'success',
-          `Usuari ${isActive ? 'desactivat' : 'activat'} correctament.`,
+          Messages.USERS.STATUS_CHANGE_SUCCESS(isActive),
           ''
         );
       },
       error: (err) => {
-        this.alertService.show(
-          'error',
-          'Error en modificar l\'estat del usuari.',
-          ''
-        );
-      }
+        this.alertService.show('error', Messages.USERS.STATUS_CHANGE_ERROR, '');
+      },
     });
   }
 
@@ -290,32 +310,58 @@ export class OrdersDashboardComponent implements OnInit {
     const dialogRef = this.dialog.open(BulkUploadModalComponent, {
       width: '500px',
       data: {
-        plantillaUrl: type === 'menus' ? '/import_templates/import_menus_example.json' : '/import_templates/import_users_example.json',
-        descripcion: type === 'menus' ? 'Importar menus des d\'un arxiu JSON' : 'Importar usuaris des d\'un arxiu JSON'
-      }
+        plantillaUrl:
+          type === 'menus'
+            ? AppConstants.IMPORT_TEMPLATES.MENUS
+            : AppConstants.IMPORT_TEMPLATES.USERS,
+        descripcion:
+          type === 'menus'
+            ? AppConstants.IMPORT_DESCRIPTIONS.MENUS
+            : AppConstants.IMPORT_DESCRIPTIONS.USERS,
+      },
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         if (type === 'menus') {
           this.menusService.import(result).subscribe({
             next: () => {
-              this.alertService.show('success', 'Menús importats correctament', '', 3000);
+              this.alertService.show(
+                'success',
+                Messages.IMPORT_EXPORT.MENUS_IMPORT_SUCCESS,
+                '',
+                3000
+              );
               this.loadMenusWeek();
             },
             error: (error: Error) => {
-              this.alertService.show('error', 'Error durant la importació dels menús', '', 3000);
-            }
+              this.alertService.show(
+                'error',
+                Messages.IMPORT_EXPORT.MENUS_IMPORT_ERROR,
+                '',
+                3000
+              );
+            },
           });
         } else {
-          this.studentService.import(result).subscribe({
+          this.userService.import(result).subscribe({
             next: () => {
-              this.alertService.show('success', 'Usuaris importats correctament', '', 3000);
+              this.alertService.show(
+                'success',
+                Messages.IMPORT_EXPORT.USERS_IMPORT_SUCCESS,
+                '',
+                3000
+              );
               this.loadUsers();
             },
             error: (error: Error) => {
-              this.alertService.show('error', 'Error durant la importació dels usuaris', '', 3000);
-            }
+              this.alertService.show(
+                'error',
+                Messages.IMPORT_EXPORT.USERS_IMPORT_ERROR,
+                '',
+                3000
+              );
+            },
           });
         }
       }
@@ -327,25 +373,44 @@ export class OrdersDashboardComponent implements OnInit {
     if (this.importType === 'menus') {
       this.menusService.import(json).subscribe({
         next: () => {
-          this.alertService.show('success', 'Menús importats correctament', '', 3000);
+          this.alertService.show(
+            'success',
+            Messages.IMPORT_EXPORT.MENUS_IMPORT_SUCCESS,
+            '',
+            3000
+          );
           this.loadMenusWeek();
         },
         error: (error: Error) => {
-          this.alertService.show('error', 'Error durant la importació dels menús', '', 3000);
-        }
+          this.alertService.show(
+            'error',
+            Messages.IMPORT_EXPORT.MENUS_IMPORT_ERROR,
+            '',
+            3000
+          );
+        },
       });
     } else {
-      this.studentService.import(json).subscribe({
+      this.userService.import(json).subscribe({
         next: () => {
-          this.alertService.show('success', 'Usuaris importats correctament', '', 3000);
+          this.alertService.show(
+            'success',
+            Messages.IMPORT_EXPORT.USERS_IMPORT_SUCCESS,
+            '',
+            3000
+          );
           this.loadUsers();
         },
         error: (error: Error) => {
-          this.alertService.show('error', 'Error durant la importació dels usuaris', '', 3000);
-        }
+          this.alertService.show(
+            'error',
+            Messages.IMPORT_EXPORT.USERS_IMPORT_ERROR,
+            '',
+            3000
+          );
+        },
       });
     }
     this.showImportPopup = false; // Cierra el popup si usas el modal antiguo
   }
-
 }

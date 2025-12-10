@@ -3,8 +3,8 @@
 
     <!-- Encabezado -->
     <header class="flex flex-col items-center gap-2 mb-6">
-      <h1 class="text-[#009ca6] text-[20.4px] font-bold leading-8 font-sans">Iniciar Sessió</h1>
-      <p class="text-gray-600 text-sm leading-6 font-sans">Sistema de Menjador Escolar</p>
+      <h1 class="text-[#009ca6] text-[20.4px] font-bold leading-8 font-sans">{{ UILabels.LOGIN.TITLE }}</h1>
+      <p class="text-gray-600 text-sm leading-6 font-sans">{{ UILabels.LOGIN.SUBTITLE }}</p>
     </header>
 
     <!-- Formulario -->
@@ -12,7 +12,7 @@
 
       <!-- Usuari -->
       <div class="flex flex-col gap-1">
-        <label for="email" class="text-gray-700 text-xs font-medium leading-5 font-sans">Correu electrònic</label>
+        <label for="email" class="text-gray-700 text-xs font-medium leading-5 font-sans">{{ UILabels.LOGIN.EMAIL_LABEL }}</label>
         <div class="relative">
           <div class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5">
             <app-icon name="email"></app-icon>
@@ -21,7 +21,7 @@
             id="email"
             type="email"
             formControlName="user"
-            placeholder="el.teu@ginebro.cat"
+            [placeholder]="UILabels.LOGIN.EMAIL_PLACEHOLDER"
             class="w-full h-[41px] pl-10 pr-3 py-2 rounded-md border border-gray-300 text-base font-sans focus:outline-none focus:ring-2 focus:ring-[#009ca6]"
           />
         </div>
@@ -29,7 +29,7 @@
 
       <!-- Contrasenya -->
       <div class="flex flex-col gap-1">
-        <label for="password" class="text-gray-700 text-xs font-medium leading-5 font-sans">Contrasenya</label>
+        <label for="password" class="text-gray-700 text-xs font-medium leading-5 font-sans">{{ UILabels.LOGIN.PASSWORD_LABEL }}</label>
         <div class="relative">
           <div class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5">
             <app-icon name="lock"></app-icon>
@@ -38,7 +38,7 @@
             id="password"
             type="password"
             formControlName="password"
-            placeholder="La teva contrasenya"
+            [placeholder]="UILabels.LOGIN.PASSWORD_PLACEHOLDER"
             class="w-full h-[41px] pl-10 pr-3 py-2 rounded-md border border-gray-300 text-base font-sans focus:outline-none focus:ring-2 focus:ring-[#009ca6]"
           />
         </div>
@@ -53,16 +53,16 @@
         <div class="flex items-center justify-center">
           <app-icon name="user"></app-icon>
         </div>
-        <span>{{ isSubmitting ? 'Iniciant sessió...' : 'Iniciar Sessió' }}</span>
+        <span>{{ isSubmitting ? UILabels.LOGIN.SUBMIT_BUTTON_LOADING : UILabels.LOGIN.SUBMIT_BUTTON }}</span>
       </button>
 
       <!-- Enllaç registre -->
       <a (click)="forgotPassword()" class="text-center text-[#009ca6] text-sm leading-6 font-sans hover:underline cursor-pointer">
-        Has oblidat la contrasenya?
+        {{ UILabels.LOGIN.FORGOT_PASSWORD_LINK }}
       </a>
 
       <a (click)="register()" class="text-center text-[#009ca6] text-sm leading-6 font-sans hover:underline cursor-pointer">
-        No tens un compte?
+        {{ UILabels.LOGIN.REGISTER_LINK }}
       </a>
     </form>
 
