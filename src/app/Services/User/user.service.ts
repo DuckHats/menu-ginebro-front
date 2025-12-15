@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable, catchError, map, of, throwError } from 'rxjs';
 import { User } from '../../interfaces/user';
 import { API_CONFIG } from '../../config/api.config';
@@ -12,28 +12,22 @@ export class UserService {
   private baseUrl = `${API_CONFIG.baseUrl}/users`;
   private cachedUser: User | null = null;
 
-  constructor(private http: HttpClient) {}
-  private getHeaders(): HttpHeaders {
-    const token = localStorage.getItem('token') || '';
-    return new HttpHeaders({ Authorization: `Bearer ${token}` });
+  constructor(private http: HttpClient) { }
+
+  getCsrfCookie(): Observable<any> {
+    return this.http.get('/sanctum/csrf-cookie');
   }
 
+
   getUsers(): Observable<any> {
-    const headers = this.getHeaders();
-    return this.http.get<{ status: number; data: User[] }>(this.baseUrl, {
-      headers,
-    });
+    return this.http.get<{ status: number; data: User[] }>(this.baseUrl);
   }
 
   getUserById(id: number): Observable<User> {
     // Cache check removed to ensure fresh data (including allergies) is always fetched
 
-    const headers = this.getHeaders();
-
     return this.http
-      .get<{ status: number; data: User }>(`${this.baseUrl}/${id}`, {
-        headers,
-      })
+      .get<{ status: number; data: User }>(`${this.baseUrl}/${id}`)
       .pipe(
         map((response) => {
           const user = response.data;
@@ -44,33 +38,25 @@ export class UserService {
   }
 
   me(): Observable<User> {
-    const headers = this.getHeaders();
-    return this.http
-      .get<{ data: User }>(`${this.baseUrl}/me`, { headers })
-      .pipe(
-        map((res) => {
-          this.saveUser(res.data);
-          return res.data;
-        })
-      );
+    return this.http.get<{ data: User }>(`${this.baseUrl}/me`).pipe(
+      map((res) => {
+        this.saveUser(res.data);
+        return res.data;
+      })
+    );
   }
 
   updateUser(id: number, data: any): Observable<User> {
-    const headers = this.getHeaders();
-    return this.http
-      .put<{ data: User }>(`${this.baseUrl}/${id}`, data, { headers })
-      .pipe(
-        map((res) => {
-          this.saveUser(res.data);
-          return res.data;
-        })
-      );
+    return this.http.put<{ data: User }>(`${this.baseUrl}/${id}`, data).pipe(
+      map((res) => {
+        this.saveUser(res.data);
+        return res.data;
+      })
+    );
   }
 
   export(format: string): Observable<any> {
-    const headers = this.getHeaders();
     const options = {
-      headers,
       responseType: 'blob' as 'json',
       observe: 'response' as 'body',
     };
@@ -120,9 +106,7 @@ export class UserService {
   }
 
   import(body: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/import`, body, {
-      headers: this.getHeaders(),
-    });
+    return this.http.post(`${this.baseUrl}/import`, body);
   }
 
   private handleError(error: any) {

@@ -13,26 +13,19 @@ export class UsersService {
 
   constructor(private http: HttpClient) {}
 
-  private getHeaders(): HttpHeaders {
-    const token = localStorage.getItem('token') || '';
-    return new HttpHeaders({ Authorization: `Bearer ${token}` });
-  }
-
   getAll(): Observable<any[]> {
-    return this.http
-      .get<any[]>(this.apiUrl, { headers: this.getHeaders() })
-      .pipe(catchError(this.handleError));
+    return this.http.get<any[]>(this.apiUrl).pipe(catchError(this.handleError));
   }
 
   getOne(id: number): Observable<any> {
     return this.http
-      .get<any>(`${this.apiUrl}/${id}`, { headers: this.getHeaders() })
+      .get<any>(`${this.apiUrl}/${id}`)
       .pipe(catchError(this.handleError));
   }
 
   create(userData: FormData): Observable<any> {
     return this.http
-      .post<any>(this.apiUrlregister, userData, { headers: this.getHeaders() })
+      .post<any>(this.apiUrlregister, userData)
       .pipe(catchError(this.handleError));
   }
 
@@ -47,20 +40,18 @@ export class UsersService {
     }
   ): Observable<any> {
     return this.http
-      .put<any>(`${this.apiUrl}/${id}`, user, { headers: this.getHeaders() })
+      .put<any>(`${this.apiUrl}/${id}`, user)
       .pipe(catchError(this.handleError));
   }
 
   delete(id: number): Observable<any> {
     return this.http
-      .delete<any>(`${this.apiUrl}/${id}`, { headers: this.getHeaders() })
+      .delete<any>(`${this.apiUrl}/${id}`)
       .pipe(catchError(this.handleError));
   }
 
   export(format: string): Observable<any> {
-    const headers = this.getHeaders();
     const options = {
-      headers,
       responseType: 'blob' as 'json',
       observe: 'response' as 'body',
     };
@@ -72,38 +63,24 @@ export class UsersService {
 
   bulkUpload(data: any): Observable<any> {
     return this.http
-      .post(`${this.apiUrl}/bulk`, data, { headers: this.getHeaders() })
-      .pipe(catchError(this.handleError));
-  }
-
-  toggleUser(endpoint: string): Observable<any> {
-    return this.http
-      .post(endpoint, {}, { headers: this.getHeaders() })
-      .pipe(catchError((err) => throwError(() => err)));
-  }
-
-  enableUser(id: number): Observable<any> {
-    return this.http
-      .post<any>(
-        `${this.apiUrl}/${id}/enable`,
-        {},
-        { headers: this.getHeaders() }
-      )
+      .post(`${this.apiUrl}/bulk`, data)
       .pipe(catchError(this.handleError));
   }
 
   disableUser(id: number): Observable<any> {
     return this.http
-      .post<any>(
-        `${this.apiUrl}/${id}/disable`,
-        {},
-        { headers: this.getHeaders() }
-      )
+      .post<any>(`${this.apiUrl}/${id}/disable`, {})
+      .pipe(catchError(this.handleError));
+  }
+
+  enableUser(id: number): Observable<any> {
+    return this.http
+      .post<any>(`${this.apiUrl}/${id}/enable`, {})
       .pipe(catchError(this.handleError));
   }
 
   private handleError(error: any) {
-    console.error('ActivitiesService error:', error);
+    console.error('UsersService error:', error);
     return throwError(() => error);
   }
 }

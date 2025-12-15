@@ -136,9 +136,7 @@ export const API_CONFIG = {
 
 ```bash
 # Inicia el servidor de desarrollo
-npm start
-# o
-ng serve
+ng serve --proxy-config proxy.conf.json
 
 # Servidor con configuración específica
 ng serve --configuration=development
