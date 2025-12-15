@@ -1,36 +1,36 @@
-<nav class="flex w-full h-[60px] px-[26px] mb-8 justify-center items-center shadow-[...] bg-white sm:px-4">
-  <div class="flex w-[328px] h-[60px] px-[23px] py-[12px] justify-center items-start gap-[46px] max-w-full md:gap-[30px] sm:px-4 sm:gap-[20px]">
-    
-    <!-- Food -->
+<nav
+  class="flex w-full h-[60px] px-[26px] mb-8 justify-center items-center shadow-[...] sm:px-4"
+  style="background: var(--surface)"
+>
+  <div
+    class="flex w-[328px] h-[60px] px-[23px] py-[12px] justify-center items-start gap-[46px] max-w-full md:gap-[30px] sm:px-4 sm:gap-[20px]"
+  >
     <button
       *ngIf="!isAdmin"
       [ngClass]="getNavClasses('food')"
-      (click)="navigate('food')">
+      (click)="navigate('food')"
+    >
       <mat-icon>restaurant</mat-icon>
     </button>
 
-    <!-- History -->
     <button
       *ngIf="!isAdmin"
       [ngClass]="getNavClasses('history')"
-      (click)="navigate('history')">
+      (click)="navigate('history')"
+    >
       <mat-icon>history</mat-icon>
     </button>
 
-    <!-- Admin (solo si es admin) -->
     <button
       *ngIf="isAdmin"
       [ngClass]="getNavClasses('admin')"
-      (click)="navigate('admin')">
+      (click)="navigate('admin')"
+    >
       <mat-icon>admin_panel_settings</mat-icon>
     </button>
 
-    <!-- Profile -->
-    <button
-      [ngClass]="getNavClasses('profile')"
-      (click)="navigate('profile')">
+    <button [ngClass]="getNavClasses('profile')" (click)="navigate('profile')">
       <mat-icon>person</mat-icon>
     </button>
-
   </div>
 </nav>

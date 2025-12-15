@@ -1,21 +1,39 @@
 @import "tailwindcss";
 
-app-weekly-calendar {
-  height: auto !important;
-  min-height: 0 !important;
-  max-height: none !important;
-  display: block !important;
+:root {
+  --primary: #0ea5e9;
+  --primary-hover: #0284c7;
+  --primary-soft: #e0f2fe;
+
+  --bg: #ffffff;
+  --surface: #f8fafc;
+  --border: #e5e7eb;
+
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
+
+  --success: #22c55e;
+  --success-soft: #dcfce7;
+
+  --warning: #facc15;
+  --warning-soft: #fef9c3;
+
+  --info: #3b82f6;
+  --info-soft: #dbeafe;
+
+  --danger: #ef4444;
+  --danger-soft: #fee2e2;
 }
 
+html,
+body {
+  height: 100%;
+}
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; } /* cambiar tipografia */
-/* cambiar tipografia */ /* cambiar tipografia */ /* cambiar tipografia */
-/* cambiar tipografia */ /* cambiar tipografia */ /* cambiar tipografia */
-/* cambiar tipografia */ /* cambiar tipografia */ /* cambiar tipografia */
-/* cambiar tipografia */ /* cambiar tipografia */ /* cambiar tipografia */
-/* cambiar tipografia */ /* cambiar tipografia */ /* cambiar tipografia */
-/* cambiar tipografia */ /* cambiar tipografia */ /* cambiar tipografia */
-/* cambiar tipografia */ /* cambiar tipografia */ /* cambiar tipografia */
-/* cambiar tipografia */ /* cambiar tipografia */ /* cambiar tipografia */
-/* cambiar tipografia */ /* cambiar tipografia */ /* cambiar tipografia */
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text-primary);
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}

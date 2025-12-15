@@ -1,12 +1,12 @@
-import { Component } from "@angular/core";
-import { CommonModule } from "@angular/common";
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: "app-school-meal-info",
+  selector: 'app-school-meal-info',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: "./school-meal-info.component.html",
-  styleUrls: ["./school-meal-info.component.css"],
+  templateUrl: './school-meal-info.component.html',
+  styleUrls: ['./school-meal-info.component.css'],
 })
 export class SchoolMealInfoComponent {
   mealIcon: string = `<svg id="109:126" layer-name="Frame" width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-[64px] h-[64px]">

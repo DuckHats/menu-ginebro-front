@@ -4,12 +4,17 @@
       <div class="flex items-center gap-2">
         <div [innerHTML]="clockIcon"></div>
         <div class="flex flex-col">
-          <h1 class="text-[#009a93] text-[20px] md:text-[24px] font-bold leading-8 m-0">
+          <h1
+            class="text-[#009a93] text-[20px] md:text-[24px] font-bold leading-8 m-0"
+          >
             Historial de Comandes
           </h1>
         </div>
       </div>
-      <button (click)="goToHomePage()" class="flex flex-col text-[#009a93] text-sm md:text-base leading-6 bg-none border-none p-0 cursor-pointer text-left">
+      <button
+        (click)="goToHomePage()"
+        class="flex flex-col text-[#009a93] text-sm md:text-base leading-6 bg-none border-none p-0 cursor-pointer text-left"
+      >
         <span>Tornar al menú</span>
       </button>
     </header>

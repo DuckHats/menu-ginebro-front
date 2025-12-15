@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';  // <-- import FormsModule here
+import { FormsModule } from '@angular/forms'; // <-- import FormsModule here
 import { Student } from '../../interfaces/student';
 import { Order, MenuItem } from '../../interfaces/order-history';
 import { UsersService } from '../../Services/Admin/users/users.service';
@@ -40,7 +40,7 @@ export class OrdersDashboardComponent implements OnInit {
     { value: 1, label: 'Pendent' },
     { value: 2, label: 'En preparació' },
     { value: 3, label: 'Entregat' },
-    { value: 4, label: 'No recollit' }
+    { value: 4, label: 'No recollit' },
   ];
 
   constructor(
@@ -50,7 +50,7 @@ export class OrdersDashboardComponent implements OnInit {
     private alertService: AlertService,
     private studentService: StudentService,
     private dialog: MatDialog
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.admintype = this.studentService.getLocalStudent()?.user_type_id || 1;
@@ -86,7 +86,9 @@ export class OrdersDashboardComponent implements OnInit {
     });
 
     const menuPromises = datesOfWeek.map((date) =>
-      this.menusService.getByDate(date).toPromise()
+      this.menusService
+        .getByDate(date)
+        .toPromise()
         .then((res: any) => {
           const dishes = res.data?.dishes || [];
 
@@ -98,15 +100,22 @@ export class OrdersDashboardComponent implements OnInit {
               if (typeof options === 'string') {
                 options = JSON.parse(options);
               }
-              name = Array.isArray(options) && options.length > 0 ? options[0] : 'N/A';
+              name =
+                Array.isArray(options) && options.length > 0
+                  ? options[0]
+                  : 'N/A';
             } catch (e) {
-              console.error(`Error parsing options for dish ID ${dish.id}:`, dish.options, e);
+              console.error(
+                `Error parsing options for dish ID ${dish.id}:`,
+                dish.options,
+                e
+              );
             }
 
             return {
               type: this.getDishType(dish.dish_type_id),
               name,
-              date
+              date,
             };
           });
 
@@ -122,12 +131,10 @@ export class OrdersDashboardComponent implements OnInit {
         })
     );
 
-    Promise.all(menuPromises)
-      .then((results) => {
-        this.weeklyMenus = results;
-      });
+    Promise.all(menuPromises).then((results) => {
+      this.weeklyMenus = results;
+    });
   }
-
 
   getDishType(id: number): string {
     switch (id) {
@@ -188,8 +195,13 @@ export class OrdersDashboardComponent implements OnInit {
         window.URL.revokeObjectURL(a.href);
       },
       error: (err) => {
-        this.alertService.show('error', 'Error durant l\'exportació de dades.', '', 3000);
-      }
+        this.alertService.show(
+          'error',
+          "Error durant l'exportació de dades.",
+          '',
+          3000
+        );
+      },
     });
   }
 
@@ -204,8 +216,13 @@ export class OrdersDashboardComponent implements OnInit {
         window.URL.revokeObjectURL(a.href);
       },
       error: (err) => {
-        this.alertService.show('error', 'Error durant l\'exportació de dades.', '', 3000);
-      }
+        this.alertService.show(
+          'error',
+          "Error durant l'exportació de dades.",
+          '',
+          3000
+        );
+      },
     });
   }
 
@@ -220,11 +237,15 @@ export class OrdersDashboardComponent implements OnInit {
         window.URL.revokeObjectURL(a.href);
       },
       error: (err) => {
-        this.alertService.show('error', 'Error durant l\'exportació de dades.', '', 3000);
-      }
+        this.alertService.show(
+          'error',
+          "Error durant l'exportació de dades.",
+          '',
+          3000
+        );
+      },
     });
   }
-
 
   onDateChange(event: Event): void {
     const input = event.target as HTMLInputElement;
@@ -237,12 +258,20 @@ export class OrdersDashboardComponent implements OnInit {
   onStatusChange(order: Order): void {
     this.ordersService.updateStatus(order.id, order.orderStatus.id).subscribe({
       next: () => {
-        this.alertService.show('success', 'Estat de la comanda modificada correctament.', '');
+        this.alertService.show(
+          'success',
+          'Estat de la comanda modificada correctament.',
+          ''
+        );
         this.loadOrders(this.selectedDate);
       },
       error: (err) => {
-        this.alertService.show('error', 'Error en actualitzar l\'estat de la comanda.', '');
-      }
+        this.alertService.show(
+          'error',
+          "Error en actualitzar l'estat de la comanda.",
+          ''
+        );
+      },
     });
   }
 
@@ -278,10 +307,10 @@ export class OrdersDashboardComponent implements OnInit {
       error: (err) => {
         this.alertService.show(
           'error',
-          'Error en modificar l\'estat del usuari.',
+          "Error en modificar l'estat del usuari.",
           ''
         );
-      }
+      },
     });
   }
 
@@ -290,32 +319,58 @@ export class OrdersDashboardComponent implements OnInit {
     const dialogRef = this.dialog.open(BulkUploadModalComponent, {
       width: '500px',
       data: {
-        plantillaUrl: type === 'menus' ? '/import_templates/import_menus_example.json' : '/import_templates/import_users_example.json',
-        descripcion: type === 'menus' ? 'Importar menus des d\'un arxiu JSON' : 'Importar usuaris des d\'un arxiu JSON'
-      }
+        plantillaUrl:
+          type === 'menus'
+            ? '/import_templates/import_menus_example.json'
+            : '/import_templates/import_users_example.json',
+        descripcion:
+          type === 'menus'
+            ? "Importar menus des d'un arxiu JSON"
+            : "Importar usuaris des d'un arxiu JSON",
+      },
     });
 
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         if (type === 'menus') {
           this.menusService.import(result).subscribe({
             next: () => {
-              this.alertService.show('success', 'Menús importats correctament', '', 3000);
+              this.alertService.show(
+                'success',
+                'Menús importats correctament',
+                '',
+                3000
+              );
               this.loadMenusWeek();
             },
             error: (error: Error) => {
-              this.alertService.show('error', 'Error durant la importació dels menús', '', 3000);
-            }
+              this.alertService.show(
+                'error',
+                'Error durant la importació dels menús',
+                '',
+                3000
+              );
+            },
           });
         } else {
           this.studentService.import(result).subscribe({
             next: () => {
-              this.alertService.show('success', 'Usuaris importats correctament', '', 3000);
+              this.alertService.show(
+                'success',
+                'Usuaris importats correctament',
+                '',
+                3000
+              );
               this.loadUsers();
             },
             error: (error: Error) => {
-              this.alertService.show('error', 'Error durant la importació dels usuaris', '', 3000);
-            }
+              this.alertService.show(
+                'error',
+                'Error durant la importació dels usuaris',
+                '',
+                3000
+              );
+            },
           });
         }
       }
@@ -327,25 +382,44 @@ export class OrdersDashboardComponent implements OnInit {
     if (this.importType === 'menus') {
       this.menusService.import(json).subscribe({
         next: () => {
-          this.alertService.show('success', 'Menús importats correctament', '', 3000);
+          this.alertService.show(
+            'success',
+            'Menús importats correctament',
+            '',
+            3000
+          );
           this.loadMenusWeek();
         },
         error: (error: Error) => {
-          this.alertService.show('error', 'Error durant la importació dels menús', '', 3000);
-        }
+          this.alertService.show(
+            'error',
+            'Error durant la importació dels menús',
+            '',
+            3000
+          );
+        },
       });
     } else {
       this.studentService.import(json).subscribe({
         next: () => {
-          this.alertService.show('success', 'Usuaris importats correctament', '', 3000);
+          this.alertService.show(
+            'success',
+            'Usuaris importats correctament',
+            '',
+            3000
+          );
           this.loadUsers();
         },
         error: (error: Error) => {
-          this.alertService.show('error', 'Error durant la importació dels usuaris', '', 3000);
-        }
+          this.alertService.show(
+            'error',
+            'Error durant la importació dels usuaris',
+            '',
+            3000
+          );
+        },
       });
     }
-    this.showImportPopup = false; // Cierra el popup si usas el modal antiguo
+    this.showImportPopup = false;
   }
-
 }
