@@ -13,11 +13,11 @@
       </div>
       <div class="flex flex-col">
         <p class="text-[18px] font-bold leading-[1.2]">
-          <span>{{ student.name }}</span>
+          <span>{{ student?.name }}</span>
           <!-- <span class="px-[2px]"></span>
           <span>{{ middleName }}</span> -->
           <span class="px-[2px]"></span>
-          <span>{{ student.last_name }}</span>
+          <span>{{ student?.last_name }}</span>
         </p>
       </div>
       <!-- <p class="user-role">Estudiante</p> User type label -->
@@ -28,7 +28,7 @@
       <!-- Datos -->
       <div>
         <p class="text-sm font-semibold text-[#333]">
-          📧 Email: <span class="font-normal">{{ student.email }}</span>
+          📧 Email: <span class="font-normal">{{ student?.email }}</span>
         </p>
       </div>
 
