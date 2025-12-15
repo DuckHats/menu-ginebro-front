@@ -1,102 +1,224 @@
-<main class="flex items-center justify-center min-h-screen bg-gray-100 px-4 font-sans">
+<main
+  class="flex items-center justify-center min-h-screen px-4 font-sans"
+  style="background: var(--bg)"
+>
   <section
-    class="w-full max-w-sm lg:max-w-md bg-white rounded-lg shadow-[0_4px_4px_rgba(0,0,0,0.25),0_4px_6px_-4px_rgba(0,0,0,0.1),0_10px_15px_-3px_rgba(0,0,0,0.1),0_-10px_15px_rgba(0,0,0,0.1)]">
-
+    class="w-full max-w-sm lg:max-w-md rounded-lg shadow-[0_4px_4px_rgba(0,0,0,0.25),0_4px_6px_-4px_rgba(0,0,0,0.1),0_10px_15px_-3px_rgba(0,0,0,0.1),0_-10px_15px_rgba(0,0,0,0.1)]"
+    style="background: var(--surface)"
+  >
     <header class="flex flex-col items-center pt-8 pb-6 text-center">
-      <h1 class="text-[#009ca6] text-[20.4px] font-bold leading-8">Registre d’Estudiant</h1>
-      <p class="text-gray-600 text-sm leading-6">Sistema de Menjador Escolar</p>
+      <h1
+        class="text-[20.4px] font-bold leading-8"
+        style="color: var(--primary)"
+      >
+        Registre d’Estudiant
+      </h1>
+      <p class="text-sm leading-6" style="color: var(--text-secondary)">
+        Sistema de Menjador Escolar
+      </p>
     </header>
 
-    <!-- PAS 1: Email -->
-    <form *ngIf="step === 1" [formGroup]="emailForm" (ngSubmit)="sendCode()" class="px-10 pb-6 flex flex-col gap-6">
+    <form
+      *ngIf="step === 1"
+      [formGroup]="emailForm"
+      (ngSubmit)="sendCode()"
+      class="px-10 pb-6 flex flex-col gap-6"
+    >
       <div class="flex flex-col gap-1">
-        <label for="email" class="text-gray-700 text-xs font-medium">Correu electrònic</label>
+        <label class="text-xs font-medium" style="color: var(--text-secondary)">
+          Correu electrònic
+        </label>
         <div class="relative">
-          <app-icon name="email" class="absolute left-3 top-2.5 w-5 h-5 text-gray-400"></app-icon>
-          <input type="email" id="email" formControlName="email" placeholder="el@teu.email"
-            class="w-full h-[41px] pl-10 pr-3 py-2 rounded-md border border-gray-300 text-base focus:outline-none focus:ring-2 focus:ring-[#009ca6]" />
+          <app-icon
+            name="email"
+            class="absolute left-3 top-2.5 w-5 h-5"
+            style="color: var(--text-muted)"
+          ></app-icon>
+          <input
+            type="email"
+            formControlName="email"
+            placeholder="el@teu.email"
+            class="w-full h-[41px] pl-10 pr-3 py-2 rounded-md border text-base focus:outline-none focus:ring-2"
+            style="
+              border-color: var(--border);
+              color: var(--text-primary);
+              --tw-ring-color: var(--primary);
+            "
+          />
         </div>
       </div>
-      <button type="submit"
-        class="w-full h-10 bg-[#009ca6] text-white text-sm font-medium rounded-md flex items-center justify-center gap-2 hover:bg-[#00838f] transition"
-        [disabled]="emailForm.invalid || isSubmitting">
+
+      <button
+        type="submit"
+        class="w-full h-10 text-white text-sm font-medium rounded-md flex items-center justify-center gap-2 transition"
+        style="background: var(--primary)"
+        [disabled]="emailForm.invalid || isSubmitting"
+      >
         <app-icon name="add-user" class="w-5 h-5"></app-icon>
         <span *ngIf="!isSubmitting">Enviar codi</span>
         <span *ngIf="isSubmitting">Enviant...</span>
       </button>
-      <div *ngIf="emailForm.get('email')?.touched && emailForm.get('email')?.errors"
-        class="text-sm text-red-500 font-normal">
-        <small class="text-danger" *ngIf="emailForm.get('email') && emailForm.get('email')?.errors?.['required']">El
-          correu és obligatori.</small>
-        <small class="text-danger" *ngIf="emailForm.get('email')?.errors?.['email']">Format de correu no vàlid.</small>
-        <small class="text-danger" *ngIf="emailForm.get('email')?.errors?.['ginebroEmail']">Només es permeten correus
-          ginebro.cat.</small>
+
+      <div
+        *ngIf="
+          emailForm.get('email')?.touched && emailForm.get('email')?.errors
+        "
+        class="text-sm"
+        style="color: var(--danger)"
+      >
+        <small *ngIf="emailForm.get('email')?.errors?.['required']">
+          El correu és obligatori.
+        </small>
+        <small *ngIf="emailForm.get('email')?.errors?.['email']">
+          Format de correu no vàlid.
+        </small>
+        <small *ngIf="emailForm.get('email')?.errors?.['ginebroEmail']">
+          Només es permeten correus ginebro.cat.
+        </small>
       </div>
     </form>
 
-    <!-- PAS 2: Dades i codi -->
-    <form *ngIf="step === 2" [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="px-10 pb-6 flex flex-col gap-6">
+    <form
+      *ngIf="step === 2"
+      [formGroup]="registerForm"
+      (ngSubmit)="onSubmit()"
+      class="px-10 pb-6 flex flex-col gap-6"
+    >
       <div class="flex flex-col gap-1">
-        <label for="name" class="text-gray-700 text-xs font-medium">Nom</label>
+        <label class="text-xs font-medium" style="color: var(--text-secondary)">
+          Nom
+        </label>
         <div class="relative">
-          <app-icon name="user" class="absolute left-3 top-2.5 w-5 h-5 text-gray-400"></app-icon>
-          <input type="text" id="name" formControlName="name" placeholder="El teu nom"
-            class="w-full h-[41px] pl-10 pr-3 py-2 rounded-md border border-gray-300 text-base focus:outline-none focus:ring-2 focus:ring-[#009ca6]" />
+          <app-icon
+            name="user"
+            class="absolute left-3 top-2.5 w-5 h-5"
+            style="color: var(--text-muted)"
+          ></app-icon>
+          <input
+            type="text"
+            formControlName="name"
+            placeholder="El teu nom"
+            class="w-full h-[41px] pl-10 pr-3 py-2 rounded-md border text-base focus:outline-none focus:ring-2"
+            style="
+              border-color: var(--border);
+              color: var(--text-primary);
+              --tw-ring-color: var(--primary);
+            "
+          />
         </div>
       </div>
 
       <div class="flex flex-col gap-1">
-        <label for="last_name" class="text-gray-700 text-xs font-medium">Cognoms</label>
+        <label class="text-xs font-medium" style="color: var(--text-secondary)">
+          Cognoms
+        </label>
         <div class="relative">
-          <app-icon name="user" class="absolute left-3 top-2.5 w-5 h-5 text-gray-400"></app-icon>
-          <input type="text" id="last_name" formControlName="last_name" placeholder="Els teus cognoms"
-            class="w-full h-[41px] pl-10 pr-3 py-2 rounded-md border border-gray-300 text-base focus:outline-none focus:ring-2 focus:ring-[#009ca6]" />
+          <app-icon
+            name="user"
+            class="absolute left-3 top-2.5 w-5 h-5"
+            style="color: var(--text-muted)"
+          ></app-icon>
+          <input
+            type="text"
+            formControlName="last_name"
+            placeholder="Els teus cognoms"
+            class="w-full h-[41px] pl-10 pr-3 py-2 rounded-md border text-base focus:outline-none focus:ring-2"
+            style="
+              border-color: var(--border);
+              color: var(--text-primary);
+              --tw-ring-color: var(--primary);
+            "
+          />
         </div>
       </div>
 
       <div class="flex flex-col gap-1">
-        <label for="verification_code" class="text-gray-700 text-xs font-medium">Codi de verificació</label>
-        <div class="relative">
-          <app-otp-input (codeChange)="registerForm.get('verification_code')?.setValue($event)"></app-otp-input>
-        </div>
+        <label class="text-xs font-medium" style="color: var(--text-secondary)">
+          Codi de verificació
+        </label>
+        <app-otp-input
+          (codeChange)="registerForm.get('verification_code')?.setValue($event)"
+        ></app-otp-input>
       </div>
 
       <div class="flex flex-col gap-1">
-        <label for="password" class="text-gray-700 text-xs font-medium">Contrasenya</label>
+        <label class="text-xs font-medium" style="color: var(--text-secondary)">
+          Contrasenya
+        </label>
         <div class="relative">
-          <app-icon name="lock" class="absolute left-3 top-2.5 w-5 h-5 text-gray-400"></app-icon>
-          <input type="password" id="password" formControlName="password" placeholder="La teva contrasenya"
-            class="w-full h-[41px] pl-10 pr-3 py-2 rounded-md border border-gray-300 text-base focus:outline-none focus:ring-2 focus:ring-[#009ca6]" />
+          <app-icon
+            name="lock"
+            class="absolute left-3 top-2.5 w-5 h-5"
+            style="color: var(--text-muted)"
+          ></app-icon>
+          <input
+            type="password"
+            formControlName="password"
+            placeholder="La teva contrasenya"
+            class="w-full h-[41px] pl-10 pr-3 py-2 rounded-md border text-base focus:outline-none focus:ring-2"
+            style="
+              border-color: var(--border);
+              color: var(--text-primary);
+              --tw-ring-color: var(--primary);
+            "
+          />
         </div>
       </div>
 
-      <app-password-strength [password]="passwordValue" (strengthChange)="passwordValid = $event">
-      </app-password-strength>
+      <app-password-strength
+        [password]="passwordValue"
+        (strengthChange)="passwordValid = $event"
+      ></app-password-strength>
 
       <div class="flex flex-col gap-1">
-        <label for="password_confirmation" class="text-gray-700 text-xs font-medium">Confirma la Contrasenya</label>
+        <label class="text-xs font-medium" style="color: var(--text-secondary)">
+          Confirma la Contrasenya
+        </label>
         <div class="relative">
-          <app-icon name="lock" class="absolute left-3 top-2.5 w-5 h-5 text-gray-400"></app-icon>
-          <input type="password" id="password_confirmation" formControlName="password_confirmation"
+          <app-icon
+            name="lock"
+            class="absolute left-3 top-2.5 w-5 h-5"
+            style="color: var(--text-muted)"
+          ></app-icon>
+          <input
+            type="password"
+            formControlName="password_confirmation"
             placeholder="Introduïu la contrasenya de nou"
-            class="w-full h-[41px] pl-10 pr-3 py-2 rounded-md border border-gray-300 text-base focus:outline-none focus:ring-2 focus:ring-[#009ca6]" />
+            class="w-full h-[41px] pl-10 pr-3 py-2 rounded-md border text-base focus:outline-none focus:ring-2"
+            style="
+              border-color: var(--border);
+              color: var(--text-primary);
+              --tw-ring-color: var(--primary);
+            "
+          />
         </div>
       </div>
 
-      <small class="text-red-500" *ngIf="registerForm.errors?.['passwordsMismatch']">Les contrasenyes no
-        coincideixen.</small>
+      <small
+        *ngIf="registerForm.errors?.['passwordsMismatch']"
+        style="color: var(--danger)"
+      >
+        Les contrasenyes no coincideixen.
+      </small>
 
-      <button type="submit"
-        class="w-full h-10 bg-[#009ca6] text-white text-sm font-medium rounded-md flex items-center justify-center gap-2 hover:bg-[#00838f] transition"
-        [disabled]="registerForm.invalid || isSubmitting">
+      <button
+        type="submit"
+        class="w-full h-10 text-white text-sm font-medium rounded-md flex items-center justify-center gap-2 transition"
+        style="background: var(--primary)"
+        [disabled]="registerForm.invalid || isSubmitting"
+      >
         <app-icon name="add-user" class="w-5 h-5"></app-icon>
         <span *ngIf="!isSubmitting">Completar registre</span>
         <span *ngIf="isSubmitting">Registrant...</span>
       </button>
     </form>
 
-    <a href="#" class="text-[#009ca6] text-sm font-normal text-center block pb-6 hover:underline"
-      (click)="navigateToLogin(); $event.preventDefault()">
+    <a
+      href="#"
+      class="text-sm font-normal text-center block pb-6 hover:underline"
+      style="color: var(--primary)"
+      (click)="navigateToLogin(); $event.preventDefault()"
+    >
       Ja tens compte? Inicia sessió
     </a>
   </section>

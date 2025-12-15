@@ -23,10 +23,11 @@ export class OrderHistoryComponent implements OnInit {
   orders: Order[] = [];
   userId: number = 1;
 
-  constructor(private ordersService: OrdersService,
+  constructor(
+    private ordersService: OrdersService,
     private router: Router,
     private studentService: StudentService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.userId = this.studentService.getLocalStudent()?.id || 1;
@@ -42,13 +43,22 @@ export class OrderHistoryComponent implements OnInit {
 
           if (order.orderDetail) {
             if (type.includes('primer')) {
-              menuItems.push({ type: 'Primer Plat', name: order.orderDetail.option1 });
+              menuItems.push({
+                type: 'Primer Plat',
+                name: order.orderDetail.option1,
+              });
             }
             if (type.includes('segon') || type.includes('segundo')) {
-              menuItems.push({ type: 'Segon Plat', name: order.orderDetail.option2 });
+              menuItems.push({
+                type: 'Segon Plat',
+                name: order.orderDetail.option2,
+              });
             }
             if (type.includes('postre')) {
-              menuItems.push({ type: 'Postre', name: order.orderDetail.option3 });
+              menuItems.push({
+                type: 'Postre',
+                name: order.orderDetail.option3,
+              });
             }
           }
 
@@ -66,6 +76,6 @@ export class OrderHistoryComponent implements OnInit {
   }
 
   goToHomePage(): void {
-    this.router.navigate(["/" + NavigationConfig.HOME]);
+    this.router.navigate(['/' + NavigationConfig.HOME]);
   }
 }

@@ -1,24 +1,31 @@
 .action-button {
-    width: 100%;
-    background-color: #009ca6;
-    border-radius: 8px;
-    padding-top: 16px;
-    padding-bottom: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    border: none;
-    cursor: pointer;
-  }
-  
-  .action-button:hover {
-    background-color: #008891;
-  }
-  
-  .button-text {
-    color: #fff;
-    font-size: 14px;
-    font-family: Inter, sans-serif;
-  }
-  
+  width: 100%;
+  background-color: var(--primary);
+  border-radius: 8px;
+  padding: 16px 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.action-button:hover {
+  background-color: var(--primary-hover);
+}
+
+.action-button:focus-visible {
+  outline: 2px solid var(--primary-soft);
+  outline-offset: 2px;
+}
+
+.button-text {
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: Inter, sans-serif;
+}

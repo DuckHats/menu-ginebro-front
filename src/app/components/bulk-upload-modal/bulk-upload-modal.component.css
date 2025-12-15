@@ -1,5 +1,5 @@
 .cdk-overlay-backdrop {
-  background-color: rgba(255, 255, 255, 0.3) !important;
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
+  background-color: color-mix(in srgb, var(--bg) 70%, transparent) !important;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
 }

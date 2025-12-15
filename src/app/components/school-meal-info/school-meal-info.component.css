@@ -1,24 +1,23 @@
 .meal-info-section {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-  }
-  
-  .meal-title {
-    color: #1f2937;
-    font-size: 17px;
-    font-weight: 600;
-    font-family: Inter, sans-serif;
-    text-align: center;
-    margin: 0;
-  }
-  
-  .meal-description {
-    color: #4b5563;
-    font-size: 14px;
-    font-family: Inter, sans-serif;
-    text-align: center;
-    margin: 0;
-  }
-  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.meal-title {
+  color: var(--text-primary);
+  font-size: 17px;
+  font-weight: 600;
+  font-family: Inter, sans-serif;
+  text-align: center;
+  margin: 0;
+}
+
+.meal-description {
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-family: Inter, sans-serif;
+  text-align: center;
+  margin: 0;
+}

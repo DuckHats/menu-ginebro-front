@@ -1,38 +1,78 @@
 <div
-  class="flex items-center px-6 py-4 text-sm border-t-2 rounded-b shadow-sm bg-white dark:bg-gray-900"
+  class="alert flex items-center px-6 py-4 text-sm border-t-2 rounded-b shadow-sm"
   [ngClass]="{
-    'border-green-500': type === 'success',
-    'border-red-500': type === 'error',
-    'border-blue-500': type === 'info',
-    'border-yellow-500': type === 'warning'
+    'alert--success': type === 'success',
+    'alert--error': type === 'error',
+    'alert--info': type === 'info',
+    'alert--warning': type === 'warning'
   }"
 >
-  <svg *ngIf="type === 'success'" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-green-500" fill="none"
-    viewBox="0 0 24 24">
-    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-      d="M5 13l4 4L19 7" />
+  <svg
+    *ngIf="type === 'success'"
+    class="alert-icon"
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+  >
+    <path
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      d="M5 13l4 4L19 7"
+    />
   </svg>
 
-  <svg *ngIf="type === 'error'" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-red-500" fill="none"
-    viewBox="0 0 24 24">
-    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-      d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+  <svg
+    *ngIf="type === 'error'"
+    class="alert-icon"
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+  >
+    <path
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+    />
   </svg>
 
-  <svg *ngIf="type === 'info'" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-blue-500" fill="none"
-    viewBox="0 0 24 24">
-    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-      d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 100 20 10 10 0 000-20z" />
+  <svg
+    *ngIf="type === 'info'"
+    class="alert-icon"
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+  >
+    <path
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 100 20 10 10 0 000-20z"
+    />
   </svg>
 
-  <svg *ngIf="type === 'warning'" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-yellow-500" fill="none"
-    viewBox="0 0 24 24">
-    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-      d="M12 9v2m0 4h.01M10.29 3.86l-7.6 13.19a1 1 0 00.86 1.5h15.28a1 1 0 00.86-1.5l-7.6-13.19a1 1 0 00-1.72 0z" />
+  <svg
+    *ngIf="type === 'warning'"
+    class="alert-icon"
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 24 24"
+  >
+    <path
+      stroke="currentColor"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      d="M12 9v2m0 4h.01M10.29 3.86l-7.6 13.19a1 1 0 00.86 1.5h15.28a1 1 0 00.86-1.5l-7.6-13.19a1 1 0 00-1.72 0z"
+    />
   </svg>
 
   <div class="ml-3">
-    <div class="font-bold text-black dark:text-gray-50">{{ title }}</div>
-    <div class="text-gray-900 dark:text-gray-300 mt-1">{{ message }}</div>
+    <div class="alert-title">{{ title }}</div>
+    <div class="alert-message mt-1">{{ message }}</div>
   </div>
 </div>
