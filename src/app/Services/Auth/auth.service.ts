@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { map, Observable, switchMap } from 'rxjs';
+import { map, Observable, switchMap, catchError } from 'rxjs';
 import { BaseService } from '../base.service';
 import { HttpHeaders } from '@angular/common/http';
 import { User } from '../../interfaces/user';
@@ -35,11 +35,26 @@ export class AuthService extends BaseService {
     return this.post('register', credentials);
   }
 
-  logout(): void {
-    localStorage.removeItem(AppConstants.STORAGE_KEYS.USER);
-    localStorage.removeItem(AppConstants.STORAGE_KEYS.IS_ADMIN);
-    this.cachedUser = null;
-    this.cachedTimestamp = 0;
+  logout(): Observable<void> {
+    return this.getCsrfCookie().pipe(
+      switchMap(() => this.post('logout', {})),
+      map(() => {
+        localStorage.removeItem(AppConstants.STORAGE_KEYS.USER);
+        localStorage.removeItem(AppConstants.STORAGE_KEYS.IS_ADMIN);
+        this.cachedUser = null;
+        this.cachedTimestamp = 0;
+        return;
+      }),
+      catchError((err) => {
+        console.error('Logout failed:', err);
+        localStorage.removeItem(AppConstants.STORAGE_KEYS.USER);
+        localStorage.removeItem(AppConstants.STORAGE_KEYS.IS_ADMIN);
+        this.cachedUser = null;
+        this.cachedTimestamp = 0;
+        // propagate error
+        throw err;
+      })
+    );
   }
 
   checkAuth(): Observable<User> {
@@ -73,8 +88,20 @@ export class AuthService extends BaseService {
 
             return this.cachedUser;
           } else {
+            // clear any stale data
+            localStorage.removeItem(AppConstants.STORAGE_KEYS.USER);
+            this.cachedUser = null;
+            this.cachedTimestamp = 0;
+
             throw new Error(ConsoleMessages.ERRORS.AUTH_FAILED);
           }
+        }),
+        catchError((err) => {
+          // clear storage on error (unauthenticated / server error)
+          localStorage.removeItem(AppConstants.STORAGE_KEYS.USER);
+          this.cachedUser = null;
+          this.cachedTimestamp = 0;
+          throw err;
         })
       );
   }

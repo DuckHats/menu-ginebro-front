@@ -14,8 +14,7 @@ import { AlertService } from '../../Services/Alert/alert.service';
 import { NavigationConfig } from '../../config/navigation.config';
 import { IconComponent } from '../../components/icon/icon.component';
 import { Messages } from '../../config/messages.config';
-import { AppConstants } from '../../config/app-constants.config';
-import { BrandingConfig } from '../../config/branding.config';
+// App uses session cookies; token constants removed
 import { UILabels } from '../../config/ui-labels.config';
 
 @Component({
@@ -43,10 +42,7 @@ export class LoginComponent {
       password: ['', [Validators.required]],
     });
 
-    // Already logged in? Redirect
-    if (localStorage.getItem(AppConstants.STORAGE_KEYS.TOKEN) !== null) {
-      this.router.navigate([NavigationConfig.LOGIN]);
-    }
+    // No token-based check here: authentication is session/cookie-based, not JWT.
   }
 
   onSubmit(): void {
@@ -55,12 +51,8 @@ export class LoginComponent {
 
       this.authService.login(this.loginForm.value).subscribe({
         next: (response) => {
-          if (response.status === 200 && response.data?.token) {
-            const token = response.data.token;
-            const userId = response.data.user?.id;
-
-            localStorage.setItem(AppConstants.STORAGE_KEYS.TOKEN, token);
-
+          // Backend uses session cookies (no JWT). On success we fetch current user.
+          if (response.status === 200) {
             this.userService.me().subscribe({
               next: (fullUser) => {
                 this.authService.checkIfAdmin().subscribe(
