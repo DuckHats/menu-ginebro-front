@@ -13,63 +13,46 @@ export class OrdersService {
 
   constructor(private http: HttpClient) {}
 
-  private getHeaders(): HttpHeaders {
-    const token = localStorage.getItem('token') || '';
-    return new HttpHeaders({ Authorization: `Bearer ${token}` });
-  }
-
   getByDate(date: string): Observable<any> {
     return this.http
-      .get<any>(`${this.apiUrlByDate}/${date}`, {
-        headers: this.getHeaders(),
-      })
+      .get<any>(`${this.apiUrlByDate}/${date}`)
       .pipe(catchError(this.handleError));
   }
 
   getByUser(userId: number): Observable<any> {
     return this.http
-      .get<any>(`${API_CONFIG.baseUrl}/orders_by_user/${userId}`, {
-        headers: this.getHeaders(),
-      })
+      .get<any>(`${API_CONFIG.baseUrl}/orders_by_user/${userId}`)
       .pipe(catchError(this.handleError));
   }
 
   updateStatus(orderId: number, statusId: number): Observable<any> {
     return this.http
-      .post(
-        `${API_CONFIG.baseUrl}/orders/updateStatus/${orderId}`,
-        { order_status_id: statusId },
-        { headers: this.getHeaders() }
-      )
+      .post(`${API_CONFIG.baseUrl}/orders/updateStatus/${orderId}`, {
+        order_status_id: statusId,
+      })
       .pipe(catchError(this.handleError));
   }
 
   createOrder(order: any): Observable<any> {
     return this.http
-      .post(`${this.apiUrl}`, order, { headers: this.getHeaders() })
+      .post(`${this.apiUrl}`, order)
       .pipe(catchError(this.handleError));
   }
 
   getOrderTypes(): Observable<any> {
     return this.http
-      .get<any>(`${API_CONFIG.baseUrl}/orders_type`, {
-        headers: this.getHeaders(),
-      })
+      .get<any>(`${API_CONFIG.baseUrl}/orders_type`)
       .pipe(catchError(this.handleError));
   }
 
   checkDateAvailability(date: string): Observable<any> {
     return this.http
-      .get<any>(`${this.apiUrl}/checkDate/${date}`, {
-        headers: this.getHeaders(),
-      })
+      .get<any>(`${this.apiUrl}/checkDate/${date}`)
       .pipe(catchError(this.handleError));
   }
 
   export(format: string): Observable<any> {
-    const headers = this.getHeaders();
     const options = {
-      headers,
       responseType: 'blob' as 'json',
       observe: 'response' as 'body',
     };

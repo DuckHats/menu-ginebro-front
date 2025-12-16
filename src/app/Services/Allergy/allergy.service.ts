@@ -12,16 +12,10 @@ export class AllergyService extends BaseService {
     return 'allergies';
   }
 
-  private getHeaders(): HttpHeaders {
-    const token = localStorage.getItem('token') || '';
-    return new HttpHeaders({ Authorization: `Bearer ${token}` });
-  }
-
   getAllergies(): Observable<Allergy[]> {
     return this.http
       .get<{ status: number; data: Allergy[] }>(
-        `${this.baseUrl}/${this.endpoint}`,
-        { headers: this.getHeaders() }
+        `${this.baseUrl}/${this.endpoint}`
       )
       .pipe(
         map((response: { status: number; data: Allergy[] }) => response.data)
@@ -36,8 +30,6 @@ export class AllergyService extends BaseService {
       allergies: allergies,
       custom_allergies: customAllergies,
     };
-    return this.http.post<any>(`${this.baseUrl}/${this.endpoint}`, payload, {
-      headers: this.getHeaders(),
-    });
+    return this.http.post<any>(`${this.baseUrl}/${this.endpoint}`, payload);
   }
 }

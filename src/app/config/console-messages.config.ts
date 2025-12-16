@@ -1,7 +1,7 @@
 export const ConsoleMessages = {
   ERRORS: {
     STUDENT_NOT_FOUND: 'Student not found in localStorage',
-    NO_TOKEN: 'No hay token',
+    NO_SESSION: 'No hay sesión activa',
     AUTH_FAILED: 'Autenticación fallida',
     NO_CACHED_USER: 'No cached user available',
     LOADING_ORDER_TYPES: 'Error loading order types:',

@@ -13,22 +13,13 @@ export class MenusService {
 
   constructor(private http: HttpClient) {}
 
-  private getHeaders(): HttpHeaders {
-    const token = localStorage.getItem('token') || '';
-    return new HttpHeaders({ Authorization: `Bearer ${token}` });
-  }
-
   getByDate(date: string): Observable<any> {
     return this.http
-      .get<any>(`${this.apiUrl}/${date}`, {
-        headers: this.getHeaders(),
-      })
+      .get<any>(`${this.apiUrl}/${date}`)
       .pipe(catchError(this.handleError));
   }
   export(format: string): Observable<any> {
-    const headers = this.getHeaders();
     const options = {
-      headers,
       responseType: 'blob' as 'json',
       observe: 'response' as 'body',
     };
@@ -39,9 +30,7 @@ export class MenusService {
   }
 
   import(body: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/import`, body, {
-      headers: this.getHeaders(),
-    });
+    return this.http.post(`${this.apiUrl}/import`, body);
   }
 
   private handleError(error: any) {

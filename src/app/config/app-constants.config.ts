@@ -35,7 +35,6 @@ export const AppConstants = {
 
   // Storage keys
   STORAGE_KEYS: {
-    TOKEN: 'token',
     USER: 'user',
     IS_ADMIN: 'isAdmin',
   },

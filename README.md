@@ -23,7 +23,7 @@ Una aplicación moderna desarrollada con Angular 19 que permite a estudiantes, c
 
 ### 🔐 Autenticación y Autorización
 
-- **Login/Logout** con tokens JWT
+- **Login/Logout** via session cookies (Laravel session)
 - **Registro de estudiantes** con verificación por código
 - **Recuperación de contraseña** por email
 - **Verificación de email** con códigos OTP
@@ -136,9 +136,7 @@ export const API_CONFIG = {
 
 ```bash
 # Inicia el servidor de desarrollo
-npm start
-# o
-ng serve
+ng serve --proxy-config proxy.conf.json
 
 # Servidor con configuración específica
 ng serve --configuration=development
