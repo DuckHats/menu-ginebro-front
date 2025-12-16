@@ -1,97 +1,103 @@
-<div
-  class="user-card-container h-screen flex items-start justify-center overflow-hidden p-4"
->
+<div class="user-card-container flex justify-center p-4">
   <div
-    class="w-full max-w-[500px] mt-2 rounded-2xl shadow-lg overflow-hidden bg-white"
+    class="w-full max-w-md rounded-xl border border-gray-200 bg-white"
   >
     <!-- Header -->
-    <div class="bg-[#009ca6] p-6 flex items-center gap-4 text-white">
+    <div class="flex items-center gap-3 px-5 py-4 border-b border-gray-200">
       <div
-        class="w-12 h-12 flex justify-center items-center rounded-full bg-white/20"
+        class="flex h-10 w-10 items-center justify-center rounded-full bg-[#009ca6]/10 text-[#009ca6]"
       >
         <mat-icon>person</mat-icon>
       </div>
-      <div class="flex flex-col">
-        <p class="text-[18px] font-bold leading-[1.2]">
-          <span>{{ student.name }}</span>
-          <!-- <span class="px-[2px]"></span>
-          <span>{{ middleName }}</span> -->
-          <span class="px-[2px]"></span>
-          <span>{{ student.last_name }}</span>
+
+      <div>
+        <p class="text-base font-semibold text-gray-800 leading-tight">
+          {{ student.name }} {{ student.last_name }}
+        </p>
+        <p class="text-xs text-gray-500">
+          {{ student.email }}
         </p>
       </div>
-      <!-- <p class="user-role">Estudiante</p> User type label -->
     </div>
 
     <!-- Body -->
-    <div class="px-6 py-4 flex flex-col gap-4">
-      <!-- Datos -->
-      <div>
-        <p class="text-sm font-semibold text-[#333]">
-          📧 Email: <span class="font-normal">{{ student.email }}</span>
-        </p>
-      </div>
+    <div class="px-5 py-4 space-y-5">
+      <!-- Allergies -->
+      <div class="space-y-3">
+        <h3 class="text-sm font-semibold text-[#009ca6]">
+          Al·lèrgies
+        </h3>
 
-      <!-- Allergies Section -->
-      <div class="border-t border-[#e0e0e0] pt-3">
-        <h3 class="text-md font-bold mb-2 text-[#009ca6]">Al·lèrgies</h3>
-
-        <form [formGroup]="profileForm" (ngSubmit)="saveAllergies()">
-          <div class="mb-3">
-            <mat-form-field appearance="outline" class="w-full">
-              <mat-label>Comunes</mat-label>
-              <mat-select
-                formControlName="allergies"
-                multiple
-                panelClass="user-card-panel"
-              >
-                <mat-option
-                  *ngFor="let allergy of allergies"
-                  [value]="allergy.id"
-                >
-                  {{ allergy.name }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-          </div>
-
-          <div class="mb-3">
-            <label class="block text-sm font-semibold text-[#333] mb-1"
-              >Altres (separades per comes):</label
+        <form
+          [formGroup]="profileForm"
+          (ngSubmit)="saveAllergies()"
+          class="space-y-3"
+        >
+          <!-- Common allergies -->
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-select
+              placeholder="Comunes"
+              formControlName="allergies"
+              multiple
+              panelClass="user-card-panel"
             >
+              <mat-option
+                *ngFor="let allergy of allergies"
+                [value]="allergy.id"
+              >
+                {{ allergy.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <!-- Custom allergies -->
+          <div>
+            <label class="block text-xs font-medium text-gray-600 mb-1">
+              Altres (separades per comes)
+            </label>
+
             <input
               type="text"
               formControlName="custom_allergies"
-              class="w-full p-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-[#009ca6]"
               placeholder="Ex: Maduixes, Kiwi"
+              class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm
+                     focus:outline-none focus:ring-1 focus:ring-[#009ca6]
+                     focus:border-[#009ca6]"
             />
           </div>
 
+          <!-- Submit -->
           <button
             type="submit"
-            class="w-full bg-[#009ca6] text-white font-bold py-2 px-4 rounded hover:bg-[#00858e] transition text-sm"
+            class="w-full rounded-md bg-[#009ca6] py-2 text-sm font-semibold
+                   text-white hover:bg-[#00858e] transition"
           >
-            Guardar Al·lèrgies
+            Guardar al·lèrgies
           </button>
         </form>
       </div>
 
-      <!-- Ajustes -->
-      <div class="border-t border-[#e0e0e0] pt-3">
-        <p
+      <!-- Actions -->
+      <div class="border-t border-gray-200 pt-3 space-y-1">
+        <button
+          type="button"
           (click)="forgotPassword()"
-          class="flex justify-between items-center text-sm text-[#333] py-2 cursor-pointer hover:text-[#009ca6] transition"
+          class="w-full flex items-center justify-between text-sm text-gray-700
+                 hover:text-[#009ca6] py-2 transition"
         >
-          <span>⚙️ Cambiar contrasenya</span>
-          <span class="text-[#bbb] text-[18px]">›</span>
-        </p>
-        <p
+          <span>Canviar contrasenya</span>
+          <span class="text-gray-400">›</span>
+        </button>
+
+        <button
+          type="button"
           (click)="logout()"
-          class="flex justify-between items-center text-sm text-red-600 font-semibold py-2 cursor-pointer hover:text-red-700 transition"
+          class="w-full flex items-center justify-between text-sm font-semibold
+                 text-red-600 hover:text-red-700 py-2 transition"
         >
-          <span>🔴 Tancar sessió</span>
-          <span class="text-[#bbb] text-[18px]">›</span>
-        </p>
+          <span>Tancar sessió</span>
+          <span class="text-gray-400">›</span>
+        </button>
       </div>
     </div>
   </div>
