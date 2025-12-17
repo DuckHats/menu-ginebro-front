@@ -75,6 +75,8 @@ export const Messages = {
     ALLERGIES_SAVED_DESC:
       "Les teves al·lèrgies s'han actualitzat correctament.",
     ALLERGIES_ERROR: "No s'han pogut guardar les al·lèrgies.",
+    PROTECTED_USER_ERROR:
+      'No es pot desactivar aquest usuari (Admin, Cuina o Usuari Actual).',
   },
 
   // Generic messages

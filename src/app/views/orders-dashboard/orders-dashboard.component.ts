@@ -171,6 +171,7 @@ export class OrdersDashboardComponent implements OnInit {
           lastName: user.last_name,
           email: user.email,
           status: user.status,
+          user_type_id: user.user_type_id,
         }));
       },
       error: (err) => {
@@ -285,6 +286,11 @@ export class OrdersDashboardComponent implements OnInit {
   }
 
   toggleUserStatus(student: Student): void {
+    if (this.isProtectedUser(student)) {
+      this.alertService.show('error', Messages.USERS.PROTECTED_USER_ERROR, '');
+      return;
+    }
+
     const isActive = student.status === 1;
     const request$ = isActive
       ? this.usersService.disableUser(student.id)
@@ -412,5 +418,18 @@ export class OrdersDashboardComponent implements OnInit {
       });
     }
     this.showImportPopup = false; // Cierra el popup si usas el modal antiguo
+  }
+
+  isProtectedUser(student: Student): boolean {
+    const currentUserId = this.userService.getUserId();
+    const nameLower = student.name.toLowerCase();
+
+    // 1. Current user
+    if (student.id === currentUserId) return true;
+
+    // 2. Admin or Cooker
+    if (student.user_type_id == 1 || student.user_type_id == 3) return true;
+
+    return false;
   }
 }
