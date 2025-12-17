@@ -91,17 +91,27 @@ export class OrdersDashboardComponent implements OnInit {
           const dishes = res.data?.dishes || [];
 
           const parsedMenus: MenuItem[] = dishes.map((dish: any) => {
-            let name = 'N/A';
+            let parsedOptions: string[] = [];
 
             try {
               let options = dish.options;
               if (typeof options === 'string') {
                 options = JSON.parse(options);
               }
-              name =
-                Array.isArray(options) && options.length > 0
-                  ? options[0]
-                  : 'N/A';
+              if (Array.isArray(options)) {
+                if (
+                  options.length === 1 &&
+                  typeof options[0] === 'string' &&
+                  options[0].includes(',')
+                ) {
+                  parsedOptions = options[0]
+                    .split(',')
+                    .map((o: string) => o.trim())
+                    .filter((o: string) => o.length > 0);
+                } else {
+                  parsedOptions = options;
+                }
+              }
             } catch (e) {
               console.error(
                 ConsoleMessages.ERRORS.PARSING_OPTIONS(dish.id),
@@ -112,7 +122,8 @@ export class OrdersDashboardComponent implements OnInit {
 
             return {
               type: this.getDishType(dish.dish_type_id),
-              name,
+              name: parsedOptions.join(', ') || 'N/A',
+              options: parsedOptions,
               date,
             };
           });
