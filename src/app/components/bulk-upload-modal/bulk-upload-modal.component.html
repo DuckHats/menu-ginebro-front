@@ -1,23 +1,61 @@
-<div class="p-6 w-full max-w-md rounded-2xl bg-white  shadow-xl border border-gray-200">
+<div
+  class="p-6 w-full max-w-md rounded-2xl bg-white shadow-xl border border-gray-200"
+>
   <h2 class="text-xl font-bold text-[#009ca6] mb-3">Carrega massiva</h2>
   <p class="text-sm text-gray-700 mb-5">{{ data.descripcion }}</p>
 
-  <div class="mb-5">
-    <a [href]="data.plantillaUrl" download class="text-[#009ca6] hover:underline text-sm">⬇️ Descarregar plantilla</a>
+  <div class="mb-5 flex flex-col gap-2">
+    <a
+      [href]="data.plantillaUrl"
+      download
+      class="text-[#009ca6] hover:underline text-sm"
+      >⬇️ Plantilla JSON</a
+    >
+    <a
+      *ngIf="data.plantillaCsvUrl"
+      [href]="data.plantillaCsvUrl"
+      download
+      class="text-[#009ca6] hover:underline text-sm"
+      >⬇️ Plantilla CSV</a
+    >
   </div>
 
-  <div class="border-2 border-dashed border-gray-300 rounded-xl p-5 text-center text-sm text-gray-600 cursor-pointer transition hover:bg-gray-50"
-    (click)="fileInput.click()" (dragover)="onDragOver($event)" (drop)="onDrop($event)">
+  <div
+    class="border-2 border-dashed border-gray-300 rounded-xl p-5 text-center text-sm text-gray-600 cursor-pointer transition hover:bg-gray-50"
+    (click)="fileInput.click()"
+    (dragover)="onDragOver($event)"
+    (drop)="onDrop($event)"
+  >
     <span *ngIf="!selectedFile">Fes clic o arrossega un fitxer aquí</span>
-    <span *ngIf="selectedFile" class="font-medium text-gray-800">Fitxer seleccionat: {{ selectedFile.name }}</span>
-    <input type="file" accept=".json" #fileInput (change)="onFileChange($event)" hidden>
+    <span *ngIf="selectedFile" class="font-medium text-gray-800"
+      >Fitxer seleccionat: {{ selectedFile.name }}</span
+    >
+    <input
+      type="file"
+      accept=".json, .csv"
+      #fileInput
+      (change)="onFileChange($event)"
+      hidden
+    />
   </div>
 
-  <p class="text-xs text-gray-500 mt-3">Només es permeten fitxers JSON amb el format correcte.</p>
+  <p class="text-xs text-gray-500 mt-3">
+    Només es permeten fitxers JSON o CSV amb el format correcte.
+  </p>
 
   <div class="mt-6 flex justify-end gap-2">
-    <button class="bg-[#009ca6] hover:bg-[#007b85] transition text-white px-4 py-2 rounded-lg disabled:opacity-50"
-      [disabled]="!selectedFile" (click)="uploadFile()">Pujar fitxer</button>
-    <button class="text-gray-600 hover:text-gray-800 transition px-4 py-2" (click)="close()">Cancel·lar</button>
+    <button
+      class="bg-[#009ca6] hover:bg-[#007b85] transition text-white px-4 py-2 rounded-lg disabled:opacity-50"
+      [disabled]="!selectedFile"
+      (click)="uploadFile()"
+    >
+      Pujar fitxer
+    </button>
+    <button
+      class="text-gray-600 hover:text-gray-800 transition px-4 py-2"
+      (click)="close()"
+    >
+      Cancel·lar
+    </button>
   </div>
 </div>

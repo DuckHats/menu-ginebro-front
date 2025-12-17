@@ -47,12 +47,13 @@ export const AppConstants = {
   // Import template paths
   IMPORT_TEMPLATES: {
     MENUS: '/import_templates/import_menus_example.json',
+    MENUS_CSV: '/import_templates/import_menus_example.csv',
     USERS: '/import_templates/import_users_example.json',
   },
 
   // Import descriptions
   IMPORT_DESCRIPTIONS: {
-    MENUS: "Importar menus des d'un arxiu JSON",
+    MENUS: "Importar menus des d'un arxiu JSON o CSV",
     USERS: "Importar usuaris des d'un arxiu JSON",
   },
 };
