@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { API_CONFIG } from '../environments/api.config';
+import { API_CONFIG } from '../config/api.config';
 import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class BaseService {
   protected baseUrl = API_CONFIG.baseUrl;
@@ -15,11 +15,19 @@ export class BaseService {
     return this.http.get<T>(`${this.baseUrl}/${endpoint}`, { headers });
   }
 
-  protected post<T>(endpoint: string, body: any, headers?: HttpHeaders): Observable<T> {
+  protected post<T>(
+    endpoint: string,
+    body: any,
+    headers?: HttpHeaders
+  ): Observable<T> {
     return this.http.post<T>(`${this.baseUrl}/${endpoint}`, body, { headers });
   }
 
-  protected put<T>(endpoint: string, body: any, headers?: HttpHeaders): Observable<T> {
+  protected put<T>(
+    endpoint: string,
+    body: any,
+    headers?: HttpHeaders
+  ): Observable<T> {
     return this.http.put<T>(`${this.baseUrl}/${endpoint}`, body, { headers });
   }
 

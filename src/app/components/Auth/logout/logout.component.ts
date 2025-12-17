@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../Services/Auth/auth.service';
-import { NavigationConfig } from '../../../environments/navigation.config';
+import { NavigationConfig } from '../../../config/navigation.config';
 
 @Component({
   selector: 'app-logout',
@@ -11,9 +11,11 @@ import { NavigationConfig } from '../../../environments/navigation.config';
 export class LogoutComponent {
 
   constructor(private authService: AuthService, private router: Router) {
-    this.authService.logout();
-
-    this.router.navigate(["/" + NavigationConfig.LOGIN]);
+    // Wait for server-side logout (cookie invalidation) before navigating.
+    this.authService.logout().subscribe({
+      next: () => this.router.navigate(['/' + NavigationConfig.LOGIN]),
+      error: () => this.router.navigate(['/' + NavigationConfig.LOGIN]),
+    });
   }
 
 }

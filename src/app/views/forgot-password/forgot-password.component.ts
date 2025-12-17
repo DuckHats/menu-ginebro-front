@@ -5,9 +5,10 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AlertService } from '../../Services/Alert/alert.service';
-import { NavigationConfig } from '../../environments/navigation.config';
+import { NavigationConfig } from '../../config/navigation.config';
 import { OtpInputComponent } from '../../components/otp-input/otp-input.component';
 import { PasswordStrengthComponent } from '../../components/password-strength/password-strength.component';
+import { Messages } from '../../config/messages.config';
 
 @Component({
   selector: 'app-forgot-password',
@@ -18,8 +19,8 @@ import { PasswordStrengthComponent } from '../../components/password-strength/pa
     CommonModule,
     ReactiveFormsModule,
     OtpInputComponent,
-    PasswordStrengthComponent
-  ]
+    PasswordStrengthComponent,
+  ],
 })
 export class ForgotPasswordComponent {
   step = 1;
@@ -35,21 +36,29 @@ export class ForgotPasswordComponent {
     private alertService: AlertService
   ) {
     this.emailForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]]
+      email: ['', [Validators.required, Validators.email]],
     });
 
-    this.resetForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
-      code: ['', [Validators.required, Validators.minLength(4)]],
-      password: ['', [Validators.required, Validators.minLength(8)]],
-      password_confirmation: ['', Validators.required]
-    }, { validators: this.passwordsMatchValidator });
+    this.resetForm = this.fb.group(
+      {
+        email: ['', [Validators.required, Validators.email]],
+        code: ['', [Validators.required, Validators.minLength(4)]],
+        password: ['', [Validators.required, Validators.minLength(8)]],
+        password_confirmation: ['', Validators.required],
+      },
+      { validators: this.passwordsMatchValidator }
+    );
   }
 
   sendResetCode(): void {
     if (this.emailForm.invalid) {
       this.emailForm.markAllAsTouched();
-      this.alertService.show('warning', 'El correu electrònic no és vàlid.', '', 3000);
+      this.alertService.show(
+        'warning',
+        Messages.VALIDATION.INVALID_EMAIL,
+        '',
+        3000
+      );
       return;
     }
 
@@ -58,14 +67,24 @@ export class ForgotPasswordComponent {
     this.authService.forgotPassword(this.emailForm.value.email).subscribe({
       next: () => {
         this.isSubmitting = false;
-        this.alertService.show('info', 'Codi enviat al teu correu electrònic', '', 3000);
+        this.alertService.show(
+          'info',
+          Messages.PASSWORD_RESET.CODE_SENT,
+          '',
+          3000
+        );
         this.resetForm.patchValue({ email: this.emailForm.value.email });
         this.step = 2;
       },
       error: () => {
         this.isSubmitting = false;
-        this.alertService.show('error', 'Error enviant el codi. Si us plau, torna-ho a intentar.', '', 3000);
-      }
+        this.alertService.show(
+          'error',
+          Messages.PASSWORD_RESET.CODE_SEND_ERROR,
+          '',
+          3000
+        );
+      },
     });
   }
 
@@ -74,16 +93,31 @@ export class ForgotPasswordComponent {
     this.resetForm.markAllAsTouched();
 
     if (!this.passwordValid) {
-      this.alertService.show('warning', 'La contrasenya no compleix els requisits.', '', 3000);
+      this.alertService.show(
+        'warning',
+        Messages.VALIDATION.PASSWORD_REQUIREMENTS,
+        '',
+        3000
+      );
       return;
     }
 
     if (this.resetForm.invalid) {
       const errors = this.resetForm.errors;
       if (errors?.['passwordsMismatch']) {
-        this.alertService.show('warning', 'Les contrasenyes no coincideixen.', '', 3000);
+        this.alertService.show(
+          'warning',
+          Messages.VALIDATION.PASSWORDS_MISMATCH,
+          '',
+          3000
+        );
       } else {
-        this.alertService.show('warning', 'Revisa tots els camps del formulari.', '', 3000);
+        this.alertService.show(
+          'warning',
+          Messages.VALIDATION.REVIEW_FORM_FIELDS,
+          '',
+          3000
+        );
       }
       return;
     }
@@ -92,13 +126,23 @@ export class ForgotPasswordComponent {
     this.authService.resetPassword(this.resetForm.value).subscribe({
       next: () => {
         this.isSubmitting = false;
-        this.alertService.show('success', 'Contrasenya restablerta correctament', '', 3000);
+        this.alertService.show(
+          'success',
+          Messages.PASSWORD_RESET.RESET_SUCCESS,
+          '',
+          3000
+        );
         this.router.navigateByUrl(NavigationConfig.LOGOUT);
       },
       error: () => {
         this.isSubmitting = false;
-        this.alertService.show('error', 'Error al restablir la contrasenya. Si us plau, torna-ho a intentar més tard.', '', 3000);
-      }
+        this.alertService.show(
+          'error',
+          Messages.PASSWORD_RESET.RESET_ERROR,
+          '',
+          3000
+        );
+      },
     });
   }
 

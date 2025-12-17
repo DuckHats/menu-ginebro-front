@@ -2,68 +2,63 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { API_CONFIG } from '../../environments/api.config';
+import { API_CONFIG } from '../../config/api.config';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class OrdersService {
   private apiUrl = `${API_CONFIG.baseUrl}/orders`;
   private apiUrlByDate = `${API_CONFIG.baseUrl}/orders_by_date`;
 
-  constructor(private http: HttpClient) { }
-
-  private getHeaders(): HttpHeaders {
-    const token = localStorage.getItem('token') || '';
-    return new HttpHeaders({ Authorization: `Bearer ${token}` });
-  }
+  constructor(private http: HttpClient) {}
 
   getByDate(date: string): Observable<any> {
-    return this.http.get<any>(`${this.apiUrlByDate}/${date}`, {
-      headers: this.getHeaders()
-    }).pipe(catchError(this.handleError));
+    return this.http
+      .get<any>(`${this.apiUrlByDate}/${date}`)
+      .pipe(catchError(this.handleError));
   }
 
   getByUser(userId: number): Observable<any> {
-    return this.http.get<any>(`${API_CONFIG.baseUrl}/orders_by_user/${userId}`, {
-      headers: this.getHeaders()
-    }).pipe(catchError(this.handleError));
+    return this.http
+      .get<any>(`${API_CONFIG.baseUrl}/orders_by_user/${userId}`)
+      .pipe(catchError(this.handleError));
   }
 
   updateStatus(orderId: number, statusId: number): Observable<any> {
-    return this.http.post(
-      `${API_CONFIG.baseUrl}/orders/updateStatus/${orderId}`,
-      { order_status_id: statusId },
-      { headers: this.getHeaders() }
-    ).pipe(catchError(this.handleError));
+    return this.http
+      .post(`${API_CONFIG.baseUrl}/orders/updateStatus/${orderId}`, {
+        order_status_id: statusId,
+      })
+      .pipe(catchError(this.handleError));
   }
 
   createOrder(order: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}`, order, { headers: this.getHeaders() })
+    return this.http
+      .post(`${this.apiUrl}`, order)
       .pipe(catchError(this.handleError));
   }
 
   getOrderTypes(): Observable<any> {
-    return this.http.get<any>(`${API_CONFIG.baseUrl}/orders_type`, {
-      headers: this.getHeaders()
-    }).pipe(catchError(this.handleError));
+    return this.http
+      .get<any>(`${API_CONFIG.baseUrl}/orders_type`)
+      .pipe(catchError(this.handleError));
   }
 
   checkDateAvailability(date: string): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/checkDate/${date}`, {
-      headers: this.getHeaders()
-    }).pipe(catchError(this.handleError));
+    return this.http
+      .get<any>(`${this.apiUrl}/checkDate/${date}`)
+      .pipe(catchError(this.handleError));
   }
 
   export(format: string): Observable<any> {
-    const headers = this.getHeaders();
     const options = {
-      headers,
       responseType: 'blob' as 'json',
-      observe: 'response' as 'body'
+      observe: 'response' as 'body',
     };
 
-    return this.http.get(`${this.apiUrl}/export?format=${format}`, options)
+    return this.http
+      .get(`${this.apiUrl}/export?format=${format}`, options)
       .pipe(catchError(this.handleError));
   }
 

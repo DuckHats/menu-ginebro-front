@@ -22,7 +22,8 @@ Una aplicación moderna desarrollada con Angular 19 que permite a estudiantes, c
 ## ✨ Características
 
 ### 🔐 Autenticación y Autorización
-- **Login/Logout** con tokens JWT
+
+- **Login/Logout** via session cookies (Laravel session)
 - **Registro de estudiantes** con verificación por código
 - **Recuperación de contraseña** por email
 - **Verificación de email** con códigos OTP
@@ -30,24 +31,28 @@ Una aplicación moderna desarrollada con Angular 19 que permite a estudiantes, c
 - **Gestión de sesiones** múltiples
 
 ### 👥 Gestión de Usuarios
+
 - **Perfiles diferenciados**: Administrador, Cocineros, Estudiantes
 - **Gestión de usuarios** completa (CRUD)
 - **Importación/Exportación** masiva de usuarios
 - **Activación/Desactivación** de cuentas
 
 ### 🍽️ Gestión de Menús
+
 - **Visualización de menús** semanales
 - **Selección de platos** por día
 - **Gestión de tipos de platos**
 - **Importación/Exportación** de menús
 
 ### 📊 Pedidos y Administración
+
 - **Dashboard administrativo** con métricas
 - **Historial de pedidos** por usuario y fecha
 - **Gestión de estados** de pedidos
 - **Exportación de datos** en Excel
 
 ### 🎨 Interfaz de Usuario
+
 - **Diseño responsive** con Angular Material
 - **Tema personalizable** con SCSS
 - **Componentes reutilizables**
@@ -57,21 +62,25 @@ Una aplicación moderna desarrollada con Angular 19 que permite a estudiantes, c
 ## 🛠️ Tecnologías
 
 ### Core Framework
+
 - **Angular 19** - Framework principal
 - **TypeScript 5.6** - Lenguaje de programación
 - **RxJS 7.8** - Programación reactiva
 
 ### UI/UX
+
 - **Angular Material 19** - Componentes UI
 - **Angular CDK 19** - Componentes de desarrollo
 - **TailwindCSS 4.1** - Framework CSS utilitario
 - **SCSS** - Preprocesador CSS
 
 ### HTTP y Estado
+
 - **Axios 1.8** - Cliente HTTP
 - **Angular Service Worker** - PWA capabilities
 
 ### Desarrollo
+
 - **Angular CLI 19** - Herramientas de desarrollo
 - **Karma + Jasmine** - Testing framework
 
@@ -91,29 +100,33 @@ npm install -g @angular/cli@19
 ## 🚀 Instalación
 
 1. **Clona el repositorio**
+
 ```bash
 git clone <repository-url>
 cd menu-ginebro-front
 ```
 
 2. **Instala las dependencias**
+
 ```bash
 npm install
 ```
 
 3. **Configura las variables de entorno**
+
 ```bash
 # Revisa las variables de conexión con el backend
-nano src/environments/api.config.ts
+nano src/app/config/api.config.ts
 ```
 
 4. **Edita la configuración (Opcional)**
+
 ```typescript
-// src/environments/api.config.ts
+// src/app/config/api.config.ts
 export const API_CONFIG = {
-  baseUrl: 'http://localhost:8001/api/v1',
+  baseUrl: "http://localhost:8001/api/v1",
   timeout: 10000,
-  retries: 3
+  retries: 3,
 };
 ```
 
@@ -123,9 +136,7 @@ export const API_CONFIG = {
 
 ```bash
 # Inicia el servidor de desarrollo
-npm start
-# o
-ng serve
+ng serve --proxy-config proxy.conf.json
 
 # Servidor con configuración específica
 ng serve --configuration=development
@@ -155,11 +166,13 @@ ng test
 ## 🏗️ Construcción
 
 ### Desarrollo
+
 ```bash
 ng build --configuration=development
 ```
 
 ### Producción
+
 ```bash
 ng build --configuration=production
 ```
@@ -167,6 +180,7 @@ ng build --configuration=production
 Los archivos construidos se almacenarán en `dist/test-menu1/`
 
 ### Análisis del Bundle
+
 ```bash
 ng build --stats-json
 npx webpack-bundle-analyzer dist/test-menu1/stats.json
@@ -194,7 +208,7 @@ src/
 │   │   ├── user-avatar/      # Avatar de usuario
 │   │   ├── user-card/        # Tarjeta de usuario
 │   │   └── weekly-calendar/  # Calendario semanal
-│   ├── environments/         # Configuraciones de entorno
+│   ├── config/               # Configuraciones de entorno
 │   ├── guards/               # Guards de seguridad
 │   ├── interfaces/           # Interfaces TypeScript
 │   ├── Services/             # Servicios de la aplicación
@@ -224,6 +238,7 @@ src/
 ### Servicios Principales
 
 #### AuthService
+
 ```typescript
 // Gestión de autenticación
 login(credentials: LoginCredentials): Observable<AuthResponse>
@@ -251,6 +266,7 @@ resetPassword(data: {
 ```
 
 #### UserService
+
 ```typescript
 // Gestión de usuarios
 getAll(): Observable<any[]>
@@ -266,6 +282,7 @@ disableUser(id: number): Observable<any>
 ```
 
 #### MenuService
+
 ```typescript
 // Gestión de menús
 getByDate(date: string): Observable<any>
@@ -274,6 +291,7 @@ import(body: any): Observable<any>
 ```
 
 #### OrderService
+
 ```typescript
 // Gestión de pedidos
 getByDate(date: string): Observable<any>
@@ -286,6 +304,7 @@ export(format: string): Observable<any>
 ```
 
 #### AlertService
+
 ```typescript
 // Sistema de alertas
 show(type: 'success' | 'error' | 'info' | 'warning', title: string, message: string, duration = 3000)
@@ -294,12 +313,15 @@ show(type: 'success' | 'error' | 'info' | 'warning', title: string, message: str
 ## 🛡️ Guards y Seguridad
 
 ### AuthGuard
+
 Protege rutas que requieren autenticación.
 
 ### PublicGuard
+
 Protege rutas públicas.
 
 ### AdminGuard
+
 Protege rutas del usuario administrador.
 
 ## 🤝 Contribución
@@ -322,6 +344,7 @@ Protege rutas del usuario administrador.
 ### Commits
 
 Usar el formato Conventional Commits:
+
 ```
 feat: añadir nueva funcionalidad de exportación
 fix: corregir error en validación de formulario

@@ -1,7 +1,14 @@
-import { Component, EventEmitter, Inject, Output, ViewEncapsulation } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Inject,
+  Output,
+  ViewEncapsulation,
+} from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { AlertService } from '../../Services/Alert/alert.service';
 import { CommonModule } from '@angular/common';
+import { Messages } from '../../config/messages.config';
 
 @Component({
   selector: 'app-bulk-upload-modal',
@@ -9,14 +16,15 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./bulk-upload-modal.component.css'],
   imports: [CommonModule],
   standalone: true,
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
 })
 export class BulkUploadModalComponent {
   selectedFile: File | null = null;
 
   constructor(
     private dialogRef: MatDialogRef<BulkUploadModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { plantillaUrl: string, descripcion: string },
+    @Inject(MAT_DIALOG_DATA)
+    public data: { plantillaUrl: string; descripcion: string },
     private alertService: AlertService
   ) {}
 
@@ -36,7 +44,12 @@ export class BulkUploadModalComponent {
 
   uploadFile(): void {
     if (!this.selectedFile) {
-      this.alertService.show('warning', 'Has de seleccionar un json vàlid', '', 3000);
+      this.alertService.show(
+        'warning',
+        Messages.IMPORT_EXPORT.SELECT_VALID_JSON,
+        '',
+        3000
+      );
       return;
     }
 
@@ -46,7 +59,12 @@ export class BulkUploadModalComponent {
         const jsonData = JSON.parse(e.target.result);
         this.dialogRef.close(jsonData); // <-- Retorna JSON al componente padre
       } catch {
-        this.alertService.show('error', 'El fitxer no és un JSON vàlid', '', 3000);
+        this.alertService.show(
+          'error',
+          Messages.IMPORT_EXPORT.INVALID_JSON,
+          '',
+          3000
+        );
       }
     };
     reader.readAsText(this.selectedFile);

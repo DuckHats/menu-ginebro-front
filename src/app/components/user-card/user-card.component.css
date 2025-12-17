@@ -1,97 +1,92 @@
-/* :host {
-    display: block;
-  }
-  
-  .user-card {
-    width: 320px;
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-    background-color: white;
-    font-family: "Inter", sans-serif;
-  }
-  
+/* Scoped styles using .user-card-container wrapper because of ViewEncapsulation.None */
+.user-card-container .mat-mdc-form-field {
+  font-family: inherit;
+  width: 100%;
+}
 
-  .user-card-header {
-    background-color: #009ca6;
-    padding: 24px;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    color: white;
-  }
-  
-  .avatar-container {
-    width: 48px;
-    height: 48px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 50%;
-    background-color: rgba(255, 255, 255, 0.2);
-  }
-  
-  .user-info {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .first-name,
-  .middle-name,
-  .last-name {
-    font-weight: 700;
-    font-size: 18px;
-    line-height: 1.2;
-  }
-  
-  .user-role {
-    font-size: 14px;
-    opacity: 0.85;
-    margin-top: 4px;
-  }
-  
+.user-card-container .mat-mdc-text-field-wrapper {
+  background-color: white !important;
+}
 
-  .user-card-body {
-    padding: 16px;
-  }
-  
-  .section-title {
-    font-weight: 600;
-    font-size: 14px;
-    color: #333;
-    margin-bottom: 8px;
-  }
-  
-  .user-details,
-  .user-settings {
-    border-bottom: 1px solid #e0e0e0;
-    padding: 12px 0;
-  }
-  
-  .info-item,
-  .settings-item,
-  .logout-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 14px;
-    padding: 8px 0;
-    cursor: pointer;
-    color: #333;
-  }
-  
-  .icon {
-    margin-right: 8px;
-    font-size: 16px;
-    color: #666;
-  }
-  
-  .arrow {
-    font-size: 18px;
-    color: #bbb;
-  }
-  
-  .logout-item {
-    color: red;
-    font-weight: 600;
-  } */
+.user-card-container .mat-mdc-form-field-focus-overlay {
+  background-color: transparent !important;
+}
+
+/* Borders */
+.user-card-container .mdc-notched-outline__leading,
+.user-card-container .mdc-notched-outline__notch,
+.user-card-container .mdc-notched-outline__trailing {
+  border-color: #d1d5db !important; /* gray-300 */
+}
+
+/* Focused Borders */
+.user-card-container
+  .mat-mdc-form-field.mat-focused
+  .mdc-notched-outline__leading,
+.user-card-container
+  .mat-mdc-form-field.mat-focused
+  .mdc-notched-outline__notch,
+.user-card-container
+  .mat-mdc-form-field.mat-focused
+  .mdc-notched-outline__trailing {
+  border-color: #009ca6 !important;
+  border-width: 2px !important;
+}
+
+/* Spacing fix */
+.user-card-container .mat-mdc-form-field-infix {
+  padding-top: 8px !important;
+  padding-bottom: 8px !important;
+  min-height: 48px !important;
+}
+
+/* Text styles */
+.user-card-container .mat-mdc-select-value {
+  color: #333 !important;
+  font-size: 14px !important;
+}
+
+.user-card-container .mat-mdc-select-placeholder {
+  color: #9ca3af !important;
+}
+
+/* Labels */
+.user-card-container .mat-mdc-floating-label {
+  color: #666 !important;
+}
+
+.user-card-container .mat-mdc-form-field.mat-focused .mat-mdc-floating-label {
+  color: #009ca6 !important;
+}
+
+/* Arrow */
+.user-card-container .mat-mdc-select-arrow {
+  color: #666 !important;
+}
+
+/* Dropdown Panel - Note: This is attached to body, so we might need specificity or ::ng-deep if it's outside the component view, 
+   BUT since we are trying to avoid ::ng-deep globally, we can use a custom panel class if possible, or keep this specific rule global-ish.
+   With ViewEncapsulation.None, these styles ARE global, so we must be careful. 
+   Material panels are attached to the body, so '.user-card-container .mat-mdc-select-panel' WON'T work unless the panel is inside.
+   It's usually in a cdk-overlay-container. 
+   
+   To be safe and clean, we should add 'panelClass' to the mat-select in HTML and style that class. 
+   For now, I'll use a specific class pattern if possible, but standard material overrides often need to be global.
+*/
+.user-card-panel .mat-mdc-option:hover,
+.user-card-panel .mat-mdc-option.mat-mdc-option-active {
+  background-color: #f0f9fa !important;
+}
+
+.user-card-panel .mat-mdc-option.mdc-list-item--selected {
+  background-color: #e6f7f8 !important;
+}
+
+.user-card-panel .mat-pseudo-checkbox-checked::after {
+  color: #009ca6 !important;
+}
+
+.user-card-panel .mat-pseudo-checkbox-checked {
+  background-color: #009ca6 !important;
+  border-color: #009ca6 !important;
+}
