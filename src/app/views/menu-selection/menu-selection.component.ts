@@ -66,7 +66,7 @@ export default class MenuSelectionComponent implements OnInit {
   loadMenuFromBackend(): void {
     if (!this.selectedDate) return;
 
-    const formattedDate = this.selectedDate.toISOString().split('T')[0];
+    const formattedDate = this.formatDate(this.selectedDate);
     this.menusService.getByDate(formattedDate).subscribe({
       next: (response) => {
         const dishes = response.data?.dishes || [];
@@ -162,7 +162,7 @@ export default class MenuSelectionComponent implements OnInit {
         ?.options.find((o) => o.selected)?.name || '';
 
     const allergies = '';
-    const order_date = selectedDateCopy.toISOString().split('T')[0]; // ara order_date reflectirà la DATA LOCAL correcta
+    const order_date = this.formatDate(selectedDateCopy);
 
     const payload = {
       order_date,
@@ -236,5 +236,11 @@ export default class MenuSelectionComponent implements OnInit {
     } else {
       return [];
     }
+  }
+  private formatDate(date: Date): string {
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
 }
