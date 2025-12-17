@@ -250,9 +250,12 @@
           <td class="px-6 py-3">{{ student.lastName }}</td>
           <td class="px-6 py-3">{{ student.email }}</td>
           <td class="px-6 py-3">
-            <label class="inline-flex items-center cursor-pointer">
+            <label class="inline-flex items-center"
+              [class.cursor-pointer]="!isProtectedUser(student)"
+              [class.cursor-not-allowed]="isProtectedUser(student)"
+              [class.opacity-50]="isProtectedUser(student)">
               <input type="checkbox" class="sr-only peer" [checked]="student.status === 1"
-                (change)="toggleUserStatus(student)" />
+                [disabled]="isProtectedUser(student)" (change)="toggleUserStatus(student)" />
               <div
                 class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:bg-green-500 transition-colors duration-300">
               </div>
