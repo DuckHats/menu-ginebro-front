@@ -195,7 +195,14 @@
           <tbody>
             <tr *ngFor="let menu of date.menus" class="border-b border-gray-200">
               <td class="px-4 py-2">{{ menu.type }}</td>
-              <td class="px-4 py-2">{{ menu.name }}</td>
+              <td class="px-4 py-2">
+                <div class="flex flex-wrap gap-1">
+                  <span *ngFor="let option of menu.options"
+                    class="px-2 py-1 rounded-full text-xs font-medium bg-cyan-50 text-cyan-700 border border-cyan-200">
+                    {{ option }}
+                  </span>
+                </div>
+              </td>
             </tr>
           </tbody>
         </table>

@@ -1,6 +1,7 @@
 export interface MenuItem {
   type: string;
   name: string;
+  options: string[];
 }
 
 export interface Order {

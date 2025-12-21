@@ -55,18 +55,21 @@ export class OrderHistoryComponent implements OnInit {
               menuItems.push({
                 type: 'Primer Plat',
                 name: order.orderDetail.option1,
+                options: [order.orderDetail.option1],
               });
             }
             if (type.includes('segon') || type.includes('segundo')) {
               menuItems.push({
                 type: 'Segon Plat',
                 name: order.orderDetail.option2,
+                options: [order.orderDetail.option2],
               });
             }
             if (type.includes('postre')) {
               menuItems.push({
                 type: 'Postre',
                 name: order.orderDetail.option3,
+                options: [order.orderDetail.option3],
               });
             }
           }
