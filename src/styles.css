@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+@theme {
+  --color-primary: #009ca6;
+  --color-primary-dark: #007d85;
+  --color-primary-light: #e6f5f6;
+}
+
 app-weekly-calendar {
   height: auto !important;
   min-height: 0 !important;
@@ -37,7 +43,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .mat-mdc-form-field.mat-focused .mdc-notched-outline__leading,
 .mat-mdc-form-field.mat-focused .mdc-notched-outline__notch,
 .mat-mdc-form-field.mat-focused .mdc-notched-outline__trailing {
-  border-color: #0ea5e9 !important; /* sky-500 */
+  border-color: var(--color-primary) !important;
   border-width: 2px !important;
 }
 
@@ -92,18 +98,18 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 .user-card-panel .mat-mdc-option:hover,
 .user-card-panel .mat-mdc-option.mat-mdc-option-active {
-  background-color: #f0f9ff !important;
+  background-color: var(--color-primary-light) !important;
 }
 
 .user-card-panel .mat-mdc-option.mdc-list-item--selected {
-  background-color: #e0f2fe !important;
+  background-color: var(--color-primary-light) !important;
 }
 
 .user-card-panel .mat-pseudo-checkbox-checked::after {
-  color: #0284c7 !important;
+  color: var(--color-primary) !important;
 }
 
 .user-card-panel .mat-pseudo-checkbox-checked {
-  background-color: #0284c7 !important;
-  border-color: #0284c7 !important;
+  background-color: var(--color-primary) !important;
+  border-color: var(--color-primary) !important;
 }

@@ -3,7 +3,7 @@
     <div class="p-10 lg:p-12">
       <!-- Header -->
       <header class="flex flex-col items-center text-center mb-10">
-        <div class="w-16 h-16 bg-sky-600 rounded-2xl flex items-center justify-center shadow-lg shadow-sky-200 mb-6">
+        <div class="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center shadow-lg shadow-primary/20 mb-6">
           <mat-icon class="text-white text-3xl w-8 h-8">person_add</mat-icon>
         </div>
         <h1 class="text-3xl font-bold text-slate-800 tracking-tight mb-2">
@@ -21,7 +21,7 @@
             {{ UILabels.REGISTRATION.EMAIL_LABEL }}
           </label>
           <div class="relative group">
-            <div class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-sky-600 transition-colors">
+            <div class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors">
               <mat-icon class="text-[20px] w-5 h-5">mail_outline</mat-icon>
             </div>
             <input
@@ -29,7 +29,7 @@
               id="email"
               formControlName="email"
               [placeholder]="UILabels.REGISTRATION.EMAIL_PLACEHOLDER"
-              class="w-full pl-12 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-slate-700 placeholder:text-slate-400 focus:bg-white focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10 transition-all outline-none font-medium"
+              class="w-full pl-12 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-slate-700 placeholder:text-slate-400 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all outline-none font-medium"
             />
           </div>
           <div *ngIf="emailForm.get('email')?.touched && emailForm.get('email')?.errors" class="px-1">
@@ -42,7 +42,7 @@
         <button
           type="submit"
           [disabled]="emailForm.invalid || isSubmitting"
-          class="w-full bg-sky-600 hover:bg-sky-700 disabled:bg-slate-300 text-white py-4 rounded-2xl font-bold shadow-lg shadow-sky-200 transition-all active:scale-[0.98] flex items-center justify-center gap-2"
+          class="w-full bg-primary hover:bg-primary-dark disabled:bg-slate-300 text-white py-4 rounded-2xl font-bold shadow-lg shadow-primary/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2"
         >
           <mat-icon *ngIf="!isSubmitting" class="text-[20px] w-5 h-5">send</mat-icon>
           <div *ngIf="isSubmitting" class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
@@ -57,11 +57,11 @@
           <div class="space-y-2">
             <label for="name" class="text-sm font-bold text-slate-700 ml-1">{{ UILabels.REGISTRATION.NAME_LABEL }}</label>
             <div class="relative group">
-              <div class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-sky-600 transition-colors">
+              <div class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors">
                 <mat-icon class="text-[20px] w-5 h-5">person_outline</mat-icon>
               </div>
               <input type="text" id="name" formControlName="name" [placeholder]="UILabels.REGISTRATION.NAME_PLACEHOLDER"
-                class="w-full pl-12 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-slate-700 placeholder:text-slate-400 focus:bg-white focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10 transition-all outline-none font-medium" />
+                class="w-full pl-12 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-slate-700 placeholder:text-slate-400 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all outline-none font-medium" />
             </div>
           </div>
 
@@ -69,11 +69,11 @@
           <div class="space-y-2">
             <label for="last_name" class="text-sm font-bold text-slate-700 ml-1">{{ UILabels.REGISTRATION.LAST_NAME_LABEL }}</label>
             <div class="relative group">
-              <div class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-sky-600 transition-colors">
+              <div class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors">
                 <mat-icon class="text-[20px] w-5 h-5">badge</mat-icon>
               </div>
               <input type="text" id="last_name" formControlName="last_name" [placeholder]="UILabels.REGISTRATION.LAST_NAME_PLACEHOLDER"
-                class="w-full pl-12 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-slate-700 placeholder:text-slate-400 focus:bg-white focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10 transition-all outline-none font-medium" />
+                class="w-full pl-12 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-slate-700 placeholder:text-slate-400 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all outline-none font-medium" />
             </div>
           </div>
         </div>
@@ -90,11 +90,11 @@
         <div class="space-y-2">
           <label for="password" class="text-sm font-bold text-slate-700 ml-1">{{ UILabels.REGISTRATION.PASSWORD_LABEL }}</label>
           <div class="relative group">
-            <div class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-sky-600 transition-colors">
+            <div class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors">
               <mat-icon class="text-[20px] w-5 h-5">lock_outline</mat-icon>
             </div>
             <input type="password" id="password" formControlName="password" [placeholder]="UILabels.REGISTRATION.PASSWORD_PLACEHOLDER"
-              class="w-full pl-12 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-slate-700 placeholder:text-slate-400 focus:bg-white focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10 transition-all outline-none font-medium" />
+              class="w-full pl-12 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-slate-700 placeholder:text-slate-400 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all outline-none font-medium" />
           </div>
           <app-password-strength [password]="passwordValue" (strengthChange)="passwordValid = $event"></app-password-strength>
         </div>
@@ -103,12 +103,12 @@
         <div class="space-y-2">
           <label for="password_confirmation" class="text-sm font-bold text-slate-700 ml-1">{{ UILabels.REGISTRATION.PASSWORD_CONFIRMATION_LABEL }}</label>
           <div class="relative group">
-            <div class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-sky-600 transition-colors">
+            <div class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors">
               <mat-icon class="text-[20px] w-5 h-5">lock_reset</mat-icon>
             </div>
             <input type="password" id="password_confirmation" formControlName="password_confirmation"
               [placeholder]="UILabels.REGISTRATION.PASSWORD_CONFIRMATION_PLACEHOLDER"
-              class="w-full pl-12 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-slate-700 placeholder:text-slate-400 focus:bg-white focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10 transition-all outline-none font-medium" />
+              class="w-full pl-12 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-slate-700 placeholder:text-slate-400 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all outline-none font-medium" />
           </div>
           <p class="text-xs text-rose-500 font-bold px-1" *ngIf="registerForm.errors?.['passwordsMismatch']">{{ UILabels.REGISTRATION.PASSWORDS_MISMATCH_ERROR }}</p>
         </div>
@@ -116,7 +116,7 @@
         <button
           type="submit"
           [disabled]="registerForm.invalid || isSubmitting"
-          class="w-full bg-sky-600 hover:bg-sky-700 disabled:bg-slate-300 text-white py-4 rounded-2xl font-bold shadow-lg shadow-sky-200 transition-all active:scale-[0.98] flex items-center justify-center gap-2"
+          class="w-full bg-primary hover:bg-primary-dark disabled:bg-slate-300 text-white py-4 rounded-2xl font-bold shadow-lg shadow-primary/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2"
         >
           <mat-icon *ngIf="!isSubmitting" class="text-[20px] w-5 h-5">check_circle</mat-icon>
           <div *ngIf="isSubmitting" class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
@@ -126,7 +126,7 @@
 
       <!-- Footer Link -->
       <div class="mt-8 pt-6 border-t border-slate-100 text-center">
-        <button type="button" (click)="navigateToLogin()" class="text-sm font-bold text-slate-500 hover:text-sky-600 transition-colors">
+        <button type="button" (click)="navigateToLogin()" class="text-sm font-bold text-slate-500 hover:text-primary transition-colors">
           {{ UILabels.REGISTRATION.LOGIN_LINK }}
         </button>
       </div>

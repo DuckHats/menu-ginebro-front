@@ -2,7 +2,7 @@
   <!-- Sidebar -->
   <aside class="w-full md:w-72 bg-white border-r border-gray-200 flex flex-col shadow-sm z-10">
     <div class="p-8 border-b border-gray-100 flex items-center gap-4 bg-gray-50/30">
-      <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 text-white flex items-center justify-center shadow-lg shadow-cyan-100">
+      <div class="w-12 h-12 rounded-2xl bg-primary text-white flex items-center justify-center shadow-lg shadow-primary/20">
         <mat-icon class="scale-110">person</mat-icon>
       </div>
       <div class="overflow-hidden">
@@ -14,31 +14,31 @@
     <nav class="flex-1 p-4 flex flex-col gap-2 mt-2 md:flex-col md:overflow-y-auto scrollbar-none">
       <button (click)="setActiveTab('profile')" 
         [class.active]="activeTab === 'profile'" 
-        class="nav-item relative flex items-center gap-4 px-5 py-3.5 rounded-2xl text-[15px] font-semibold text-slate-500 transition-all duration-300 hover:bg-slate-50 hover:text-slate-900 hover:pl-6 group [&.active]:bg-sky-50 [&.active]:text-sky-700 [&.active]:pl-6">
-        <div class="absolute left-0 top-[20%] bottom-[20%] w-1 bg-sky-600 rounded-r-lg opacity-0 -translate-x-1 transition-all duration-300 group-[.active]:opacity-100 group-[.active]:translate-x-0 group-hover:opacity-50 group-hover:translate-x-0 group-[.active]:group-hover:opacity-100"></div>
-        <mat-icon class="text-slate-400 transition-all duration-300 group-hover:scale-110 group-[.active]:text-sky-600">account_circle</mat-icon>
+        class="nav-item relative flex items-center gap-4 px-5 py-3.5 rounded-2xl text-[15px] font-semibold text-slate-500 transition-all duration-300 hover:bg-slate-50 hover:text-slate-900 hover:pl-6 group [&.active]:bg-primary-light/50 [&.active]:text-primary-dark [&.active]:pl-6">
+        <div class="absolute left-0 top-[20%] bottom-[20%] w-1 bg-primary rounded-r-lg opacity-0 -translate-x-1 transition-all duration-300 group-[.active]:opacity-100 group-[.active]:translate-x-0 group-hover:opacity-50 group-hover:translate-x-0 group-[.active]:group-hover:opacity-100"></div>
+        <mat-icon class="text-slate-400 transition-all duration-300 group-hover:scale-110 group-[.active]:text-primary">account_circle</mat-icon>
         <span>El meu perfil</span>
       </button>
 
       <button *ngIf="student.user_type_id == 2" (click)="setActiveTab('allergies')"
         [class.active]="activeTab === 'allergies'" 
-        class="nav-item relative flex items-center gap-4 px-5 py-3.5 rounded-2xl text-[15px] font-semibold text-slate-500 transition-all duration-300 hover:bg-slate-50 hover:text-slate-900 hover:pl-6 group [&.active]:bg-sky-50 [&.active]:text-sky-700 [&.active]:pl-6">
-        <div class="absolute left-0 top-[20%] bottom-[20%] w-1 bg-sky-600 rounded-r-lg opacity-0 -translate-x-1 transition-all duration-300 group-[.active]:opacity-100 group-[.active]:translate-x-0 group-hover:opacity-50 group-hover:translate-x-0 group-[.active]:group-hover:opacity-100"></div>
-        <mat-icon class="text-slate-400 transition-all duration-300 group-hover:scale-110 group-[.active]:text-sky-600">warning</mat-icon>
+        class="nav-item relative flex items-center gap-4 px-5 py-3.5 rounded-2xl text-[15px] font-semibold text-slate-500 transition-all duration-300 hover:bg-slate-50 hover:text-slate-900 hover:pl-6 group [&.active]:bg-primary-light/50 [&.active]:text-primary-dark [&.active]:pl-6">
+        <div class="absolute left-0 top-[20%] bottom-[20%] w-1 bg-primary rounded-r-lg opacity-0 -translate-x-1 transition-all duration-300 group-[.active]:opacity-100 group-[.active]:translate-x-0 group-hover:opacity-50 group-hover:translate-x-0 group-[.active]:group-hover:opacity-100"></div>
+        <mat-icon class="text-slate-400 transition-all duration-300 group-hover:scale-110 group-[.active]:text-primary">warning</mat-icon>
         <span>Al·lèrgies</span>
       </button>
 
       <button (click)="setActiveTab('security')" [class.active]="activeTab === 'security'" 
-        class="nav-item relative flex items-center gap-4 px-5 py-3.5 rounded-2xl text-[15px] font-semibold text-slate-500 transition-all duration-300 hover:bg-slate-50 hover:text-slate-900 hover:pl-6 group [&.active]:bg-sky-50 [&.active]:text-sky-700 [&.active]:pl-6">
-        <div class="absolute left-0 top-[20%] bottom-[20%] w-1 bg-sky-600 rounded-r-lg opacity-0 -translate-x-1 transition-all duration-300 group-[.active]:opacity-100 group-[.active]:translate-x-0 group-hover:opacity-50 group-hover:translate-x-0 group-[.active]:group-hover:opacity-100"></div>
-        <mat-icon class="text-slate-400 transition-all duration-300 group-hover:scale-110 group-[.active]:text-sky-600">security</mat-icon>
+        class="nav-item relative flex items-center gap-4 px-5 py-3.5 rounded-2xl text-[15px] font-semibold text-slate-500 transition-all duration-300 hover:bg-slate-50 hover:text-slate-900 hover:pl-6 group [&.active]:bg-primary-light/50 [&.active]:text-primary-dark [&.active]:pl-6">
+        <div class="absolute left-0 top-[20%] bottom-[20%] w-1 bg-primary rounded-r-lg opacity-0 -translate-x-1 transition-all duration-300 group-[.active]:opacity-100 group-[.active]:translate-x-0 group-hover:opacity-50 group-hover:translate-x-0 group-[.active]:group-hover:opacity-100"></div>
+        <mat-icon class="text-slate-400 transition-all duration-300 group-hover:scale-110 group-[.active]:text-primary">security</mat-icon>
         <span>Seguretat</span>
       </button>
 
       <button *ngIf="student.user_type_id == 1" (click)="setActiveTab('config')" [class.active]="activeTab === 'config'"
-        class="nav-item relative flex items-center gap-4 px-5 py-3.5 rounded-2xl text-[15px] font-semibold text-slate-500 transition-all duration-300 hover:bg-slate-50 hover:text-slate-900 hover:pl-6 group [&.active]:bg-sky-50 [&.active]:text-sky-700 [&.active]:pl-6">
-        <div class="absolute left-0 top-[20%] bottom-[20%] w-1 bg-sky-600 rounded-r-lg opacity-0 -translate-x-1 transition-all duration-300 group-[.active]:opacity-100 group-[.active]:translate-x-0 group-hover:opacity-50 group-hover:translate-x-0 group-[.active]:group-hover:opacity-100"></div>
-        <mat-icon class="text-slate-400 transition-all duration-300 group-hover:scale-110 group-[.active]:text-sky-600">settings</mat-icon>
+        class="nav-item relative flex items-center gap-4 px-5 py-3.5 rounded-2xl text-[15px] font-semibold text-slate-500 transition-all duration-300 hover:bg-slate-50 hover:text-slate-900 hover:pl-6 group [&.active]:bg-primary-light/50 [&.active]:text-primary-dark [&.active]:pl-6">
+        <div class="absolute left-0 top-[20%] bottom-[20%] w-1 bg-primary rounded-r-lg opacity-0 -translate-x-1 transition-all duration-300 group-[.active]:opacity-100 group-[.active]:translate-x-0 group-hover:opacity-50 group-hover:translate-x-0 group-[.active]:group-hover:opacity-100"></div>
+        <mat-icon class="text-slate-400 transition-all duration-300 group-hover:scale-110 group-[.active]:text-primary">settings</mat-icon>
         <span>Configuració</span>
       </button>
     </nav>
@@ -62,7 +62,7 @@
             <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">El meu perfil</h1>
             <p class="text-slate-500 mt-1 font-medium">Gestiona la teva informació personal i preferències.</p>
           </div>
-          <div class="px-4 py-1.5 bg-sky-50 text-sky-700 rounded-full text-xs font-bold uppercase tracking-wider border border-sky-100">
+          <div class="px-4 py-1.5 bg-primary-light text-primary-dark rounded-full text-xs font-bold uppercase tracking-wider border border-primary-light">
             Compte actiu
           </div>
         </header>
@@ -110,7 +110,7 @@
                 </div>
                 <div class="space-y-3">
                   <div class="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
-                    <div class="h-full w-full bg-cyan-400 rounded-full"></div>
+                    <div class="h-full w-full bg-primary rounded-full"></div>
                   </div>
                   <p class="text-[10px] text-slate-400 font-medium">Perfil completat al 100%</p>
                 </div>
@@ -150,7 +150,7 @@
                 <label class="text-sm font-bold text-slate-700">Altres al·lèrgies o observacions</label>
               </div>
               <textarea formControlName="custom_allergies" placeholder="Ex: Maduixes, Kiwi, Fruits secs..."
-                class="w-full rounded-2xl border border-slate-200 px-5 py-4 text-sm focus:ring-4 focus:ring-sky-500/10 focus:border-sky-500 outline-none transition-all min-h-[120px] bg-slate-50/30 font-medium"></textarea>
+                class="w-full rounded-2xl border border-slate-200 px-5 py-4 text-sm focus:ring-4 focus:ring-primary/20 focus:border-primary outline-none transition-all min-h-[120px] bg-slate-50/30 font-medium"></textarea>
               <p class="text-xs text-slate-400 flex items-center gap-1">
                 <mat-icon class="scale-50">info</mat-icon>
                 Separa les diferents al·lèrgies amb comes per a una millor lectura.
@@ -175,8 +175,8 @@
         </header>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div class="bg-white p-10 rounded-3xl shadow-sm border border-slate-200/60 flex flex-col items-center text-center space-y-6 group hover:border-sky-200 transition-colors">
-            <div class="w-16 h-16 rounded-2xl bg-sky-50 text-sky-600 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
+          <div class="bg-white p-10 rounded-3xl shadow-sm border border-slate-200/60 flex flex-col items-center text-center space-y-6 group hover:border-primary-light transition-colors">
+            <div class="w-16 h-16 rounded-2xl bg-primary-light text-primary flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
               <mat-icon class="scale-125">lock</mat-icon>
             </div>
             <div>

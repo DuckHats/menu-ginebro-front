@@ -10,14 +10,14 @@ import { animate, style, transition, trigger } from '@angular/animations';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div class="min-h-screen bg-gradient-to-br from-cyan-50 to-white flex flex-col items-center justify-center p-6 text-center" @fadeIn>
-      <div class="max-w-md w-full bg-white p-10 rounded-3xl shadow-xl border border-cyan-100 relative overflow-hidden">
+    <div class="min-h-screen bg-gradient-to-br from-primary-light/30 to-white flex flex-col items-center justify-center p-6 text-center" @fadeIn>
+      <div class="max-w-md w-full bg-white p-10 rounded-3xl shadow-xl border border-primary-light/50 relative overflow-hidden">
         <!-- Animated Background Element -->
-        <div class="absolute -top-20 -right-20 w-40 h-40 bg-cyan-100 rounded-full blur-3xl opacity-50 animate-pulse"></div>
+        <div class="absolute -top-20 -right-20 w-40 h-40 bg-primary-light/50 rounded-full blur-3xl opacity-50 animate-pulse"></div>
         
         <!-- Icon -->
-        <div class="w-24 h-24 bg-cyan-100 rounded-2xl flex items-center justify-center mx-auto mb-8 transform rotate-12 hover:rotate-0 transition-transform duration-500">
-          <svg class="w-12 h-12 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="w-24 h-24 bg-primary-light rounded-2xl flex items-center justify-center mx-auto mb-8 transform rotate-12 hover:rotate-0 transition-transform duration-500">
+          <svg class="w-12 h-12 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
           </svg>
@@ -30,7 +30,7 @@ import { animate, style, transition, trigger } from '@angular/animations';
 
         <div class="space-y-6">
           <div class="h-1 w-full bg-gray-100 rounded-full overflow-hidden">
-            <div class="h-full bg-cyan-500 w-1/2 animate-[loading_2s_ease-in-out_infinite]"></div>
+            <div class="h-full bg-primary w-1/2 animate-[loading_2s_ease-in-out_infinite]"></div>
           </div>
           
           <div class="pt-4 border-t border-gray-50">
