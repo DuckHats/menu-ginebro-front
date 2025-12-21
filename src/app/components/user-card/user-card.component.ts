@@ -20,6 +20,7 @@ import {
 import { Messages } from '../../config/messages.config';
 import { AppConstants } from '../../config/app-constants.config';
 import { AssetsConfig } from '../../config/assets.config';
+import { AdminConfigurationComponent } from '../../views/admin-configuration/admin-configuration.component';
 
 import { ViewEncapsulation } from '@angular/core';
 
@@ -36,12 +37,14 @@ import { ViewEncapsulation } from '@angular/core';
     FormsModule,
     MatSelectModule,
     MatFormFieldModule,
+    AdminConfigurationComponent
   ],
 })
 export class UserCardComponent implements OnInit {
   student!: User;
   profileForm: FormGroup;
   allergies: Allergy[] = [];
+  activeTab: 'profile' | 'allergies' | 'security' | 'config' = 'profile';
 
   avatarSvg: string = AssetsConfig.SVG.USER_AVATAR;
 
@@ -57,6 +60,10 @@ export class UserCardComponent implements OnInit {
       allergies: [[]],
       custom_allergies: [''],
     });
+  }
+
+  setActiveTab(tab: 'profile' | 'allergies' | 'security' | 'config') {
+    this.activeTab = tab;
   }
 
   ngOnInit(): void {

@@ -10,8 +10,7 @@ import { ForgotPasswordComponent } from './views/forgot-password/forgot-password
 import { LogoutComponent } from './components/Auth/logout/logout.component';
 import { StudentRegistrationComponent } from './views/student-registration/student-registration.component';
 import { PublicGuard } from './guards/public.guard';
-
-
+import { NavigationConfig } from './config/navigation.config';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent, canActivate: [PublicGuard] },
@@ -31,6 +30,7 @@ export const routes: Routes = [
   { path: 'admin/monthly', component:  OrdersDashboardComponent}, // Ruta para la sección de historial de pedidos (admin)
   { path: 'admin/anual', component:  OrdersDashboardComponent}, // Ruta para la sección de historial de pedidos (admin)
   { path: 'admin/image', component:  OrdersDashboardComponent}, // Ruta para la sección de historial de pedidos (admin)
+  { path: NavigationConfig.MAINTENANCE, loadComponent: () => import('./views/maintenance/maintenance.component').then(m => m.MaintenanceComponent) },
   
   {path: '**', redirectTo: ''}, // Redirigir cualquier ruta no reconocida a la raíz
 ];

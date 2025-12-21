@@ -1,74 +1,213 @@
-<div class="user-card-container flex justify-center p-4">
-  <div class="w-full max-w-md rounded-xl border border-gray-200 bg-white">
-    <!-- Header -->
-    <div class="flex items-center gap-3 px-5 py-4 border-b border-gray-200">
-      <div class="flex h-10 w-10 items-center justify-center rounded-full bg-[#009ca6]/10 text-[#009ca6]">
-        <mat-icon>person</mat-icon>
+<div *ngIf="student" class="profile-container min-h-screen bg-gray-50 flex flex-col md:flex-row">
+  <!-- Sidebar -->
+  <aside class="w-full md:w-72 bg-white border-r border-gray-200 flex flex-col shadow-sm z-10">
+    <div class="p-8 border-b border-gray-100 flex items-center gap-4 bg-gray-50/30">
+      <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 text-white flex items-center justify-center shadow-lg shadow-cyan-100">
+        <mat-icon class="scale-110">person</mat-icon>
       </div>
-
-      <div>
-        <p class="text-base font-semibold text-gray-800 leading-tight">
-          {{ student.name }} {{ student.last_name }}
-        </p>
-        <p class="text-xs text-gray-500">
-          {{ student.email }}
-        </p>
+      <div class="overflow-hidden">
+        <p class="font-bold text-gray-900 truncate leading-tight">{{ student.name }}</p>
+        <p class="text-xs text-gray-400 truncate mt-0.5 font-medium">{{ student.email }}</p>
       </div>
     </div>
 
-    <!-- Body -->
-    <div class="px-5 py-4 space-y-5">
-      <!-- Allergies -->
-      @if (student.user_type_id == 2) {
-      <div class="space-y-3">
-        <h3 class="text-sm font-semibold text-[#009ca6]">
-          Al·lèrgies
-        </h3>
+    <nav class="flex-1 p-4 flex flex-col gap-2 mt-2 md:flex-col md:overflow-y-auto scrollbar-none">
+      <button (click)="setActiveTab('profile')" 
+        [class.active]="activeTab === 'profile'" 
+        class="nav-item relative flex items-center gap-4 px-5 py-3.5 rounded-2xl text-[15px] font-semibold text-slate-500 transition-all duration-300 hover:bg-slate-50 hover:text-slate-900 hover:pl-6 group [&.active]:bg-sky-50 [&.active]:text-sky-700 [&.active]:pl-6">
+        <div class="absolute left-0 top-[20%] bottom-[20%] w-1 bg-sky-600 rounded-r-lg opacity-0 -translate-x-1 transition-all duration-300 group-[.active]:opacity-100 group-[.active]:translate-x-0 group-hover:opacity-50 group-hover:translate-x-0 group-[.active]:group-hover:opacity-100"></div>
+        <mat-icon class="text-slate-400 transition-all duration-300 group-hover:scale-110 group-[.active]:text-sky-600">account_circle</mat-icon>
+        <span>El meu perfil</span>
+      </button>
 
-        <form [formGroup]="profileForm" (ngSubmit)="saveAllergies()" class="space-y-3">
-          <!-- Common allergies -->
-          <mat-form-field appearance="outline" class="w-full">
-            <mat-select placeholder="Comunes" formControlName="allergies" multiple panelClass="user-card-panel">
-              <mat-option *ngFor="let allergy of allergies" [value]="allergy.id">
-                {{ allergy.name }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
+      <button *ngIf="student.user_type_id == 2" (click)="setActiveTab('allergies')"
+        [class.active]="activeTab === 'allergies'" 
+        class="nav-item relative flex items-center gap-4 px-5 py-3.5 rounded-2xl text-[15px] font-semibold text-slate-500 transition-all duration-300 hover:bg-slate-50 hover:text-slate-900 hover:pl-6 group [&.active]:bg-sky-50 [&.active]:text-sky-700 [&.active]:pl-6">
+        <div class="absolute left-0 top-[20%] bottom-[20%] w-1 bg-sky-600 rounded-r-lg opacity-0 -translate-x-1 transition-all duration-300 group-[.active]:opacity-100 group-[.active]:translate-x-0 group-hover:opacity-50 group-hover:translate-x-0 group-[.active]:group-hover:opacity-100"></div>
+        <mat-icon class="text-slate-400 transition-all duration-300 group-hover:scale-110 group-[.active]:text-sky-600">warning</mat-icon>
+        <span>Al·lèrgies</span>
+      </button>
 
-          <!-- Custom allergies -->
+      <button (click)="setActiveTab('security')" [class.active]="activeTab === 'security'" 
+        class="nav-item relative flex items-center gap-4 px-5 py-3.5 rounded-2xl text-[15px] font-semibold text-slate-500 transition-all duration-300 hover:bg-slate-50 hover:text-slate-900 hover:pl-6 group [&.active]:bg-sky-50 [&.active]:text-sky-700 [&.active]:pl-6">
+        <div class="absolute left-0 top-[20%] bottom-[20%] w-1 bg-sky-600 rounded-r-lg opacity-0 -translate-x-1 transition-all duration-300 group-[.active]:opacity-100 group-[.active]:translate-x-0 group-hover:opacity-50 group-hover:translate-x-0 group-[.active]:group-hover:opacity-100"></div>
+        <mat-icon class="text-slate-400 transition-all duration-300 group-hover:scale-110 group-[.active]:text-sky-600">security</mat-icon>
+        <span>Seguretat</span>
+      </button>
+
+      <button *ngIf="student.user_type_id == 1" (click)="setActiveTab('config')" [class.active]="activeTab === 'config'"
+        class="nav-item relative flex items-center gap-4 px-5 py-3.5 rounded-2xl text-[15px] font-semibold text-slate-500 transition-all duration-300 hover:bg-slate-50 hover:text-slate-900 hover:pl-6 group [&.active]:bg-sky-50 [&.active]:text-sky-700 [&.active]:pl-6">
+        <div class="absolute left-0 top-[20%] bottom-[20%] w-1 bg-sky-600 rounded-r-lg opacity-0 -translate-x-1 transition-all duration-300 group-[.active]:opacity-100 group-[.active]:translate-x-0 group-hover:opacity-50 group-hover:translate-x-0 group-[.active]:group-hover:opacity-100"></div>
+        <mat-icon class="text-slate-400 transition-all duration-300 group-hover:scale-110 group-[.active]:text-sky-600">settings</mat-icon>
+        <span>Configuració</span>
+      </button>
+    </nav>
+
+    <div class="p-4 border-t border-gray-100 bg-gray-50/30">
+      <button (click)="logout()" class="relative flex items-center gap-4 px-5 py-3.5 rounded-2xl text-[15px] font-bold text-red-500 transition-all duration-300 hover:bg-red-50 w-full group">
+        <mat-icon class="group-hover:rotate-12 transition-transform">logout</mat-icon>
+        <span>Tancar sessió</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="flex-1 p-6 md:p-12 overflow-auto bg-gray-50/50">
+    <div class="max-w-5xl mx-auto">
+
+      <!-- Profile Tab -->
+      <div *ngIf="activeTab === 'profile'" class="space-y-8 animate-fade-in">
+        <header class="flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>
-            <label class="block text-xs font-medium text-gray-600 mb-1">
-              Altres (separades per comes)
-            </label>
+            <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">El meu perfil</h1>
+            <p class="text-slate-500 mt-1 font-medium">Gestiona la teva informació personal i preferències.</p>
+          </div>
+          <div class="px-4 py-1.5 bg-sky-50 text-sky-700 rounded-full text-xs font-bold uppercase tracking-wider border border-sky-100">
+            Compte actiu
+          </div>
+        </header>
 
-            <input type="text" formControlName="custom_allergies" placeholder="Ex: Maduixes, Kiwi" class="w-full rounded-md border border-gray-300 px-3 py-2 text-sm
-                     focus:outline-none focus:ring-1 focus:ring-[#009ca6]
-                     focus:border-[#009ca6]" />
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div class="md:col-span-2 space-y-6">
+            <div class="bg-white rounded-3xl shadow-sm border border-slate-200/60 overflow-hidden">
+              <div class="p-6 border-b border-slate-100 bg-slate-50/50 flex items-center gap-3">
+                <mat-icon class="text-slate-400">badge</mat-icon>
+                <h2 class="font-bold text-slate-800">Informació Personal</h2>
+              </div>
+              <div class="p-8 grid grid-cols-1 sm:grid-cols-2 gap-8">
+                <div class="space-y-1.5">
+                  <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Nom</label>
+                  <p class="text-slate-900 font-semibold text-lg">{{ student.name }}</p>
+                </div>
+                <div class="space-y-1.5">
+                  <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Cognoms</label>
+                  <p class="text-slate-900 font-semibold text-lg">{{ student.last_name }}</p>
+                </div>
+                <div class="space-y-1.5 sm:col-span-2 p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                  <label class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Correu electrònic</label>
+                  <div class="flex items-center gap-2 mt-1">
+                    <mat-icon class="text-slate-400 scale-75">mail</mat-icon>
+                    <p class="text-slate-900 font-semibold">{{ student.email }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <!-- Submit -->
-          <button type="submit" class="w-full rounded-md bg-[#009ca6] py-2 text-sm font-semibold
-                   text-white hover:bg-[#00858e] transition">
-            Guardar al·lèrgies
-          </button>
-        </form>
+          <div class="space-y-6">
+            <div class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-3xl p-8 text-white shadow-xl shadow-slate-200 relative overflow-hidden group">
+              <div class="absolute -right-4 -top-4 w-24 h-24 bg-white/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
+              <div class="relative z-10">
+                <p class="text-slate-400 text-[10px] font-bold uppercase tracking-widest mb-4">Estat del compte</p>
+                <div class="flex items-center gap-4 mb-6">
+                  <div class="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center backdrop-blur-md">
+                    <mat-icon>verified_user</mat-icon>
+                  </div>
+                  <div>
+                    <p class="font-bold text-lg">Verificat</p>
+                    <p class="text-xs text-slate-400">Usuari Ginebró</p>
+                  </div>
+                </div>
+                <div class="space-y-3">
+                  <div class="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
+                    <div class="h-full w-full bg-cyan-400 rounded-full"></div>
+                  </div>
+                  <p class="text-[10px] text-slate-400 font-medium">Perfil completat al 100%</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      }
 
-      <!-- Actions -->
-      <div class="border-t border-gray-200 pt-3 space-y-1">
-        <button type="button" (click)="forgotPassword()" class="w-full flex items-center justify-between text-sm text-gray-700
-                 hover:text-[#009ca6] py-2 transition">
-          <span>Canviar contrasenya</span>
-          <span class="text-gray-400">›</span>
-        </button>
+      <!-- Allergies Tab -->
+      <div *ngIf="activeTab === 'allergies'" class="space-y-8 animate-fade-in">
+        <header>
+          <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">Al·lèrgies i Intoleràncies</h1>
+          <p class="text-slate-500 mt-1 font-medium">Informa'ns sobre les teves necessitats alimentàries per a un servei segur.</p>
+        </header>
 
-        <button type="button" (click)="logout()" class="w-full flex items-center justify-between text-sm font-semibold
-                 text-red-600 hover:text-red-700 py-2 transition">
-          <span>Tancar sessió</span>
-          <span class="text-gray-400">›</span>
-        </button>
+        <div class="bg-white rounded-3xl shadow-sm border border-slate-200/60 p-8">
+          <form [formGroup]="profileForm" (ngSubmit)="saveAllergies()" class="space-y-8">
+            <div class="space-y-3">
+              <div class="flex items-center gap-2 mb-1">
+                <mat-icon class="text-amber-500">report_problem</mat-icon>
+                <label class="text-sm font-bold text-slate-700">Al·lèrgies comunes</label>
+              </div>
+              <mat-form-field appearance="outline" class="w-full custom-select">
+                <mat-select placeholder="Selecciona les teves al·lèrgies" formControlName="allergies" multiple
+                  panelClass="user-card-panel">
+                  <mat-option *ngFor="let allergy of allergies" [value]="allergy.id">
+                    {{ allergy.name }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="space-y-3">
+              <div class="flex items-center gap-2 mb-1">
+                <mat-icon class="text-slate-400">edit_note</mat-icon>
+                <label class="text-sm font-bold text-slate-700">Altres al·lèrgies o observacions</label>
+              </div>
+              <textarea formControlName="custom_allergies" placeholder="Ex: Maduixes, Kiwi, Fruits secs..."
+                class="w-full rounded-2xl border border-slate-200 px-5 py-4 text-sm focus:ring-4 focus:ring-sky-500/10 focus:border-sky-500 outline-none transition-all min-h-[120px] bg-slate-50/30 font-medium"></textarea>
+              <p class="text-xs text-slate-400 flex items-center gap-1">
+                <mat-icon class="scale-50">info</mat-icon>
+                Separa les diferents al·lèrgies amb comes per a una millor lectura.
+              </p>
+            </div>
+
+            <div class="flex justify-end pt-4">
+              <button type="submit" class="px-10 py-4 bg-slate-900 text-white rounded-2xl font-bold hover:bg-slate-800 transition-all shadow-xl shadow-slate-200 flex items-center gap-2 group">
+                <span>Guardar canvis</span>
+                <mat-icon class="group-hover:translate-x-1 transition-transform">arrow_forward</mat-icon>
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
+
+      <!-- Security Tab -->
+      <div *ngIf="activeTab === 'security'" class="space-y-8 animate-fade-in">
+        <header>
+          <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">Seguretat</h1>
+          <p class="text-slate-500 mt-1 font-medium">Gestiona la teva contrasenya i la privacitat del teu compte.</p>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div class="bg-white p-10 rounded-3xl shadow-sm border border-slate-200/60 flex flex-col items-center text-center space-y-6 group hover:border-sky-200 transition-colors">
+            <div class="w-16 h-16 rounded-2xl bg-sky-50 text-sky-600 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
+              <mat-icon class="scale-125">lock</mat-icon>
+            </div>
+            <div>
+              <h3 class="font-bold text-xl text-slate-900">Canviar contrasenya</h3>
+              <p class="text-sm text-slate-500 mt-2 font-medium">Actualitza la teva clau d'accés per mantenir el teu compte segur.</p>
+            </div>
+            <button (click)="forgotPassword()" class="w-full py-3.5 border-2 border-slate-100 rounded-2xl text-sm font-bold text-slate-700 hover:bg-slate-50 hover:border-slate-200 transition-all">
+              Configurar ara
+            </button>
+          </div>
+
+          <div class="bg-white p-10 rounded-3xl shadow-sm border border-slate-200/60 flex flex-col items-center text-center space-y-6 group hover:border-red-100 transition-colors">
+            <div class="w-16 h-16 rounded-2xl bg-red-50 text-red-600 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
+              <mat-icon class="scale-125">logout</mat-icon>
+            </div>
+            <div>
+              <h3 class="font-bold text-xl text-slate-900">Tancar sessió</h3>
+              <p class="text-sm text-slate-500 mt-2 font-medium">Surt de la teva sessió de forma segura en aquest dispositiu.</p>
+            </div>
+            <button (click)="logout()" class="w-full py-3.5 bg-red-50 text-red-600 rounded-2xl text-sm font-bold hover:bg-red-100 transition-all">
+              Sortir del compte
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Config Tab (Admin only) -->
+      <div *ngIf="activeTab === 'config' && student.user_type_id == 1" class="animate-fade-in">
+        <app-admin-configuration></app-admin-configuration>
+      </div>
+
     </div>
-  </div>
+  </main>
 </div>

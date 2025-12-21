@@ -22,6 +22,7 @@ import { ConsoleMessages } from '../../config/console-messages.config';
   imports: [CommonModule, FormsModule, MatDialogModule],
 })
 export class OrdersDashboardComponent implements OnInit {
+  AppConstants = AppConstants;
   activeTab = 'ordres';
   selectedDate = new Date().toISOString().split('T')[0];
   weeklyMenus: { date: string; menus: MenuItem[] }[] = [];

@@ -55,4 +55,42 @@ export const AppConstants = {
     MENUS: "Importar menus des d'un arxiu JSON",
     USERS: "Importar usuaris des d'un arxiu JSON",
   },
-};
+
+  // Configuration constants
+  CONFIGURATION: {
+    TABS: {
+      IMAGES: 'imatges',
+      ORDERS: 'comandes',
+      STATUS: 'estat',
+      CONFIG: 'config',
+    },
+    LABELS: {
+      TITLE: 'Configuració del Sistema',
+      IMAGES_TAB: 'Imatges Menú',
+      ORDERS_TAB: 'Comandes i Preus',
+      STATUS_TAB: "Estat de l'App",
+      CONFIG_TAB: 'Configuració',
+      IMAGES_TITLE: 'Imatges dels Menús Mensuals',
+      IMAGES_DESC: 'Puja les imatges dels menús perquè els usuaris les puguin consultar.',
+      UPLOAD_NEW: 'Puja una nova imatge',
+      UPLOADING: 'Pujant...',
+      ORDERS_TITLE: 'Configuració de Comandes',
+      DEADLINE_TIME: 'Hora límit de comanda',
+      DEADLINE_TIME_DESC: 'Hora màxima per fer la comanda el dia anterior.',
+      DAYS_AHEAD: "Dies d'antelació",
+      DAYS_AHEAD_DESC: "Quants dies abans s'ha de tancar la comanda.",
+      MENU_PRICE: 'Preu del menú (€)',
+      MENU_PRICE_DESC: 'Preu per tiquet de menú.',
+      SAVE_CHANGES: 'Guardar Canvis',
+      SAVING: 'Guardant...',
+      APP_STATUS_TITLE: "Estat de l'Aplicació",
+      APP_STATUS_DESC: "Si desactives l'aplicació, els usuaris veuran una pàgina de manteniment.",
+      APP_ACTIVE: 'Aplicació Activa',
+      APP_ACTIVE_DESC: "L'aplicació està funcionant normalment",
+      APP_INACTIVE_DESC: "L'aplicació està en manteniment",
+      MAINTENANCE_TITLE: 'Estem en manteniment',
+      MAINTENANCE_DESC: "Estem realitzant algunes millores al sistema per oferir-te un millor servei. Torna a intentar-ho d'aquí a una estona.",
+      MAINTENANCE_FOOTER: 'Gràcies per la teva paciència',
+    }
+  }
+} as const;
