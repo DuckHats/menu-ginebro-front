@@ -16,12 +16,17 @@ export class AuthGuard implements CanActivate {
     private configService: ConfigurationService
   ) {}
 
-  canActivate(): Observable<boolean> {
+  canActivate(route: any, state: any): Observable<boolean> {
     return this.authService.checkAuth().pipe(
       switchMap((user) => {
         if (!user) {
           this.router.navigate(['/' + NavigationConfig.LOGIN]);
           return of(false);
+        }
+
+        // Allow logout route regardless of maintenance mode
+        if (state.url.includes(NavigationConfig.LOGOUT)) {
+          return of(true);
         }
 
         // If user is admin, allow access regardless of maintenance mode

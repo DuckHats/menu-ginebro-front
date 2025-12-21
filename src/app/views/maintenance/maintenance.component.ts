@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AppConstants } from '../../config/app-constants.config';
+import { NavigationConfig } from '../../config/navigation.config';
+import { Router } from '@angular/router';
 import { animate, style, transition, trigger } from '@angular/animations';
 
 @Component({
@@ -26,10 +28,20 @@ import { animate, style, transition, trigger } from '@angular/animations';
           {{ AppConstants.CONFIGURATION.LABELS.MAINTENANCE_DESC }}
         </p>
 
-        <div class="space-y-4">
+        <div class="space-y-6">
           <div class="h-1 w-full bg-gray-100 rounded-full overflow-hidden">
             <div class="h-full bg-cyan-500 w-1/2 animate-[loading_2s_ease-in-out_infinite]"></div>
           </div>
+          
+          <div class="pt-4 border-t border-gray-50">
+            <button (click)="logout()" class="flex items-center justify-center gap-2 mx-auto px-6 py-2.5 text-sm font-bold text-red-500 hover:bg-red-50 rounded-xl transition-all group">
+              <svg class="w-5 h-5 group-hover:rotate-12 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+              </svg>
+              <span>Tancar sessió</span>
+            </button>
+          </div>
+
           <p class="text-xs text-gray-400 uppercase tracking-widest font-semibold">{{ AppConstants.CONFIGURATION.LABELS.MAINTENANCE_FOOTER }}</p>
         </div>
       </div>
@@ -53,6 +65,11 @@ import { animate, style, transition, trigger } from '@angular/animations';
   ]
 })
 export class MaintenanceComponent {
+  private router = inject(Router);
   AppConstants = AppConstants;
   year = new Date().getFullYear();
+
+  logout() {
+    this.router.navigate([NavigationConfig.LOGOUT]);
+  }
 }
