@@ -9,6 +9,10 @@ import { NavigationConfig } from '../../config/navigation.config';
 import { AppConstants } from '../../config/app-constants.config';
 import { ConsoleMessages } from '../../config/console-messages.config';
 
+import { MatIconModule } from '@angular/material/icon';
+import { animate, style, transition, trigger } from '@angular/animations';
+import { UILabels } from '../../config/ui-labels.config';
+
 @Component({
   selector: 'app-welcome-screen',
   standalone: true,
@@ -17,11 +21,21 @@ import { ConsoleMessages } from '../../config/console-messages.config';
     UserAvatarComponent,
     SchoolMealInfoComponent,
     ActionButtonComponent,
+    MatIconModule
   ],
   templateUrl: './welcome-screen.component.html',
   styleUrls: ['./welcome-screen.component.css'],
+  animations: [
+    trigger('fadeIn', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(10px)' }),
+        animate('400ms ease-out', style({ opacity: 1, transform: 'translateY(0)' })),
+      ]),
+    ]),
+  ],
 })
 export class WelcomeScreenComponent implements OnInit {
+  UILabels = UILabels;
   student!: Student;
 
   constructor(private router: Router) {}

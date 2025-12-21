@@ -12,14 +12,27 @@ import { Messages } from '../../config/messages.config';
 import { AppConstants } from '../../config/app-constants.config';
 import { ConsoleMessages } from '../../config/console-messages.config';
 
+import { MatIconModule } from '@angular/material/icon';
+import { animate, style, transition, trigger } from '@angular/animations';
+import { UILabels } from '../../config/ui-labels.config';
+
 @Component({
   selector: 'app-menu-selection',
   templateUrl: './menu-selection.component.html',
   styleUrls: ['./menu-selection.component.css'],
   standalone: true,
-  imports: [CommonModule, WeeklyCalendarComponent],
+  imports: [CommonModule, WeeklyCalendarComponent, MatIconModule],
+  animations: [
+    trigger('fadeIn', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(10px)' }),
+        animate('400ms ease-out', style({ opacity: 1, transform: 'translateY(0)' })),
+      ]),
+    ]),
+  ],
 })
 export default class MenuSelectionComponent implements OnInit {
+  UILabels = UILabels;
   orderTypes: { id: number; name: string }[] = [];
   menuTypes: { id: number; name: string; selected: boolean }[] = [];
   menuSections: MenuSection[] = [];
