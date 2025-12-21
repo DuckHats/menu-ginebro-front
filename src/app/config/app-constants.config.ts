@@ -91,6 +91,58 @@ export const AppConstants = {
       MAINTENANCE_TITLE: 'Estem en manteniment',
       MAINTENANCE_DESC: "Estem realitzant algunes millores al sistema per oferir-te un millor servei. Torna a intentar-ho d'aquí a una estona.",
       MAINTENANCE_FOOTER: 'Gràcies per la teva paciència',
+      ADMIN_DASHBOARD: {
+        TITLE: 'Panell de Control',
+        TABS: {
+          ORDERS: 'ordres',
+          MENUS: 'menus',
+          USERS: 'usuaris',
+        },
+        LABELS: {
+          ORDERS: 'Ordres',
+          MENUS: 'Menús',
+          USERS: 'Usuaris',
+        },
+        ORDERS: {
+          TITLE: 'Gestió d\'Ordres',
+          EXPORT: 'Exportar',
+          PREVIOUS_DAY: '← Dia anterior',
+          NEXT_DAY: 'Dia següent →',
+          TABLE: {
+            USER: 'Usuari',
+            EMAIL: 'Email',
+            DATE: 'Data',
+            TYPE: 'Tipus',
+            ALLERGIES: 'Al·lèrgies',
+            FIRST_DISH: 'Primer plat',
+            SECOND_DISH: 'Segon plat',
+            DESSERT: 'Postre',
+            STATUS: 'Estat',
+            TUPPER: 'Tupper',
+          },
+          NO_ORDERS: 'No s\'han trobat ordres per a la data seleccionada.',
+        },
+        MENUS: {
+          TITLE: 'Gestió de Menús',
+          PREVIOUS_WEEK: '← Setmana anterior',
+          NEXT_WEEK: 'Setmana següent →',
+          IMPORT: 'Importar Menús',
+          NO_MENUS: 'No hi han menús per a la data seleccionada',
+        },
+        USERS: {
+          TITLE: 'Gestió d\'Usuaris',
+          IMPORT: 'Importar Usuaris',
+          TABLE: {
+            ID: 'ID',
+            NAME: 'Nom',
+            LAST_NAME: 'Cognoms',
+            EMAIL: 'Email',
+            STATUS: 'Estat',
+          },
+          ACTIVE: 'Actiu',
+          INACTIVE: 'Inactiu',
+        },
+      }
     }
   }
 } as const;

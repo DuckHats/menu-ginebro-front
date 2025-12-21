@@ -9,21 +9,31 @@ import { MenusService } from '../../Services/Menus/menu.service';
 import { AlertService } from '../../Services/Alert/alert.service';
 import { UserService } from '../../Services/User/user.service';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
 import { BulkUploadModalComponent } from '../../components/bulk-upload-modal/bulk-upload-modal.component';
 import { Messages } from '../../config/messages.config';
 import { AppConstants } from '../../config/app-constants.config';
 import { ConsoleMessages } from '../../config/console-messages.config';
+import { animate, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-orders-dashboard',
   templateUrl: './orders-dashboard.component.html',
   styleUrls: ['./orders-dashboard.component.css'],
   standalone: true,
-  imports: [CommonModule, FormsModule, MatDialogModule],
+  imports: [CommonModule, FormsModule, MatDialogModule, MatIconModule],
+  animations: [
+    trigger('fadeIn', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(10px)' }),
+        animate('400ms ease-out', style({ opacity: 1, transform: 'translateY(0)' })),
+      ]),
+    ]),
+  ],
 })
 export class OrdersDashboardComponent implements OnInit {
   AppConstants = AppConstants;
-  activeTab = 'ordres';
+  activeTab: string = AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.ORDERS;
   selectedDate = new Date().toISOString().split('T')[0];
   weeklyMenus: { date: string; menus: MenuItem[] }[] = [];
   selectedExportFormat = 'json';
@@ -56,17 +66,17 @@ export class OrdersDashboardComponent implements OnInit {
     this.loadAllData();
   }
 
-  setActiveTab(tab: 'ordres' | 'menus' | 'usuaris' | 'json' | 'export'): void {
+  setActiveTab(tab: string): void {
     this.activeTab = tab;
     this.loadAllData();
   }
 
   loadAllData(): void {
-    if (this.activeTab === 'menus') {
+    if (this.activeTab === AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.MENUS) {
       this.loadMenusWeek();
-    } else if (this.activeTab === 'ordres') {
+    } else if (this.activeTab === AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.ORDERS) {
       this.loadOrders(this.selectedDate);
-    } else if (this.activeTab === 'usuaris') {
+    } else if (this.activeTab === AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.USERS) {
       this.loadUsers();
     }
   }
