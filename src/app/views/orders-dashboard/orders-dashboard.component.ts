@@ -47,7 +47,8 @@ import { animate, style, transition, trigger } from '@angular/animations';
 export class OrdersDashboardComponent implements OnInit {
   AppConstants = AppConstants;
   activeTab: string = AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.ORDERS;
-  selectedDate = new Date().toISOString().split('T')[0];
+  // Keep this as a Date object so Angular Material datepicker formats correctly
+  selectedDate: Date = new Date();
   weeklyMenus: { date: string; menus: MenuItem[] }[] = [];
   selectedExportFormat = 'json';
 
@@ -88,7 +89,7 @@ export class OrdersDashboardComponent implements OnInit {
     if (this.activeTab === AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.MENUS) {
       this.loadMenusWeek();
     } else if (this.activeTab === AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.ORDERS) {
-      this.loadOrders(this.selectedDate);
+      this.loadOrders(this.formatDate(this.selectedDate));
     } else if (this.activeTab === AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.USERS) {
       this.loadUsers();
     }
@@ -104,7 +105,7 @@ export class OrdersDashboardComponent implements OnInit {
     const datesOfWeek = Array.from({ length: 5 }, (_, i) => {
       const d = new Date(startOfWeek);
       d.setDate(d.getDate() + i);
-      return d.toISOString().split('T')[0];
+      return this.formatDate(d);
     });
 
     const menuPromises = datesOfWeek.map((date) =>
@@ -281,11 +282,12 @@ export class OrdersDashboardComponent implements OnInit {
   onDateChange(event: any): void {
     const value = event.value || (event.target as HTMLInputElement).value;
     if (value) {
-      // If it's a Date object from MatDatepicker, convert to YYYY-MM-DD
+      // prefer Date object from the picker
       if (value instanceof Date) {
-        this.selectedDate = value.toISOString().split('T')[0];
-      } else {
         this.selectedDate = value;
+      } else {
+        // fallback: try to parse string to Date
+        this.selectedDate = new Date(value);
       }
       this.loadAllData();
     }
@@ -299,7 +301,7 @@ export class OrdersDashboardComponent implements OnInit {
           Messages.ORDERS.STATUS_UPDATE_SUCCESS,
           ''
         );
-        this.loadOrders(this.selectedDate);
+        this.loadOrders(this.formatDate(this.selectedDate));
       },
       error: (err) => {
         this.alertService.show(
@@ -314,15 +316,24 @@ export class OrdersDashboardComponent implements OnInit {
   changeWeek(offset: number): void {
     const current = new Date(this.selectedDate);
     current.setDate(current.getDate() + offset * 7);
-    this.selectedDate = current.toISOString().split('T')[0];
+    this.selectedDate = current;
     this.loadMenusWeek();
   }
 
   changeDay(offset: number): void {
     const current = new Date(this.selectedDate);
     current.setDate(current.getDate() + offset);
-    this.selectedDate = current.toISOString().split('T')[0];
-    this.loadOrders(this.selectedDate);
+    this.selectedDate = current;
+    this.loadOrders(this.formatDate(this.selectedDate));
+  }
+
+  // Helper: format a Date into YYYY-MM-DD (API expects this format)
+  formatDate(d: Date): string {
+    if (!d) return '';
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
 
   toggleUserStatus(student: Student): void {

@@ -1,15 +1,8 @@
-/* Control base compartit */
-.admin-control {
-  height: 48px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
 /* Datepicker */
 .admin-datepicker-field {
   width: 100%;
   max-width: 240px;
+  height: 48px;
 }
 
 /* Wrapper */
@@ -53,6 +46,11 @@
 /* Icona calendari */
 ::ng-deep .admin-datepicker-field .mat-datepicker-toggle {
   color: #64748b;
+  height: 48px;
+  width: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 ::ng-deep .admin-datepicker-field.mat-focused .mat-datepicker-toggle {

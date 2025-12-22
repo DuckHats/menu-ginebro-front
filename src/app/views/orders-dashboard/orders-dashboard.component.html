@@ -81,46 +81,81 @@
             {{ selectedDate | date:'dd/MM/yyyy' }}
           </p>
         </div>
-
-        <!-- Datepicker -->
-        <mat-form-field *ngIf="activeTab !== AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.USERS"
-          appearance="outline" class="admin-datepicker-field admin-control">
-          <mat-label>Selecciona una data</mat-label>
-          <input matInput [matDatepicker]="picker" [value]="selectedDate" readonly (dateChange)="onDateChange($event)"
-            (click)="picker.open()">
-          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-          <mat-datepicker #picker></mat-datepicker>
-        </mat-form-field>
       </div>
 
       <!-- ACTIONS -->
-      <div class="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 w-full">
-        <!-- RIGHT -->
-        <div class="flex gap-2 justify-end">
-          <!-- LEFT -->
-          <select [(ngModel)]="selectedExportFormat" class="admin-control bg-white border border-slate-200 rounded-2xl px-4 text-sm font-semibold text-slate-700
-                   focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all">
+      <div class="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4 w-full">
+        <!-- LEFT: Navigation + Datepicker -->
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+          <!-- Day/Week Navigation -->
+          <div class="flex gap-2">
+            <ng-container [ngSwitch]="activeTab">
+              <!-- Orders: Day Navigation -->
+              <ng-container *ngSwitchCase="AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.ORDERS">
+                <button (click)="changeDay(-1)"
+                  class="h-12 flex items-center gap-2 px-4 bg-white border border-slate-200 rounded-2xl text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-all shadow-sm">
+                  <mat-icon class="text-lg">chevron_left</mat-icon>
+                  <span class="hidden sm:inline">Día anterior</span>
+                </button>
+                <button (click)="changeDay(1)"
+                  class="h-12 flex items-center gap-2 px-4 bg-white border border-slate-200 rounded-2xl text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-all shadow-sm">
+                  <span class="hidden sm:inline">Siguiente día</span>
+                  <mat-icon class="text-lg">chevron_right</mat-icon>
+                </button>
+              </ng-container>
+
+              <!-- Menus: Week Navigation -->
+              <ng-container *ngSwitchCase="AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.MENUS">
+                <button (click)="changeWeek(-1)"
+                  class="h-12 flex items-center gap-2 px-4 bg-white border border-slate-200 rounded-2xl text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-all shadow-sm">
+                  <mat-icon class="text-lg">chevron_left</mat-icon>
+                  <span class="hidden sm:inline">Semana anterior</span>
+                </button>
+                <button (click)="changeWeek(1)"
+                  class="h-12 flex items-center gap-2 px-4 bg-white border border-slate-200 rounded-2xl text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-all shadow-sm">
+                  <span class="hidden sm:inline">Siguiente semana</span>
+                  <mat-icon class="text-lg">chevron_right</mat-icon>
+                </button>
+              </ng-container>
+            </ng-container>
+          </div>
+
+          <!-- Datepicker -->
+          <mat-form-field *ngIf="activeTab !== AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.USERS"
+            appearance="outline" class="admin-datepicker-field">
+            <mat-label>Selecciona una data</mat-label>
+            <input matInput [matDatepicker]="picker" [(ngModel)]="selectedDate" readonly
+              (dateChange)="onDateChange($event)" (click)="picker.open()">
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+        </div>
+
+        <!-- RIGHT: Export/Import Controls -->
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+          <select [(ngModel)]="selectedExportFormat"
+            class="h-12 bg-white border border-slate-200 rounded-2xl px-4 text-sm font-semibold text-slate-700 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all shadow-sm">
             <option value="json">JSON</option>
             <option value="csv">CSV</option>
             <option value="xlsx">Excel</option>
           </select>
+
           <button (click)="activeTab === AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.ORDERS
               ? exportOrdersData()
               : (activeTab === AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.MENUS
                 ? exportMenuData()
-                : exportUserData())" class="admin-control flex gap-2 bg-primary hover:bg-primary-dark text-white px-6 rounded-2xl font-bold
-                   shadow-lg shadow-primary/20 transition-all active:scale-95">
+                : exportUserData())"
+            class="h-12 flex items-center justify-center gap-2 bg-primary hover:bg-primary-dark text-white px-6 rounded-2xl font-semibold shadow-lg shadow-primary/20 transition-all active:scale-95 whitespace-nowrap">
             <mat-icon>download</mat-icon>
-            Exportar
+            <span>Exportar</span>
           </button>
 
           <button *ngIf="activeTab === AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.MENUS
                        || activeTab === AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.USERS"
             (click)="openImportPopup(activeTab === AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.MENUS ? 'menus' : 'usuaris')"
-            class="admin-control flex gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-6 rounded-2xl font-bold
-                   shadow-lg shadow-emerald-200 transition-all active:scale-95">
+            class="h-12 flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-6 rounded-2xl font-semibold shadow-lg shadow-emerald-200 transition-all active:scale-95 whitespace-nowrap">
             <mat-icon>upload</mat-icon>
-            Importar
+            <span>Importar</span>
           </button>
         </div>
       </div>
@@ -131,20 +166,6 @@
 
       <!-- ORDRES -->
       <div *ngSwitchCase="AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.ORDERS" class="space-y-6">
-        <!-- Day Navigation -->
-        <div class="flex gap-3">
-          <button (click)="changeDay(-1)"
-            class="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-50 transition-all shadow-sm">
-            <mat-icon>chevron_left</mat-icon>
-            {{ AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.ORDERS.PREVIOUS_DAY }}
-          </button>
-          <button (click)="changeDay(1)"
-            class="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-50 transition-all shadow-sm">
-            {{ AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.ORDERS.NEXT_DAY }}
-            <mat-icon>chevron_right</mat-icon>
-          </button>
-        </div>
-
         <!-- Desktop Table -->
         <div class="hidden xl:block bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
           <table class="w-full text-left text-sm border-separate border-spacing-0">
@@ -292,20 +313,6 @@
 
       <!-- MENUS -->
       <div *ngSwitchCase="AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.MENUS" class="space-y-6">
-        <!-- Week Navigation -->
-        <div class="flex gap-3">
-          <button (click)="changeWeek(-1)"
-            class="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-50 transition-all shadow-sm">
-            <mat-icon>chevron_left</mat-icon>
-            {{ AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.MENUS.PREVIOUS_WEEK }}
-          </button>
-          <button (click)="changeWeek(1)"
-            class="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-50 transition-all shadow-sm">
-            {{ AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.MENUS.NEXT_WEEK }}
-            <mat-icon>chevron_right</mat-icon>
-          </button>
-        </div>
-
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
           <div *ngFor="let date of weeklyMenus"
             class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden flex flex-col">

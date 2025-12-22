@@ -6,7 +6,7 @@ import {
   withXsrfConfiguration,
 } from '@angular/common/http';
 
-import { provideNativeDateAdapter } from '@angular/material/core';
+import { provideNativeDateAdapter, MAT_DATE_LOCALE } from '@angular/material/core';
 import { routes } from './app.routes';
 import { authInterceptor } from './interceptors/auth.interceptor';
 
@@ -22,5 +22,6 @@ export const appConfig: ApplicationConfig = {
       })
     ),
     provideNativeDateAdapter(),
+    { provide: MAT_DATE_LOCALE, useValue: 'es-ES' },
   ],
 };
