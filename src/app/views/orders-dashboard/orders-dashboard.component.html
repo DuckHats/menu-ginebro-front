@@ -95,11 +95,13 @@
                 <button (click)="changeDay(-1)"
                   class="h-12 flex items-center gap-2 px-4 bg-white border border-slate-200 rounded-2xl text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-all shadow-sm">
                   <mat-icon class="text-lg">chevron_left</mat-icon>
-                  <span class="hidden sm:inline">Día anterior</span>
+                  <span class="hidden sm:inline">{{
+                    AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.ORDERS.PREVIOUS_DAY }}</span>
                 </button>
                 <button (click)="changeDay(1)"
                   class="h-12 flex items-center gap-2 px-4 bg-white border border-slate-200 rounded-2xl text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-all shadow-sm">
-                  <span class="hidden sm:inline">Siguiente día</span>
+                  <span class="hidden sm:inline">{{ AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.ORDERS.NEXT_DAY
+                    }}</span>
                   <mat-icon class="text-lg">chevron_right</mat-icon>
                 </button>
               </ng-container>
@@ -109,11 +111,13 @@
                 <button (click)="changeWeek(-1)"
                   class="h-12 flex items-center gap-2 px-4 bg-white border border-slate-200 rounded-2xl text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-all shadow-sm">
                   <mat-icon class="text-lg">chevron_left</mat-icon>
-                  <span class="hidden sm:inline">Semana anterior</span>
+                  <span class="hidden sm:inline">{{
+                    AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.MENUS.PREVIOUS_WEEK }}</span>
                 </button>
                 <button (click)="changeWeek(1)"
                   class="h-12 flex items-center gap-2 px-4 bg-white border border-slate-200 rounded-2xl text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-all shadow-sm">
-                  <span class="hidden sm:inline">Siguiente semana</span>
+                  <span class="hidden sm:inline">{{ AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.MENUS.NEXT_WEEK
+                    }}</span>
                   <mat-icon class="text-lg">chevron_right</mat-icon>
                 </button>
               </ng-container>
@@ -147,7 +151,7 @@
                 : exportUserData())"
             class="h-12 flex items-center justify-center gap-2 bg-primary hover:bg-primary-dark text-white px-6 rounded-2xl font-semibold shadow-lg shadow-primary/20 transition-all active:scale-95 whitespace-nowrap">
             <mat-icon>download</mat-icon>
-            <span>Exportar</span>
+            <span>{{ AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.ORDERS.EXPORT }}</span>
           </button>
 
           <button *ngIf="activeTab === AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.MENUS
@@ -155,7 +159,9 @@
             (click)="openImportPopup(activeTab === AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.MENUS ? 'menus' : 'usuaris')"
             class="h-12 flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-6 rounded-2xl font-semibold shadow-lg shadow-emerald-200 transition-all active:scale-95 whitespace-nowrap">
             <mat-icon>upload</mat-icon>
-            <span>Importar</span>
+            <span>{{ activeTab === AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.MENUS ?
+              AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.MENUS.IMPORT :
+              AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.USERS.IMPORT }}</span>
           </button>
         </div>
       </div>

@@ -3,12 +3,10 @@ import { BrandingConfig } from './branding.config';
 export const AppConstants = {
   // Dish types
   DISH_TYPES: {
-    1: 'Primer Plat',
-    2: 'Segont Plat',
-    3: 'Postre',
-  },
-
-  // Order status
+    1: 'Primer plat',
+    2: 'Segon plat',
+    3: 'Postres',
+  },  // Order status
   ORDER_STATUS: {
     PENDING: { value: 1, label: 'Pendent' },
     IN_PREPARATION: { value: 2, label: 'En preparació' },
@@ -52,7 +50,7 @@ export const AppConstants = {
 
   // Import descriptions
   IMPORT_DESCRIPTIONS: {
-    MENUS: "Importar menus des d'un arxiu JSON",
+    MENUS: "Importar menús des d'un arxiu JSON",
     USERS: "Importar usuaris des d'un arxiu JSON",
   },
 
@@ -126,12 +124,12 @@ export const AppConstants = {
           TITLE: 'Gestió de Menús',
           PREVIOUS_WEEK: 'Setmana anterior',
           NEXT_WEEK: 'Setmana següent',
-          IMPORT: 'Importar Menús',
+          IMPORT: 'Importar menús',
           NO_MENUS: 'No hi han menús per a la data seleccionada',
         },
         USERS: {
           TITLE: 'Gestió d\'Usuaris',
-          IMPORT: 'Importar Usuaris',
+          IMPORT: 'Importar usuaris',
           TABLE: {
             ID: 'ID',
             NAME: 'Nom',
