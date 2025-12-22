@@ -10,6 +10,10 @@ import { AlertService } from '../../Services/Alert/alert.service';
 import { UserService } from '../../Services/User/user.service';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatNativeDateModule } from '@angular/material/core';
 import { BulkUploadModalComponent } from '../../components/bulk-upload-modal/bulk-upload-modal.component';
 import { Messages } from '../../config/messages.config';
 import { AppConstants } from '../../config/app-constants.config';
@@ -21,7 +25,16 @@ import { animate, style, transition, trigger } from '@angular/animations';
   templateUrl: './orders-dashboard.component.html',
   styleUrls: ['./orders-dashboard.component.css'],
   standalone: true,
-  imports: [CommonModule, FormsModule, MatDialogModule, MatIconModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatDialogModule,
+    MatIconModule,
+    MatDatepickerModule,
+    MatInputModule,
+    MatFormFieldModule,
+    MatNativeDateModule,
+  ],
   animations: [
     trigger('fadeIn', [
       transition(':enter', [
@@ -59,7 +72,7 @@ export class OrdersDashboardComponent implements OnInit {
     private alertService: AlertService,
     private userService: UserService,
     private dialog: MatDialog
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.admintype = this.userService.getLocalUser()?.user_type_id || 1;
@@ -265,10 +278,15 @@ export class OrdersDashboardComponent implements OnInit {
     });
   }
 
-  onDateChange(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    if (input.value) {
-      this.selectedDate = input.value;
+  onDateChange(event: any): void {
+    const value = event.value || (event.target as HTMLInputElement).value;
+    if (value) {
+      // If it's a Date object from MatDatepicker, convert to YYYY-MM-DD
+      if (value instanceof Date) {
+        this.selectedDate = value.toISOString().split('T')[0];
+      } else {
+        this.selectedDate = value;
+      }
       this.loadAllData();
     }
   }

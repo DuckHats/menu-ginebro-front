@@ -6,6 +6,7 @@ import {
   withXsrfConfiguration,
 } from '@angular/common/http';
 
+import { provideNativeDateAdapter } from '@angular/material/core';
 import { routes } from './app.routes';
 import { authInterceptor } from './interceptors/auth.interceptor';
 
@@ -20,5 +21,6 @@ export const appConfig: ApplicationConfig = {
         headerName: 'X-XSRF-TOKEN',
       })
     ),
+    provideNativeDateAdapter(),
   ],
 };

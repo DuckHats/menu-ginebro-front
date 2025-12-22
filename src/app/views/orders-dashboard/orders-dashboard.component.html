@@ -1,4 +1,5 @@
 <div class="min-h-screen bg-slate-50/50 flex flex-col lg:flex-row" @fadeIn>
+
   <!-- Sidebar Navigation -->
   <aside class="w-full lg:w-72 bg-white border-b lg:border-b-0 lg:border-r border-slate-200 flex-shrink-0 z-20">
     <div class="p-6 lg:sticky lg:top-0">
@@ -12,92 +13,114 @@
       </div>
 
       <nav class="flex flex-row lg:flex-col gap-2 overflow-x-auto lg:overflow-x-visible pb-4 lg:pb-0 no-scrollbar">
-        <!-- Ordres Tab -->
+        <!-- ORDERS -->
         <button (click)="setActiveTab(AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.ORDERS)"
           class="flex items-center gap-3 px-4 py-3 rounded-2xl text-[15px] font-semibold transition-all duration-300 whitespace-nowrap group relative"
-          [ngClass]="activeTab === AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.ORDERS ? 'bg-primary-light/50 text-primary-dark' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'">
+          [ngClass]="activeTab === AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.ORDERS
+            ? 'bg-primary-light/50 text-primary-dark'
+            : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'">
           <div *ngIf="activeTab === AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.ORDERS"
             class="absolute left-0 top-1/4 bottom-1/4 w-1 bg-primary rounded-r-lg hidden lg:block"></div>
-          <mat-icon [class.text-primary]="activeTab === AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.ORDERS"
-            class="transition-transform group-hover:scale-110">receipt_long</mat-icon>
+          <mat-icon class="group-hover:scale-110 transition-transform">receipt_long</mat-icon>
           <span>{{ AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.LABELS.ORDERS }}</span>
         </button>
 
-        <!-- Menus Tab -->
+        <!-- MENUS -->
         <button (click)="setActiveTab(AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.MENUS)"
           class="flex items-center gap-3 px-4 py-3 rounded-2xl text-[15px] font-semibold transition-all duration-300 whitespace-nowrap group relative"
-          [ngClass]="activeTab === AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.MENUS ? 'bg-primary-light/50 text-primary-dark' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'">
+          [ngClass]="activeTab === AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.MENUS
+            ? 'bg-primary-light/50 text-primary-dark'
+            : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'">
           <div *ngIf="activeTab === AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.MENUS"
             class="absolute left-0 top-1/4 bottom-1/4 w-1 bg-primary rounded-r-lg hidden lg:block"></div>
-          <mat-icon [class.text-primary]="activeTab === AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.MENUS"
-            class="transition-transform group-hover:scale-110">restaurant_menu</mat-icon>
+          <mat-icon class="group-hover:scale-110 transition-transform">restaurant_menu</mat-icon>
           <span>{{ AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.LABELS.MENUS }}</span>
         </button>
 
-        <!-- Usuaris Tab -->
-        <button *ngIf="admintype === 1" (click)="setActiveTab(AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.USERS)"
+        <!-- USERS -->
+        <button *ngIf="admintype === 1"
+          (click)="setActiveTab(AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.USERS)"
           class="flex items-center gap-3 px-4 py-3 rounded-2xl text-[15px] font-semibold transition-all duration-300 whitespace-nowrap group relative"
-          [ngClass]="activeTab === AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.USERS ? 'bg-primary-light/50 text-primary-dark' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'">
+          [ngClass]="activeTab === AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.USERS
+            ? 'bg-primary-light/50 text-primary-dark'
+            : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'">
           <div *ngIf="activeTab === AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.USERS"
             class="absolute left-0 top-1/4 bottom-1/4 w-1 bg-primary rounded-r-lg hidden lg:block"></div>
-          <mat-icon [class.text-primary]="activeTab === AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.USERS"
-            class="transition-transform group-hover:scale-110">people</mat-icon>
+          <mat-icon class="group-hover:scale-110 transition-transform">people</mat-icon>
           <span>{{ AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.LABELS.USERS }}</span>
         </button>
       </nav>
     </div>
   </aside>
 
-  <!-- Main Content Area -->
+  <!-- Main Content -->
   <main class="flex-1 p-4 lg:p-8 overflow-y-auto">
-    <!-- Header Actions (Date Picker & Export) -->
-    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8"
-      *ngIf="activeTab !== 'json' && activeTab !== 'export'">
-      
-      <div class="flex flex-col gap-1">
-        <h2 class="text-2xl font-bold text-slate-800">
-          <ng-container [ngSwitch]="activeTab">
-            <span *ngSwitchCase="AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.ORDERS">{{ AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.ORDERS.TITLE }}</span>
-            <span *ngSwitchCase="AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.MENUS">{{ AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.MENUS.TITLE }}</span>
-            <span *ngSwitchCase="AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.USERS">{{ AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.USERS.TITLE }}</span>
-          </ng-container>
-        </h2>
-        <p class="text-slate-500 text-sm" *ngIf="activeTab === AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.ORDERS">
-          {{ selectedDate | date:'dd/MM/yyyy' }}
-        </p>
-      </div>
 
-      <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto">
-        <!-- Date Picker for Orders/Menus -->
-        <div class="flex items-center gap-2 bg-white p-1.5 rounded-2xl border border-slate-200 shadow-sm" 
-             *ngIf="activeTab !== AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.USERS">
-          <button (click)="dateInput.showPicker()" class="p-2 text-slate-400 hover:text-primary transition-colors">
-            <mat-icon>calendar_today</mat-icon>
-          </button>
-          <input #dateInput type="date" [value]="selectedDate" (change)="onDateChange($event)"
-            class="bg-transparent border-none text-sm font-semibold text-slate-700 focus:ring-0 cursor-pointer pr-4" />
+    <!-- HEADER ACTIONS -->
+    <div class="flex flex-col gap-6 mb-8" *ngIf="activeTab !== 'json' && activeTab !== 'export'">
+
+      <!-- Title + Date -->
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <h2 class="text-2xl font-bold text-slate-800">
+            <ng-container [ngSwitch]="activeTab">
+              <span *ngSwitchCase="AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.ORDERS">
+                {{ AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.ORDERS.TITLE }}
+              </span>
+              <span *ngSwitchCase="AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.MENUS">
+                {{ AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.MENUS.TITLE }}
+              </span>
+              <span *ngSwitchCase="AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.USERS">
+                {{ AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.USERS.TITLE }}
+              </span>
+            </ng-container>
+          </h2>
+
+          <p *ngIf="activeTab === AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.ORDERS"
+            class="text-sm text-slate-500">
+            {{ selectedDate | date:'dd/MM/yyyy' }}
+          </p>
         </div>
 
-        <!-- Export/Import Actions -->
-        <div class="flex items-center gap-2 w-full sm:w-auto">
-          <select [(ngModel)]="selectedExportFormat" 
-            class="bg-white border border-slate-200 rounded-2xl px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none">
+        <!-- Datepicker -->
+        <mat-form-field *ngIf="activeTab !== AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.USERS"
+          appearance="outline" class="admin-datepicker-field admin-control">
+          <mat-label>Selecciona una data</mat-label>
+          <input matInput [matDatepicker]="picker" [value]="selectedDate" readonly (dateChange)="onDateChange($event)"
+            (click)="picker.open()">
+          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+      </div>
+
+      <!-- ACTIONS -->
+      <div class="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 w-full">
+        <!-- RIGHT -->
+        <div class="flex gap-2 justify-end">
+          <!-- LEFT -->
+          <select [(ngModel)]="selectedExportFormat" class="admin-control bg-white border border-slate-200 rounded-2xl px-4 text-sm font-semibold text-slate-700
+                   focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all">
             <option value="json">JSON</option>
             <option value="csv">CSV</option>
             <option value="xlsx">Excel</option>
           </select>
-
-          <button (click)="activeTab === AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.ORDERS ? exportOrdersData() : (activeTab === AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.MENUS ? exportMenuData() : exportUserData())"
-            class="flex-1 sm:flex-none flex items-center justify-center gap-2 bg-primary hover:bg-primary-dark text-white px-5 py-2.5 rounded-2xl font-bold shadow-lg shadow-primary/20 transition-all active:scale-95">
-            <mat-icon class="text-[20px] w-5 h-5">download</mat-icon>
-            <span>{{ AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.ORDERS.EXPORT }}</span>
+          <button (click)="activeTab === AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.ORDERS
+              ? exportOrdersData()
+              : (activeTab === AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.MENUS
+                ? exportMenuData()
+                : exportUserData())" class="admin-control flex gap-2 bg-primary hover:bg-primary-dark text-white px-6 rounded-2xl font-bold
+                   shadow-lg shadow-primary/20 transition-all active:scale-95">
+            <mat-icon>download</mat-icon>
+            Exportar
           </button>
 
-          <button *ngIf="activeTab === AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.MENUS || activeTab === AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.USERS"
+          <button *ngIf="activeTab === AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.MENUS
+                       || activeTab === AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.USERS"
             (click)="openImportPopup(activeTab === AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.MENUS ? 'menus' : 'usuaris')"
-            class="flex-1 sm:flex-none flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-2xl font-bold shadow-lg shadow-emerald-200 transition-all active:scale-95">
-            <mat-icon class="text-[20px] w-5 h-5">upload</mat-icon>
-            <span>{{ activeTab === AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.MENUS ? AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.MENUS.IMPORT : AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.USERS.IMPORT }}</span>
+            class="admin-control flex gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-6 rounded-2xl font-bold
+                   shadow-lg shadow-emerald-200 transition-all active:scale-95">
+            <mat-icon>upload</mat-icon>
+            Importar
           </button>
         </div>
       </div>
@@ -105,17 +128,17 @@
 
     <!-- Tab Content -->
     <div [ngSwitch]="activeTab">
-      
+
       <!-- ORDRES -->
       <div *ngSwitchCase="AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.ORDERS" class="space-y-6">
         <!-- Day Navigation -->
         <div class="flex gap-3">
-          <button (click)="changeDay(-1)" 
+          <button (click)="changeDay(-1)"
             class="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-50 transition-all shadow-sm">
             <mat-icon>chevron_left</mat-icon>
             {{ AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.ORDERS.PREVIOUS_DAY }}
           </button>
-          <button (click)="changeDay(1)" 
+          <button (click)="changeDay(1)"
             class="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-50 transition-all shadow-sm">
             {{ AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.ORDERS.NEXT_DAY }}
             <mat-icon>chevron_right</mat-icon>
@@ -127,21 +150,30 @@
           <table class="w-full text-left text-sm border-separate border-spacing-0">
             <thead>
               <tr class="bg-slate-50/50">
-                <th class="px-6 py-4 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100">{{ AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.ORDERS.TABLE.USER }}</th>
-                <th class="px-6 py-4 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100">{{ AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.ORDERS.TABLE.TYPE }}</th>
-                <th class="px-6 py-4 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100">{{ AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.ORDERS.TABLE.ALLERGIES }}</th>
-                <th class="px-6 py-4 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100">{{ AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.ORDERS.TABLE.FIRST_DISH }}</th>
-                <th class="px-6 py-4 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100">{{ AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.ORDERS.TABLE.SECOND_DISH }}</th>
-                <th class="px-6 py-4 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100">{{ AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.ORDERS.TABLE.DESSERT }}</th>
-                <th class="px-6 py-4 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100">{{ AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.ORDERS.TABLE.STATUS }}</th>
-                <th class="px-6 py-4 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100">{{ AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.ORDERS.TABLE.TUPPER }}</th>
+                <th class="px-6 py-4 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100">{{
+                  AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.ORDERS.TABLE.USER }}</th>
+                <th class="px-6 py-4 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100">{{
+                  AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.ORDERS.TABLE.TYPE }}</th>
+                <th class="px-6 py-4 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100">{{
+                  AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.ORDERS.TABLE.ALLERGIES }}</th>
+                <th class="px-6 py-4 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100">{{
+                  AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.ORDERS.TABLE.FIRST_DISH }}</th>
+                <th class="px-6 py-4 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100">{{
+                  AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.ORDERS.TABLE.SECOND_DISH }}</th>
+                <th class="px-6 py-4 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100">{{
+                  AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.ORDERS.TABLE.DESSERT }}</th>
+                <th class="px-6 py-4 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100">{{
+                  AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.ORDERS.TABLE.STATUS }}</th>
+                <th class="px-6 py-4 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100">{{
+                  AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.ORDERS.TABLE.TUPPER }}</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-slate-100">
               <tr *ngFor="let order of orders" class="hover:bg-slate-50/50 transition-colors">
                 <td class="px-6 py-4">
                   <div class="flex flex-col">
-                    <span class="font-bold text-slate-800">{{ order.userData.name }} {{ order.userData.last_name }}</span>
+                    <span class="font-bold text-slate-800">{{ order.userData.name }} {{ order.userData.last_name
+                      }}</span>
                     <span class="text-xs text-slate-400">{{ order.userData.email }}</span>
                   </div>
                 </td>
@@ -151,7 +183,8 @@
                   </span>
                 </td>
                 <td class="px-6 py-4">
-                  <span class="text-slate-600" [class.text-red-500]="order.allergies" [class.font-bold]="order.allergies">
+                  <span class="text-slate-600" [class.text-red-500]="order.allergies"
+                    [class.font-bold]="order.allergies">
                     {{ order.allergies || '—' }}
                   </span>
                 </td>
@@ -186,30 +219,36 @@
           </table>
           <div *ngIf="orders.length === 0" class="p-12 text-center">
             <mat-icon class="text-slate-200 text-5xl w-12 h-12 mb-4">receipt_long</mat-icon>
-            <p class="text-slate-400 font-medium">{{ AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.ORDERS.NO_ORDERS }}</p>
+            <p class="text-slate-400 font-medium">{{ AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.ORDERS.NO_ORDERS
+              }}</p>
           </div>
         </div>
 
         <!-- Mobile/Tablet Cards -->
         <div class="xl:hidden grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div *ngFor="let order of orders" class="bg-white p-5 rounded-3xl shadow-sm border border-slate-200 space-y-4">
+          <div *ngFor="let order of orders"
+            class="bg-white p-5 rounded-3xl shadow-sm border border-slate-200 space-y-4">
             <div class="flex justify-between items-start">
               <div class="flex flex-col">
-                <span class="font-bold text-slate-800 text-lg">{{ order.userData.name }} {{ order.userData.last_name }}</span>
+                <span class="font-bold text-slate-800 text-lg">{{ order.userData.name }} {{ order.userData.last_name
+                  }}</span>
                 <span class="text-sm text-slate-400">{{ order.userData.email }}</span>
               </div>
-              <span class="px-2.5 py-1 rounded-lg text-[10px] font-black bg-slate-100 text-slate-600 uppercase tracking-wider">
+              <span
+                class="px-2.5 py-1 rounded-lg text-[10px] font-black bg-slate-100 text-slate-600 uppercase tracking-wider">
                 {{ order.orderType.name }}
               </span>
             </div>
 
             <div class="grid grid-cols-2 gap-4 text-sm">
               <div class="flex flex-col gap-1">
-                <span class="text-slate-400 font-bold uppercase text-[10px] tracking-widest">{{ AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.ORDERS.TABLE.ALLERGIES }}</span>
+                <span class="text-slate-400 font-bold uppercase text-[10px] tracking-widest">{{
+                  AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.ORDERS.TABLE.ALLERGIES }}</span>
                 <span class="text-slate-700" [class.text-red-500]="order.allergies">{{ order.allergies || '—' }}</span>
               </div>
               <div class="flex flex-col gap-1">
-                <span class="text-slate-400 font-bold uppercase text-[10px] tracking-widest">{{ AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.ORDERS.TABLE.TUPPER }}</span>
+                <span class="text-slate-400 font-bold uppercase text-[10px] tracking-widest">{{
+                  AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.ORDERS.TABLE.TUPPER }}</span>
                 <span class="text-slate-700 font-bold" [class.text-emerald-600]="order.has_tupper === 1">
                   {{ order.has_tupper === 1 ? 'Sí' : 'No' }}
                 </span>
@@ -218,15 +257,18 @@
 
             <div class="bg-slate-50 rounded-2xl p-4 space-y-2">
               <div class="flex justify-between text-sm">
-                <span class="text-slate-400">{{ AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.ORDERS.TABLE.FIRST_DISH }}</span>
+                <span class="text-slate-400">{{
+                  AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.ORDERS.TABLE.FIRST_DISH }}</span>
                 <span class="text-slate-700 font-semibold text-right">{{ order.orderDetail.option1 || '—' }}</span>
               </div>
               <div class="flex justify-between text-sm">
-                <span class="text-slate-400">{{ AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.ORDERS.TABLE.SECOND_DISH }}</span>
+                <span class="text-slate-400">{{
+                  AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.ORDERS.TABLE.SECOND_DISH }}</span>
                 <span class="text-slate-700 font-semibold text-right">{{ order.orderDetail.option2 || '—' }}</span>
               </div>
               <div class="flex justify-between text-sm">
-                <span class="text-slate-400">{{ AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.ORDERS.TABLE.DESSERT }}</span>
+                <span class="text-slate-400">{{ AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.ORDERS.TABLE.DESSERT
+                  }}</span>
                 <span class="text-slate-700 font-semibold text-right">{{ order.orderDetail.option3 || '—' }}</span>
               </div>
             </div>
@@ -240,8 +282,10 @@
               </select>
             </div>
           </div>
-          <div *ngIf="orders.length === 0" class="col-span-full p-12 text-center bg-white rounded-3xl border border-dashed border-slate-200">
-            <p class="text-slate-400 font-medium">{{ AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.ORDERS.NO_ORDERS }}</p>
+          <div *ngIf="orders.length === 0"
+            class="col-span-full p-12 text-center bg-white rounded-3xl border border-dashed border-slate-200">
+            <p class="text-slate-400 font-medium">{{ AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.ORDERS.NO_ORDERS
+              }}</p>
           </div>
         </div>
       </div>
@@ -250,12 +294,12 @@
       <div *ngSwitchCase="AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.MENUS" class="space-y-6">
         <!-- Week Navigation -->
         <div class="flex gap-3">
-          <button (click)="changeWeek(-1)" 
+          <button (click)="changeWeek(-1)"
             class="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-50 transition-all shadow-sm">
             <mat-icon>chevron_left</mat-icon>
             {{ AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.MENUS.PREVIOUS_WEEK }}
           </button>
-          <button (click)="changeWeek(1)" 
+          <button (click)="changeWeek(1)"
             class="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-50 transition-all shadow-sm">
             {{ AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.MENUS.NEXT_WEEK }}
             <mat-icon>chevron_right</mat-icon>
@@ -263,9 +307,11 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
-          <div *ngFor="let date of weeklyMenus" class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden flex flex-col">
+          <div *ngFor="let date of weeklyMenus"
+            class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden flex flex-col">
             <div class="bg-slate-50 px-5 py-4 border-b border-slate-100">
-              <span class="text-sm font-black text-slate-400 uppercase tracking-widest">{{ date.date | date:'dd/MM' }}</span>
+              <span class="text-sm font-black text-slate-400 uppercase tracking-widest">{{ date.date | date:'dd/MM'
+                }}</span>
               <h3 class="text-lg font-bold text-slate-800">{{ date.date | date:'dd/MM/yyyy' }}</h3>
             </div>
 
@@ -284,7 +330,8 @@
               <ng-template #noMenus>
                 <div class="h-full flex flex-col items-center justify-center py-8 text-center">
                   <mat-icon class="text-slate-200 mb-2">event_busy</mat-icon>
-                  <p class="text-xs text-slate-400 font-medium">{{ AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.MENUS.NO_MENUS }}</p>
+                  <p class="text-xs text-slate-400 font-medium">{{
+                    AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.MENUS.NO_MENUS }}</p>
                 </div>
               </ng-template>
             </div>
@@ -299,10 +346,15 @@
           <table class="w-full text-left text-sm border-separate border-spacing-0">
             <thead>
               <tr class="bg-slate-50/50">
-                <th class="px-6 py-4 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100">{{ AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.USERS.TABLE.ID }}</th>
-                <th class="px-6 py-4 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100">{{ AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.USERS.TABLE.NAME }}</th>
-                <th class="px-6 py-4 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100">{{ AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.USERS.TABLE.EMAIL }}</th>
-                <th class="px-6 py-4 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100 text-right">{{ AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.USERS.TABLE.STATUS }}</th>
+                <th class="px-6 py-4 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100">{{
+                  AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.USERS.TABLE.ID }}</th>
+                <th class="px-6 py-4 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100">{{
+                  AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.USERS.TABLE.NAME }}</th>
+                <th class="px-6 py-4 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100">{{
+                  AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.USERS.TABLE.EMAIL }}</th>
+                <th
+                  class="px-6 py-4 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100 text-right">
+                  {{ AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.USERS.TABLE.STATUS }}</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-slate-100">
@@ -313,17 +365,19 @@
                 </td>
                 <td class="px-6 py-4 text-slate-600">{{ student.email }}</td>
                 <td class="px-6 py-4 text-right">
-                  <label class="inline-flex items-center gap-3 cursor-pointer group" 
-                         [class.opacity-50]="isProtectedUser(student)"
-                         [class.cursor-not-allowed]="isProtectedUser(student)">
-                    <span class="text-xs font-bold transition-colors" 
-                          [ngClass]="student.status === 1 ? 'text-emerald-600' : 'text-slate-400'">
-                      {{ student.status === 1 ? AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.USERS.ACTIVE : AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.USERS.INACTIVE }}
+                  <label class="inline-flex items-center gap-3 cursor-pointer group"
+                    [class.opacity-50]="isProtectedUser(student)" [class.cursor-not-allowed]="isProtectedUser(student)">
+                    <span class="text-xs font-bold transition-colors"
+                      [ngClass]="student.status === 1 ? 'text-emerald-600' : 'text-slate-400'">
+                      {{ student.status === 1 ? AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.USERS.ACTIVE :
+                      AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.USERS.INACTIVE }}
                     </span>
                     <div class="relative">
                       <input type="checkbox" class="sr-only peer" [checked]="student.status === 1"
                         [disabled]="isProtectedUser(student)" (change)="toggleUserStatus(student)" />
-                      <div class="w-10 h-5 bg-slate-200 rounded-full peer peer-checked:bg-emerald-500 transition-all duration-300 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-5"></div>
+                      <div
+                        class="w-10 h-5 bg-slate-200 rounded-full peer peer-checked:bg-emerald-500 transition-all duration-300 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-5">
+                      </div>
                     </div>
                   </label>
                 </td>
@@ -334,7 +388,8 @@
 
         <!-- Mobile Cards -->
         <div class="lg:hidden grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div *ngFor="let student of students" class="bg-white p-5 rounded-3xl shadow-sm border border-slate-200 space-y-4">
+          <div *ngFor="let student of students"
+            class="bg-white p-5 rounded-3xl shadow-sm border border-slate-200 space-y-4">
             <div class="flex justify-between items-start">
               <div class="flex flex-col">
                 <span class="text-[10px] font-mono text-slate-400">#{{ student.id }}</span>
@@ -344,17 +399,21 @@
             </div>
 
             <div class="flex items-center justify-between pt-2 border-t border-slate-50">
-              <span class="text-sm font-bold text-slate-400">{{ AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.USERS.TABLE.STATUS }}</span>
-              <label class="inline-flex items-center gap-3 cursor-pointer" 
-                     [class.opacity-50]="isProtectedUser(student)"
-                     [class.cursor-not-allowed]="isProtectedUser(student)">
-                <span class="text-xs font-bold" [ngClass]="student.status === 1 ? 'text-emerald-600' : 'text-slate-400'">
-                  {{ student.status === 1 ? AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.USERS.ACTIVE : AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.USERS.INACTIVE }}
+              <span class="text-sm font-bold text-slate-400">{{
+                AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.USERS.TABLE.STATUS }}</span>
+              <label class="inline-flex items-center gap-3 cursor-pointer" [class.opacity-50]="isProtectedUser(student)"
+                [class.cursor-not-allowed]="isProtectedUser(student)">
+                <span class="text-xs font-bold"
+                  [ngClass]="student.status === 1 ? 'text-emerald-600' : 'text-slate-400'">
+                  {{ student.status === 1 ? AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.USERS.ACTIVE :
+                  AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.USERS.INACTIVE }}
                 </span>
                 <div class="relative">
                   <input type="checkbox" class="sr-only peer" [checked]="student.status === 1"
                     [disabled]="isProtectedUser(student)" (change)="toggleUserStatus(student)" />
-                  <div class="w-10 h-5 bg-slate-200 rounded-full peer peer-checked:bg-emerald-500 transition-all duration-300 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-5"></div>
+                  <div
+                    class="w-10 h-5 bg-slate-200 rounded-full peer peer-checked:bg-emerald-500 transition-all duration-300 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-5">
+                  </div>
                 </div>
               </label>
             </div>

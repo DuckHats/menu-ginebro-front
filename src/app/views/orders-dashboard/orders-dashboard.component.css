@@ -1,0 +1,60 @@
+/* Control base compartit */
+.admin-control {
+  height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Datepicker */
+.admin-datepicker-field {
+  width: 100%;
+  max-width: 240px;
+}
+
+/* Wrapper */
+::ng-deep .admin-datepicker-field .mat-mdc-text-field-wrapper {
+  height: 48px;
+  background-color: white !important;
+  border-radius: 1rem !important;
+  display: flex;
+  align-items: center;
+  padding: 0 0.75rem;
+}
+
+/* Input */
+::ng-deep .admin-datepicker-field input {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #334155;
+  /* slate-700 */
+}
+
+/* Label */
+::ng-deep .admin-datepicker-field .mat-mdc-floating-label {
+  font-weight: 600;
+  color: #64748b;
+}
+
+/* Outline normal */
+::ng-deep .admin-datepicker-field .mdc-notched-outline__leading,
+::ng-deep .admin-datepicker-field .mdc-notched-outline__notch,
+::ng-deep .admin-datepicker-field .mdc-notched-outline__trailing {
+  border-color: #e2e8f0 !important;
+}
+
+/* Focus */
+::ng-deep .admin-datepicker-field.mat-focused .mdc-notched-outline__leading,
+::ng-deep .admin-datepicker-field.mat-focused .mdc-notched-outline__notch,
+::ng-deep .admin-datepicker-field.mat-focused .mdc-notched-outline__trailing {
+  border-color: var(--color-primary) !important;
+}
+
+/* Icona calendari */
+::ng-deep .admin-datepicker-field .mat-datepicker-toggle {
+  color: #64748b;
+}
+
+::ng-deep .admin-datepicker-field.mat-focused .mat-datepicker-toggle {
+  color: var(--color-primary);
+}

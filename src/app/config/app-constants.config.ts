@@ -106,8 +106,8 @@ export const AppConstants = {
         ORDERS: {
           TITLE: 'Gestió d\'Ordres',
           EXPORT: 'Exportar',
-          PREVIOUS_DAY: '← Dia anterior',
-          NEXT_DAY: 'Dia següent →',
+          PREVIOUS_DAY: 'Dia anterior',
+          NEXT_DAY: 'Dia següent',
           TABLE: {
             USER: 'Usuari',
             EMAIL: 'Email',
@@ -124,8 +124,8 @@ export const AppConstants = {
         },
         MENUS: {
           TITLE: 'Gestió de Menús',
-          PREVIOUS_WEEK: '← Setmana anterior',
-          NEXT_WEEK: 'Setmana següent →',
+          PREVIOUS_WEEK: 'Setmana anterior',
+          NEXT_WEEK: 'Setmana següent',
           IMPORT: 'Importar Menús',
           NO_MENUS: 'No hi han menús per a la data seleccionada',
         },
