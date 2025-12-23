@@ -251,10 +251,6 @@
                         [ngClass]="isAllergySelected(allergy.id) ? 'text-primary' : 'text-slate-600'">
                     {{ allergy.name }}
                   </span>
-                  
-                  <div *ngIf="isAllergySelected(allergy.id)" class="absolute top-2 right-2">
-                    <div class="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
-                  </div>
                 </button>
               </div>
             </div>
@@ -289,10 +285,6 @@
                 <span>Guardar canvis</span>
                 <mat-icon class="group-hover:translate-x-2 transition-transform duration-500">verified</mat-icon>
               </button>
-              <div class="flex items-center gap-4 text-slate-400 text-[10px] font-black uppercase tracking-widest">
-                <div class="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.5)]"></div>
-                Dades xifrades i segures
-              </div>
             </div>
           </form>
         </div>
