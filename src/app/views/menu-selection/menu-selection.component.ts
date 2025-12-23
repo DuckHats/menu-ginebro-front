@@ -12,6 +12,7 @@ import { Messages } from '../../config/messages.config';
 import { AppConstants } from '../../config/app-constants.config';
 import { ConsoleMessages } from '../../config/console-messages.config';
 
+import { ConfigurationService } from '../../Services/Admin/configuration/configuration.service';
 import { MatIconModule } from '@angular/material/icon';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { UILabels } from '../../config/ui-labels.config';
@@ -38,18 +39,116 @@ export default class MenuSelectionComponent implements OnInit {
   menuSections: MenuSection[] = [];
   taperSelected = false;
   selectedDate: Date = new Date();
+  
+  // Validation state
+  isRestricted = false;
+  restrictionReason = '';
+  orderDeadlineTime = '10:00';
+  orderDeadlineDaysAhead = 1;
+  orderExists = false;
+  configLoading = true;
+  disabledDates: string[] = [];
+  userOrders: any[] = [];
 
   constructor(
     private http: HttpClient,
     private ordersService: OrdersService,
     private alertService: AlertService,
     private route: Router,
-    private menusService: MenusService
+    private menusService: MenusService,
+    private configService: ConfigurationService
   ) {}
 
   ngOnInit(): void {
     this.loadOrderTypes();
+    this.loadConfigs();
     this.loadMenuFromBackend();
+  }
+
+  loadConfigs(): void {
+    this.configService.getConfigurations().subscribe({
+      next: (res) => {
+        if (res.status === 'success') {
+          this.orderDeadlineTime = res.data.order_deadline_time || '10:00';
+          this.orderDeadlineDaysAhead = Number(res.data.order_deadline_days_ahead ?? 1);
+        }
+        this.configLoading = false;
+        this.loadUserOrders();
+      },
+      error: () => {
+        this.configLoading = false;
+      }
+    });
+  }
+
+  loadUserOrders(): void {
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    if (!user.id) return;
+
+    this.ordersService.getByUser(user.id).subscribe({
+      next: (res) => {
+        this.userOrders = res.data || [];
+        this.calculateDisabledDatesForCurrentWeek();
+        this.checkAvailability();
+      }
+    });
+  }
+
+  onWeekChanged(monday: Date): void {
+    this.calculateDisabledDatesForWeek(monday);
+  }
+
+  calculateDisabledDatesForCurrentWeek(): void {
+    // Determine the Monday of the current selectedDate's week
+    const d = new Date(this.selectedDate);
+    const day = d.getDay();
+    const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+    const monday = new Date(d.setDate(diff));
+    this.calculateDisabledDatesForWeek(monday);
+  }
+
+  calculateDisabledDatesForWeek(monday: Date): void {
+    this.disabledDates = [];
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    for (let i = 0; i < 5; i++) {
+      const d = new Date(monday);
+      d.setDate(monday.getDate() + i);
+      const formatted = this.formatDate(d);
+
+      // 1. Check if order exists
+      const hasOrder = this.userOrders.some(o => o.order_date === formatted);
+      
+      // 2. Check deadline logic
+      const isDeadlinePassed = this.isDateDeadlinePassed(d);
+
+      if (hasOrder || isDeadlinePassed) {
+        this.disabledDates.push(formatted);
+      }
+    }
+  }
+
+  isDateDeadlinePassed(date: Date): boolean {
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const dateMidnight = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+
+    if (dateMidnight < today) return true;
+
+    if (Number(this.orderDeadlineDaysAhead) === 0) {
+      if (dateMidnight.getTime() === today.getTime()) {
+        const [hours, minutes] = this.orderDeadlineTime.split(':').map(Number);
+        const deadline = new Date(today);
+        deadline.setHours(hours, minutes, 0, 0);
+        return now > deadline;
+      }
+    } else {
+      const diffTime = dateMidnight.getTime() - today.getTime();
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      return diffDays < Number(this.orderDeadlineDaysAhead);
+    }
+    return false;
   }
 
   loadOrderTypes(): void {
@@ -73,7 +172,62 @@ export default class MenuSelectionComponent implements OnInit {
 
   onDateSelected(date: Date): void {
     this.selectedDate = date;
-    this.loadMenuFromBackend();
+    this.checkAvailability();
+  }
+
+  checkAvailability(): void {
+    if (!this.selectedDate) return;
+
+    const formattedDate = this.formatDate(this.selectedDate);
+    
+    // Reset state
+    this.isRestricted = false;
+    this.restrictionReason = '';
+    this.orderExists = false;
+
+    // 1. Check existing order from local data
+    const hasOrder = this.userOrders.some(o => o.order_date === formattedDate);
+    if (hasOrder) {
+      this.isRestricted = true;
+      this.orderExists = true;
+      this.restrictionReason = "Ja tens una comanda per aquest dia";
+    } else {
+      // 2. Check Deadline logic
+      this.validateDeadline();
+    }
+
+    if (!this.isRestricted) {
+      this.loadMenuFromBackend();
+    } else {
+      this.menuSections = [];
+    }
+  }
+
+  validateDeadline(): void {
+    this.isRestricted = this.isDateDeadlinePassed(this.selectedDate);
+    if (this.isRestricted) {
+      if (this.orderDeadlineDaysAhead === 0) {
+        const now = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const selectedDateMidnight = new Date(this.selectedDate.getFullYear(), this.selectedDate.getMonth(), this.selectedDate.getDate());
+        
+        if (selectedDateMidnight.getTime() === today.getTime()) {
+          this.restrictionReason = "L'hora límit per demanar per avui ha passat";
+        } else {
+          this.restrictionReason = "No es poden fer comandes per a dies passats";
+        }
+      } else {
+        const now = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const selectedDateMidnight = new Date(this.selectedDate.getFullYear(), this.selectedDate.getMonth(), this.selectedDate.getDate());
+        
+        if (selectedDateMidnight < today) {
+           this.restrictionReason = "No es poden fer comandes per a dies passats";
+        } else {
+           this.restrictionReason = `Cal demanar amb ${this.orderDeadlineDaysAhead} dia/es d'antelació`;
+        }
+      }
+    }
   }
 
   loadMenuFromBackend(): void {
@@ -145,7 +299,12 @@ export default class MenuSelectionComponent implements OnInit {
     const today = toLocalMidnight(new Date());
     const selectedDateCopy = toLocalMidnight(this.selectedDate);
 
-    if (selectedDateCopy <= today) {
+    if (this.isDateDeadlinePassed(selectedDateCopy)) {
+      this.alertService.show('error', this.restrictionReason || "La data seleccionada no és vàlida segons l'antelació configurada.", '');
+      return;
+    }
+
+    if (selectedDateCopy < today) {
       this.alertService.show('error', Messages.ORDERS.NO_PAST_ORDERS, '');
       return;
     }

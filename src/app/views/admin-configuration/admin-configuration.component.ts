@@ -8,10 +8,12 @@ import { Messages } from '../../config/messages.config';
 import { AppConstants } from '../../config/app-constants.config';
 import { animate, style, transition, trigger } from '@angular/animations';
 
+import { MatIconModule } from '@angular/material/icon';
+
 @Component({
   selector: 'app-admin-configuration',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, MatIconModule],
   templateUrl: './admin-configuration.component.html',
   styleUrls: ['./admin-configuration.component.css'],
   animations: [
