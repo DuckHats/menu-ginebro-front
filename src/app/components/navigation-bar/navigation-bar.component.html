@@ -1,37 +1,37 @@
 <nav class="fixed top-6 left-1/2 -translate-x-1/2 z-[100] w-auto pointer-events-none">
   <div class="flex items-center gap-2 p-2 bg-white/70 backdrop-blur-xl border border-white/20 rounded-3xl shadow-2xl shadow-primary/10 pointer-events-auto">
     
-    <!-- Food -->
+    <!-- Food (Menu Selection) -->
     <button
       *ngIf="!isAdmin"
       (click)="navigate('food')"
-      class="flex items-center justify-center w-12 h-12 rounded-2xl transition-all duration-300 relative group"
-      [class.active]="activeTab === 'food'">
-      <div *ngIf="activeTab === 'food'" class="absolute -bottom-1 left-1.5 right-1.5 h-1 bg-primary rounded-full blur-[2px]"></div>
-      <mat-icon class="group-hover:scale-110 transition-transform" 
-                [ngClass]="activeTab === 'food' ? 'text-primary' : 'text-slate-400'">restaurant</mat-icon>
+      class="flex items-center justify-center w-12 h-12 rounded-2xl transition-all duration-300 relative group hover:bg-slate-100/50"
+      [ngClass]="activeTab === 'food' ? 'text-primary' : 'text-slate-400'">
+      <div *ngIf="activeTab === 'food'" 
+           class="absolute -bottom-1 left-3 right-3 h-1 bg-primary rounded-full blur-[1px] animate-fadeIn"></div>
+      <mat-icon class="group-hover:scale-110 transition-transform duration-300 pointer-events-none">restaurant</mat-icon>
     </button>
 
     <!-- History -->
     <button
       *ngIf="!isAdmin"
       (click)="navigate('history')"
-      class="flex items-center justify-center w-12 h-12 rounded-2xl transition-all duration-300 relative group"
-      [class.active]="activeTab === 'history'">
-      <div *ngIf="activeTab === 'history'" class="absolute -bottom-1 left-1.5 right-1.5 h-1 bg-primary rounded-full blur-[2px]"></div>
-      <mat-icon class="group-hover:scale-110 transition-transform"
-                [ngClass]="activeTab === 'history' ? 'text-primary' : 'text-slate-400'">history</mat-icon>
+      class="flex items-center justify-center w-12 h-12 rounded-2xl transition-all duration-300 relative group hover:bg-slate-100/50"
+      [ngClass]="activeTab === 'history' ? 'text-primary' : 'text-slate-400'">
+      <div *ngIf="activeTab === 'history'" 
+           class="absolute -bottom-1 left-3 right-3 h-1 bg-primary rounded-full blur-[1px] animate-fadeIn"></div>
+      <mat-icon class="group-hover:scale-110 transition-transform duration-300 pointer-events-none">history</mat-icon>
     </button>
 
     <!-- Admin -->
     <button
       *ngIf="isAdmin"
       (click)="navigate('admin')"
-      class="flex items-center justify-center w-12 h-12 rounded-2xl transition-all duration-300 relative group"
-      [class.active]="activeTab === 'admin'">
-      <div *ngIf="activeTab === 'admin'" class="absolute -bottom-1 left-1.5 right-1.5 h-1 bg-primary rounded-full blur-[2px]"></div>
-      <mat-icon class="group-hover:scale-110 transition-transform"
-                [ngClass]="activeTab === 'admin' ? 'text-primary' : 'text-slate-400'">dashboard_customize</mat-icon>
+      class="flex items-center justify-center w-12 h-12 rounded-2xl transition-all duration-300 relative group hover:bg-slate-100/50"
+      [ngClass]="activeTab === 'admin' ? 'text-primary' : 'text-slate-400'">
+      <div *ngIf="activeTab === 'admin'" 
+           class="absolute -bottom-1 left-3 right-3 h-1 bg-primary rounded-full blur-[1px] animate-fadeIn"></div>
+      <mat-icon class="group-hover:scale-110 transition-transform duration-300 pointer-events-none">dashboard_customize</mat-icon>
     </button>
 
     <div class="w-px h-6 bg-slate-200 mx-1"></div>
@@ -39,11 +39,11 @@
     <!-- Profile -->
     <button
       (click)="navigate('profile')"
-      class="flex items-center justify-center w-12 h-12 rounded-2xl transition-all duration-300 relative group"
-      [class.active]="activeTab === 'profile'">
-      <div *ngIf="activeTab === 'profile'" class="absolute -bottom-1 left-1.5 right-1.5 h-1 bg-primary rounded-full blur-[2px]"></div>
-      <mat-icon class="group-hover:scale-110 transition-transform"
-                [ngClass]="activeTab === 'profile' ? 'text-primary' : 'text-slate-400'">person_outline</mat-icon>
+      class="flex items-center justify-center w-12 h-12 rounded-2xl transition-all duration-300 relative group hover:bg-slate-100/50"
+      [ngClass]="activeTab === 'profile' ? 'text-primary' : 'text-slate-400'">
+      <div *ngIf="activeTab === 'profile'" 
+           class="absolute -bottom-1 left-3 right-3 h-1 bg-primary rounded-full blur-[1px] animate-fadeIn"></div>
+      <mat-icon class="group-hover:scale-110 transition-transform duration-300 pointer-events-none">person_outline</mat-icon>
     </button>
 
   </div>

@@ -101,6 +101,6 @@ export class OrderHistoryComponent implements OnInit {
   }
 
   goToHomePage(): void {
-    this.router.navigate(['/' + NavigationConfig.HOME]);
+    this.router.navigate(['/']);
   }
 }

@@ -29,6 +29,7 @@
           *ngFor="let order of orders; index as i"
           [date]="order.order_date"
           [tupper]="order.tupper"
+          [menuType]="order.orderType.name || ''"
           [menuItems]="order.menuItems || []"
           class="block transform transition-all hover:scale-[1.01]"
         >

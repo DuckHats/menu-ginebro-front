@@ -49,6 +49,10 @@ export default class MenuSelectionComponent implements OnInit {
   configLoading = true;
   disabledDates: string[] = [];
   userOrders: any[] = [];
+  
+  // Modal state
+  showIntroModal = false;
+  showConfirmModal = false;
 
   constructor(
     private http: HttpClient,
@@ -63,6 +67,17 @@ export default class MenuSelectionComponent implements OnInit {
     this.loadOrderTypes();
     this.loadConfigs();
     this.loadMenuFromBackend();
+    
+    // Check if we should show intro modal (e.g., first time this session)
+    const hasSeenIntro = sessionStorage.getItem('menu_intro_seen');
+    if (!hasSeenIntro) {
+      this.showIntroModal = true;
+    }
+  }
+
+  closeIntroModal(): void {
+    this.showIntroModal = false;
+    sessionStorage.setItem('menu_intro_seen', 'true');
   }
 
   loadConfigs(): void {
@@ -318,6 +333,24 @@ export default class MenuSelectionComponent implements OnInit {
       return;
     }
 
+    // Show confirmation modal instead of submitting directly
+    this.showConfirmModal = true;
+  }
+
+  cancelConfirmation(): void {
+    this.showConfirmModal = false;
+  }
+
+  submitOrder(): void {
+    const selectedMenuType = this.menuTypes.find((type) => type.selected);
+    if (!selectedMenuType) return;
+
+    const toLocalMidnight = (d: Date | string | number): Date => {
+      const dt = new Date(d);
+      return new Date(dt.getFullYear(), dt.getMonth(), dt.getDate());
+    };
+
+    const selectedDateCopy = toLocalMidnight(this.selectedDate);
     const order_type_id = selectedMenuType.id;
 
     const option1 =
@@ -347,35 +380,34 @@ export default class MenuSelectionComponent implements OnInit {
       option3,
     };
 
-    this.ordersService.checkDateAvailability(order_date).subscribe({
+    this.ordersService.createOrder(payload).subscribe({
       next: (response) => {
-        if (response.data?.available) {
-          this.ordersService.createOrder(payload).subscribe({
-            next: (response) => {
-              this.alertService.show(
-                'success',
-                Messages.ORDERS.ORDER_SUCCESS,
-                ''
-              );
-              this.route.navigate(['/']);
-            },
-            error: (err) => {
-              this.alertService.show('error', Messages.ORDERS.ORDER_ERROR, '');
-              console.error(err);
-            },
-          });
-        } else {
-          this.alertService.show('error', Messages.ORDERS.DUPLICATE_ORDER, '');
-        }
-      },
-      error: (err) => {
+        this.showConfirmModal = false;
         this.alertService.show(
-          'error',
-          Messages.ORDERS.DATE_AVAILABILITY_ERROR,
+          'success',
+          Messages.ORDERS.ORDER_SUCCESS,
           ''
         );
+        this.route.navigate(['/history']);
+      },
+      error: (err) => {
+        this.alertService.show('error', Messages.ORDERS.ORDER_ERROR, '');
+        console.error(err);
       },
     });
+  }
+
+  getSelectedOptionsSummary(): string[] {
+    const options: string[] = [];
+    this.filteredMenuSections().forEach(section => {
+      const selected = section.options.find(o => o.selected);
+      if (selected) options.push(selected.name);
+    });
+    return options;
+  }
+
+  getSelectedMenuTypeName(): string {
+    return this.menuTypes.find(t => t.selected)?.name || '';
   }
 
   hasSelectedMenuType(): boolean {
