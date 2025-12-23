@@ -6,5 +6,9 @@
   "/sanctum": {
     "target": "http://localhost:8001",
     "secure": false
+  },
+  "/img": {
+    "target": "http://localhost:8001",
+    "secure": false
   }
 }

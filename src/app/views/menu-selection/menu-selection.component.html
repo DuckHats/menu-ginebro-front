@@ -16,6 +16,18 @@
             </p>
           </div>
         </div>
+
+        <!-- Dynamic Menu Image Button -->
+        <button 
+          *ngIf="activeMenuImage"
+          (click)="downloadActiveImage()"
+          class="px-6 py-3 bg-white border border-slate-100 rounded-2xl shadow-sm hover:shadow-md transition-all flex items-center gap-3 group animate-fadeIn"
+        >
+          <div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
+            <mat-icon class="text-lg">download</mat-icon>
+          </div>
+          <span class="text-xs font-black text-slate-700 uppercase tracking-widest">Descarregar Menú</span>
+        </button>
       </header>
 
       <div class="space-y-8 sm:space-y-12">
@@ -147,7 +159,7 @@
 
 <!-- Introduction Modal -->
 <div *ngIf="showIntroModal" 
-     class="fixed inset-0 z-[200] flex items-center justify-center p-6 animate-fadeIn"
+     class="fixed inset-0 z-[9999] flex items-center justify-center p-6 animate-fadeIn"
      @fadeIn>
   <!-- Backdrop -->
   <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-md" (click)="closeIntroModal()"></div>
@@ -180,7 +192,7 @@
 
 <!-- Confirmation Modal -->
 <div *ngIf="showConfirmModal" 
-     class="fixed inset-0 z-[200] flex items-center justify-center p-6 animate-fadeIn"
+     class="fixed inset-0 z-[9999] flex items-center justify-center p-6 animate-fadeIn"
      @fadeIn>
   <!-- Backdrop -->
   <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-md" (click)="cancelConfirmation()"></div>
@@ -239,3 +251,4 @@
     </div>
   </div>
 </div>
+

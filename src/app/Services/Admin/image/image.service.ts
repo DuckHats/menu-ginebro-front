@@ -33,4 +33,27 @@ export class ImageService {
   deleteImage(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${id}`);
   }
+
+  downloadImage(url: string): Observable<Blob> {
+    // If the URL is absolute and points to our backend, try to make it relative to use the proxy
+    // This assumes the app is running on localhost or the same domain in production
+    let targetUrl = url;
+    if (url.includes('http://localhost:8001')) {
+       targetUrl = url.replace('http://localhost:8001', '');
+    }
+    
+    // We add a cache-busting parameter to avoid stale images
+    const timestamp = new Date().getTime();
+    const finalUrl = targetUrl.includes('?') ? `${targetUrl}&t=${timestamp}` : `${targetUrl}?t=${timestamp}`;
+
+    return this.http.get(finalUrl, { 
+      responseType: 'blob', 
+      withCredentials: true,
+      headers: {
+        'Accept': 'image/jpeg, image/png, image/*',
+        'Cache-Control': 'no-cache',
+        'Pragma': 'no-cache'
+      }
+    });
+  }
 }

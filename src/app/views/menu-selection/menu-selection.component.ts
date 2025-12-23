@@ -13,6 +13,7 @@ import { AppConstants } from '../../config/app-constants.config';
 import { ConsoleMessages } from '../../config/console-messages.config';
 
 import { ConfigurationService } from '../../Services/Admin/configuration/configuration.service';
+import { ImageService } from '../../Services/Admin/image/image.service';
 import { MatIconModule } from '@angular/material/icon';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { UILabels } from '../../config/ui-labels.config';
@@ -54,18 +55,24 @@ export default class MenuSelectionComponent implements OnInit {
   showIntroModal = false;
   showConfirmModal = false;
 
+  // Images logic
+  allImages: any[] = [];
+  activeMenuImage: any = null;
+
   constructor(
     private http: HttpClient,
     private ordersService: OrdersService,
     private alertService: AlertService,
     private route: Router,
     private menusService: MenusService,
-    private configService: ConfigurationService
+    private configService: ConfigurationService,
+    private imageService: ImageService
   ) {}
 
   ngOnInit(): void {
     this.loadOrderTypes();
     this.loadConfigs();
+    this.loadImages();
     this.loadMenuFromBackend();
     
     // Check if we should show intro modal (e.g., first time this session)
@@ -107,6 +114,31 @@ export default class MenuSelectionComponent implements OnInit {
         this.checkAvailability();
       }
     });
+  }
+
+  loadImages(): void {
+    this.imageService.getImages().subscribe({
+      next: (res) => {
+        if (res.status === 'success') {
+          this.allImages = res.data || [];
+          this.updateActiveImage();
+        }
+      }
+    });
+  }
+
+  updateActiveImage(): void {
+    if (!this.selectedDate || this.allImages.length === 0) {
+      this.activeMenuImage = null;
+      return;
+    }
+
+    const formatted = this.formatDate(this.selectedDate);
+    
+    // An image is active if formatted date is between start_date and end_date (inclusive)
+    this.activeMenuImage = this.allImages.find(img => {
+      return formatted >= img.start_date && formatted <= img.end_date;
+    }) || null;
   }
 
   onWeekChanged(monday: Date): void {
@@ -187,6 +219,7 @@ export default class MenuSelectionComponent implements OnInit {
 
   onDateSelected(date: Date): void {
     this.selectedDate = date;
+    this.updateActiveImage();
     this.checkAvailability();
   }
 
@@ -446,5 +479,28 @@ export default class MenuSelectionComponent implements OnInit {
     const month = (date.getMonth() + 1).toString().padStart(2, '0');
     const day = date.getDate().toString().padStart(2, '0');
     return `${year}-${month}-${day}`;
+  }
+
+  downloadActiveImage(): void {
+    if (!this.activeMenuImage) return;
+    
+    this.imageService.downloadImage(this.activeMenuImage.path).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `menu-${this.formatDate(this.selectedDate)}.jpg`;
+        document.body.appendChild(link);
+        link.click();
+        
+        // Cleanup
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+      },
+      error: (err) => {
+        console.error('Error downloading image', err);
+        this.alertService.show('error', 'Error en descarregar la imatge', '');
+      }
+    });
   }
 }
