@@ -26,7 +26,7 @@
           <div class="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
             <mat-icon class="text-lg">download</mat-icon>
           </div>
-          <span class="text-xs font-black text-slate-700 uppercase tracking-widest">Descarregar Menú</span>
+          <span class="text-xs font-black text-slate-700 uppercase tracking-widest">{{ UILabels.MENU_SELECTION.DOWNLOAD_BUTTON }}</span>
         </button>
       </header>
 
@@ -36,7 +36,7 @@
           <!-- Left: Calendar -->
           <div class="lg:col-span-7">
             <div class="bg-slate-50/50 rounded-[1.5rem] sm:rounded-[2.5rem] p-3 sm:p-6 border border-slate-100 shadow-inner h-full flex flex-col justify-center">
-              <h3 class="text-[10px] sm:text-xs font-black text-slate-400 uppercase tracking-[0.3em] mb-4 sm:mb-6 text-center">Selecciona el dia</h3>
+              <h3 class="text-[10px] sm:text-xs font-black text-slate-400 uppercase tracking-[0.3em] mb-4 sm:mb-6 text-center">{{ UILabels.MENU_SELECTION.SELECT_DAY }}</h3>
               <app-weekly-calendar 
                 [disabledDates]="disabledDates"
                 (daySelected)="onDateSelected($event)"
@@ -59,8 +59,8 @@
                   <mat-icon class="text-xl sm:text-2xl">takeout_dining</mat-icon>
                 </div>
                 <div>
-                  <p class="font-black text-slate-800 text-xs sm:text-sm">Opció de Tàper</p>
-                  <p class="text-[8px] sm:text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mt-1">Portaré el meu propi</p>
+                  <p class="font-black text-slate-800 text-xs sm:text-sm">{{ UILabels.MENU_SELECTION.TAPER_LABEL }}</p>
+                  <p class="text-[8px] sm:text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mt-1">{{ UILabels.MENU_SELECTION.TAPER_SUBTITLE }}</p>
                 </div>
               </div>
               <div class="w-6 h-6 sm:w-8 sm:h-8 rounded-full border-2 flex items-center justify-center transition-all"
@@ -70,7 +70,7 @@
 
             <!-- Menu Type Selection -->
             <div class="bg-slate-50/50 rounded-[1.5rem] sm:rounded-[2rem] p-4 sm:p-6 border border-slate-100 space-y-3 sm:space-y-4 min-h-[5rem] sm:h-1/2 flex flex-col justify-center">
-              <h3 class="text-[9px] sm:text-[10px] font-black text-slate-400 uppercase tracking-widest">Tipus de menú</h3>
+              <h3 class="text-[9px] sm:text-[10px] font-black text-slate-400 uppercase tracking-widest">{{ UILabels.MENU_SELECTION.MENU_TYPE_TITLE }}</h3>
               <div class="grid grid-cols-3 gap-2 sm:gap-3">
                 <button
                   *ngFor="let type of menuTypes; let i = index"
@@ -95,7 +95,7 @@
               <mat-icon class="text-white text-2xl">block</mat-icon>
             </div>
             <div class="space-y-1">
-              <p class="font-black text-rose-900 uppercase tracking-widest text-[10px] sm:text-xs">Data no disponible</p>
+              <p class="font-black text-rose-900 uppercase tracking-widest text-[10px] sm:text-xs">{{ UILabels.MENU_SELECTION.RESTRICTED_DATE_TITLE }}</p>
               <p class="text-sm sm:text-lg font-black text-rose-700 leading-tight">{{ restrictionReason }}</p>
             </div>
           </div>
@@ -111,21 +111,12 @@
                   {{ section.title }}
                 </h3>
                 <div class="space-y-2 sm:space-y-3">
-                  <button
+                  <app-menu-option-card
                     *ngFor="let option of section.options; let oIdx = index"
-                    (click)="selectOption(getActualIndex(section.title), oIdx)"
-                    class="group relative w-full px-4 sm:px-5 py-3 sm:py-4 rounded-xl sm:rounded-2xl border-2 transition-all flex items-center justify-between text-left overflow-hidden min-h-[4rem]"
-                    [ngClass]="option.selected ? 'bg-white border-primary border-2 shadow-md' : 'bg-slate-50/50 border-transparent hover:border-slate-200'"
-                  >
-                    <div class="space-y-0.5">
-                      <span class="block font-black text-[11px] sm:text-xs transition-colors leading-tight" [ngClass]="option.selected ? 'text-primary' : 'text-slate-600'">{{ option.name }}</span>
-                      <span class="block text-[7px] sm:text-[8px] font-black text-slate-400 uppercase tracking-widest">{{ section.title }}</span>
-                    </div>
-                    
-                    <div class="w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 flex items-center justify-center transition-all shrink-0 ml-2"
-                      [ngClass]="option.selected ? 'border-primary bg-primary shadow-sm shadow-primary/20' : 'border-slate-100 bg-white group-hover:border-slate-200'">
-                    </div>
-                  </button>
+                    [option]="option"
+                    [sectionTitle]="section.title"
+                    (select)="selectOption(getActualIndex(section.title), oIdx)">
+                  </app-menu-option-card>
                 </div>
              </div>
           </div>
@@ -136,7 +127,7 @@
               <mat-icon class="text-slate-200 text-2xl sm:text-3xl">touch_app</mat-icon>
             </div>
             <p class="text-slate-400 font-black uppercase tracking-widest text-[9px] sm:text-[10px] max-w-[200px] sm:max-w-[250px] mx-auto leading-relaxed">
-              Tria un tipus de menú per començar a configurar la teva reserva
+              {{ UILabels.MENU_SELECTION.EMPTY_STATE }}
             </p>
           </div>
 
@@ -148,7 +139,7 @@
               class="w-full bg-primary hover:bg-primary-dark disabled:bg-slate-200 disabled:text-slate-400 text-white py-4 sm:py-6 rounded-xl sm:rounded-[2rem] font-black shadow-xl sm:shadow-2xl shadow-primary/30 transition-all active:scale-[0.96] flex items-center justify-center gap-2 sm:gap-3 group relative overflow-hidden"
             >
               <mat-icon class="text-xl sm:text-2xl group-hover:rotate-12 transition-transform">verified</mat-icon>
-              <span class="text-sm sm:text-base uppercase tracking-[0.2em] font-black">Confirmar Selecció</span>
+              <span class="text-sm sm:text-base uppercase tracking-[0.2em] font-black">{{ UILabels.MENU_SELECTION.CONFIRM_BUTTON }}</span>
             </button>
           </div>
         </div>
@@ -157,98 +148,18 @@
   </section>
 </main>
 
-<!-- Introduction Modal -->
-<div *ngIf="showIntroModal" 
-     class="fixed inset-0 z-[9999] flex items-center justify-center p-6 animate-fadeIn"
-     @fadeIn>
-  <!-- Backdrop -->
-  <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-md" (click)="closeIntroModal()"></div>
-  
-  <!-- Modal Card -->
-  <div class="relative bg-white/90 backdrop-blur-2xl w-full max-w-lg rounded-[2.5rem] shadow-2xl border border-white/50 p-10 text-center overflow-hidden">
-    <!-- Decorative background elements -->
-    <div class="absolute -top-24 -right-24 w-48 h-48 bg-primary/10 rounded-full blur-3xl"></div>
-    <div class="absolute -bottom-24 -left-24 w-48 h-48 bg-primary/5 rounded-full blur-3xl"></div>
+<app-intro-modal
+  *ngIf="showIntroModal"
+  (close)="closeIntroModal()">
+</app-intro-modal>
 
-    <div class="relative z-10 space-y-8">
-      <div class="w-20 h-20 bg-primary/10 rounded-3xl flex items-center justify-center mx-auto shadow-inner">
-        <mat-icon class="text-primary text-4xl w-10 h-10">restaurant_menu</mat-icon>
-      </div>
-      
-      <div class="space-y-3">
-        <h2 class="text-3xl font-bold text-slate-800 tracking-tight">Benvingut/da al Menjador!</h2>
-        <p class="text-slate-600 font-medium leading-relaxed">
-          Tria el teu menú diari de forma fàcil i ràpida. Recorda revisar les hores de tall i antelació per assegurar la teva comanda.
-        </p>
-      </div>
-
-      <button (click)="closeIntroModal()" 
-              class="w-full bg-primary hover:bg-primary-dark text-white py-5 rounded-2xl font-bold shadow-lg shadow-primary/20 transition-all hover:scale-[1.02] active:scale-[0.98] text-lg">
-        Començar ara
-      </button>
-    </div>
-  </div>
-</div>
-
-<!-- Confirmation Modal -->
-<div *ngIf="showConfirmModal" 
-     class="fixed inset-0 z-[9999] flex items-center justify-center p-6 animate-fadeIn"
-     @fadeIn>
-  <!-- Backdrop -->
-  <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-md" (click)="cancelConfirmation()"></div>
-  
-  <!-- Modal Card -->
-  <div class="relative bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl border border-slate-100 overflow-hidden">
-    <div class="p-10 space-y-8">
-      <div class="flex items-center gap-4 border-b border-slate-100 pb-6">
-        <div class="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center text-primary">
-          <mat-icon>verified</mat-icon>
-        </div>
-        <h2 class="text-2xl font-bold text-slate-800">Confirmar comanda</h2>
-      </div>
-
-      <!-- Order Summary -->
-      <div class="space-y-6">
-        <div class="bg-slate-50 rounded-3xl p-6 space-y-4 border border-slate-100">
-          <div class="flex justify-between items-center text-sm">
-            <span class="text-slate-400 font-bold uppercase tracking-widest text-[10px]">Data</span>
-            <span class="text-slate-700 font-bold">{{ selectedDate | date:'fullDate':'':'ca' }}</span>
-          </div>
-          <div class="flex justify-between items-center text-sm">
-            <span class="text-slate-400 font-bold uppercase tracking-widest text-[10px]">Tipus de Menú</span>
-            <span class="text-primary font-bold">{{ getSelectedMenuTypeName() }}</span>
-          </div>
-          <div class="flex justify-between items-center text-sm pt-2 border-t border-slate-200">
-            <span class="text-slate-400 font-bold uppercase tracking-widest text-[10px]">Opcions triades</span>
-            <div class="text-right flex flex-col gap-1">
-              <span *ngFor="let opt of getSelectedOptionsSummary()" class="text-slate-700 font-medium text-sm">{{ opt }}</span>
-            </div>
-          </div>
-          <div *ngIf="taperSelected" class="flex items-center gap-2 text-primary font-bold text-xs bg-primary/5 p-2 rounded-lg justify-center border border-primary/10">
-            <mat-icon class="text-sm w-4 h-4">takeout_dining</mat-icon>
-            Amb tàper propi
-          </div>
-        </div>
-
-        <p class="text-slate-500 text-sm text-center px-4">
-          Estàs segur/a que vols confirmar aquesta selecció? 
-          <br />
-          Ara pots tornar enrere per fer canvis però després no podràs modificar res.
-        </p>
-      </div>
-
-      <!-- Buttons -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <button (click)="cancelConfirmation()" 
-                class="w-full py-4 rounded-2xl font-bold text-slate-500 hover:bg-slate-50 transition-all border-2 border-transparent">
-          Tornar enrere
-        </button>
-        <button (click)="submitOrder()" 
-                class="w-full bg-primary hover:bg-primary-dark text-white py-4 rounded-2xl font-bold shadow-lg shadow-primary/20 transition-all hover:scale-[1.02] active:scale-[0.98]">
-          SÍ, CONFIRMAR
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
+<app-confirm-modal
+  *ngIf="showConfirmModal"
+  [selectedDate]="selectedDate"
+  [menuTypeName]="getSelectedMenuTypeName()"
+  [selectedOptions]="getSelectedOptionsSummary()"
+  [taperSelected]="taperSelected"
+  (confirm)="submitOrder()"
+  (cancel)="cancelConfirmation()">
+</app-confirm-modal>
 

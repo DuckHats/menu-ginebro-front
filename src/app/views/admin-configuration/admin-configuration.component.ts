@@ -9,11 +9,19 @@ import { AppConstants } from '../../config/app-constants.config';
 import { animate, style, transition, trigger } from '@angular/animations';
 
 import { MatIconModule } from '@angular/material/icon';
+import { ImageManagementCardComponent } from '../../components/admin/image-management-card/image-management-card.component';
+import { ImageUploadCardComponent } from '../../components/admin/image-upload-card/image-upload-card.component';
 
 @Component({
   selector: 'app-admin-configuration',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatIconModule],
+  imports: [
+    CommonModule, 
+    FormsModule, 
+    MatIconModule,
+    ImageManagementCardComponent,
+    ImageUploadCardComponent
+  ],
   templateUrl: './admin-configuration.component.html',
   styleUrls: ['./admin-configuration.component.css'],
   animations: [

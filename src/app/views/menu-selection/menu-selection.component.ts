@@ -14,6 +14,9 @@ import { ConsoleMessages } from '../../config/console-messages.config';
 
 import { ConfigurationService } from '../../Services/Admin/configuration/configuration.service';
 import { ImageService } from '../../Services/Admin/image/image.service';
+import { IntroModalComponent } from '../../components/modals/intro-modal/intro-modal.component';
+import { ConfirmModalComponent } from '../../components/modals/confirm-modal/confirm-modal.component';
+import { MenuOptionCardComponent } from '../../components/shared/menu-option-card/menu-option-card.component';
 import { MatIconModule } from '@angular/material/icon';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { UILabels } from '../../config/ui-labels.config';
@@ -23,7 +26,14 @@ import { UILabels } from '../../config/ui-labels.config';
   templateUrl: './menu-selection.component.html',
   styleUrls: ['./menu-selection.component.css'],
   standalone: true,
-  imports: [CommonModule, WeeklyCalendarComponent, MatIconModule],
+  imports: [
+    CommonModule, 
+    WeeklyCalendarComponent, 
+    MatIconModule,
+    IntroModalComponent,
+    ConfirmModalComponent,
+    MenuOptionCardComponent
+  ],
   animations: [
     trigger('fadeIn', [
       transition(':enter', [

@@ -1,0 +1,38 @@
+<div class="bg-slate-50/50 border-2 border-dashed border-slate-200 rounded-[2.5rem] p-8 flex flex-col lg:flex-row items-center gap-8 transition-all hover:bg-white hover:border-primary/30 group/upload">
+  <!-- Date Inputs for New Image -->
+  <div class="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-6 w-full">
+    <div class="space-y-2">
+      <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">{{ AppConstants.CONFIGURATION.LABELS.NEW_IMG_START }}</label>
+      <input type="date" [(ngModel)]="newImageDates.start_date" class="w-full h-12 text-sm border-2 border-transparent bg-white rounded-xl px-4 focus:ring-4 focus:ring-primary/5 focus:border-primary outline-none transition-all uppercase font-black text-slate-700 shadow-sm" />
+    </div>
+    <div class="space-y-2">
+      <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">{{ AppConstants.CONFIGURATION.LABELS.NEW_IMG_END }}</label>
+      <input type="date" [(ngModel)]="newImageDates.end_date" class="w-full h-12 text-sm border-2 border-transparent bg-white rounded-xl px-4 focus:ring-4 focus:ring-primary/5 focus:border-primary outline-none transition-all uppercase font-black text-slate-700 shadow-sm" />
+    </div>
+  </div>
+
+  <!-- Upload Button -->
+  <label
+    class="w-full lg:w-64 h-32 lg:h-[88px] flex items-center justify-center border-2 border-transparent rounded-[2rem] bg-slate-900 text-white cursor-pointer hover:bg-primary transition-all group/label shadow-xl shadow-slate-900/10 active:scale-95"
+    [class.opacity-50]="uploading"
+    [class.cursor-not-allowed]="uploading"
+  >
+    <input
+      type="file"
+      class="hidden"
+      (change)="onImageUpload($event)"
+      accept="image/*"
+      [disabled]="uploading"
+    />
+    <div *ngIf="!uploading" class="flex items-center gap-4 px-6">
+      <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center group-hover/label:rotate-12 transition-all">
+        <mat-icon>cloud_upload</mat-icon>
+      </div>
+      <span class="text-[11px] font-black uppercase tracking-widest">{{ AppConstants.CONFIGURATION.LABELS.UPLOAD_BUTTON }}</span>
+    </div>
+    <div *ngIf="uploading" class="flex items-center gap-4">
+      <div class="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+      <span class="text-[10px] font-black uppercase tracking-widest">{{ AppConstants.CONFIGURATION.LABELS.UPLOADING_BUTTON }}</span>
+    </div>
+  </label>
+</div>

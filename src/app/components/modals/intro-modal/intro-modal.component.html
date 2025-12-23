@@ -1,0 +1,29 @@
+<div class="fixed inset-0 z-[9999] flex items-center justify-center p-6 animate-fadeIn" @fadeIn>
+  <!-- Backdrop -->
+  <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-md" (click)="onClose()"></div>
+  
+  <!-- Modal Card -->
+  <div class="relative bg-white/90 backdrop-blur-2xl w-full max-w-lg rounded-[2.5rem] shadow-2xl border border-white/50 p-10 text-center overflow-hidden">
+    <!-- Decorative background elements -->
+    <div class="absolute -top-24 -right-24 w-48 h-48 bg-primary/10 rounded-full blur-3xl"></div>
+    <div class="absolute -bottom-24 -left-24 w-48 h-48 bg-primary/5 rounded-full blur-3xl"></div>
+
+    <div class="relative z-10 space-y-8">
+      <div class="w-20 h-20 bg-primary/10 rounded-3xl flex items-center justify-center mx-auto shadow-inner">
+        <mat-icon class="text-primary text-4xl w-10 h-10">restaurant_menu</mat-icon>
+      </div>
+      
+      <div class="space-y-3">
+        <h2 class="text-3xl font-bold text-slate-800 tracking-tight">{{ UILabels.MODALS.INTRO.TITLE }}</h2>
+        <p class="text-slate-600 font-medium leading-relaxed">
+          {{ UILabels.MODALS.INTRO.DESCRIPTION }}
+        </p>
+      </div>
+
+      <button (click)="onClose()" 
+              class="w-full bg-primary hover:bg-primary-dark text-white py-5 rounded-2xl font-bold shadow-lg shadow-primary/20 transition-all hover:scale-[1.02] active:scale-[0.98] text-lg">
+        {{ UILabels.MODALS.INTRO.BUTTON }}
+      </button>
+    </div>
+  </div>
+</div>
