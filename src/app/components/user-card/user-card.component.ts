@@ -140,6 +140,24 @@ export class UserCardComponent implements OnInit {
       });
   }
 
+  toggleAllergy(allergyId: number) {
+    const currentAllergies = this.profileForm.get('allergies')?.value as number[];
+    const index = currentAllergies.indexOf(allergyId);
+    
+    if (index > -1) {
+      currentAllergies.splice(index, 1);
+    } else {
+      currentAllergies.push(allergyId);
+    }
+    
+    this.profileForm.get('allergies')?.setValue([...currentAllergies]);
+  }
+
+  isAllergySelected(allergyId: number): boolean {
+    const currentAllergies = this.profileForm.get('allergies')?.value as number[];
+    return currentAllergies.includes(allergyId);
+  }
+
   logout() {
     this.router.navigate(['/logout']);
   }
