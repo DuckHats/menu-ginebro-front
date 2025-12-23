@@ -79,6 +79,19 @@ export const Messages = {
       'No es pot desactivar aquest usuari (Admin, Cuina o Usuari Actual).',
   },
 
+  // Configuration messages
+  CONFIGURATION: {
+    LOAD_ERROR: 'Error carregant la configuració',
+    SAVE_SUCCESS: 'Configuració guardada correctament',
+    SAVE_ERROR: 'Error guardant la configuració',
+    IMAGES_LOAD_ERROR: 'Error carregant les imatges',
+    IMAGE_UPLOAD_SUCCESS: 'Imatge pujada correctament',
+    IMAGE_UPLOAD_ERROR: 'Error pujant la imatge',
+    IMAGE_DELETE_CONFIRM: 'Estàs segur que vols eliminar aquesta imatge?',
+    IMAGE_DELETE_SUCCESS: 'Imatge eliminada correctament',
+    IMAGE_DELETE_ERROR: 'Error eliminant la imatge',
+  },
+
   // Generic messages
   GENERIC: {
     ERROR: 'Error',

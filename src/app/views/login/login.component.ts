@@ -17,12 +17,23 @@ import { Messages } from '../../config/messages.config';
 // App uses session cookies; token constants removed
 import { UILabels } from '../../config/ui-labels.config';
 
+import { MatIconModule } from '@angular/material/icon';
+import { animate, style, transition, trigger } from '@angular/animations';
+
 @Component({
   selector: 'app-login',
   standalone: true,
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
-  imports: [CommonModule, ReactiveFormsModule, IconComponent],
+  imports: [CommonModule, ReactiveFormsModule, MatIconModule],
+  animations: [
+    trigger('fadeIn', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(10px)' }),
+        animate('400ms ease-out', style({ opacity: 1, transform: 'translateY(0)' })),
+      ]),
+    ]),
+  ],
 })
 export class LoginComponent {
   loginForm: FormGroup;

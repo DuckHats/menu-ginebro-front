@@ -1,270 +1,622 @@
-<section class="p-5 font-sans">
-  <nav class="border-b border-gray-200 mb-6" aria-label="Dashboard views">
-    <ul class="flex gap-8 list-none p-0 m-0">
+<div class="min-h-screen bg-slate-50/50 flex flex-col lg:flex-row" @fadeIn>
 
-      <li>
-        <button class="py-3 font-medium border-b-2 border-transparent hover:text-cyan-600" [ngClass]="{
-          'text-cyan-600 border-cyan-500 font-bold': activeTab === 'ordres',
-          'text-gray-500': activeTab !== 'ordres'
-        }" (click)="setActiveTab('ordres')" role="tab" type="button">
-          Ordres
+  <!-- Sidebar Navigation -->
+  <aside 
+    class="bg-white border-b lg:border-b-0 lg:border-r border-slate-200 flex-shrink-0 z-20 transition-all duration-300 relative group/sidebar"
+    [ngClass]="{
+      'w-full lg:w-72': !isSidebarCollapsed,
+      'w-full lg:w-20': isSidebarCollapsed
+    }">
+    
+    <!-- Collapse Toggle (Desktop) -->
+    <button 
+      (click)="toggleSidebar()"
+      class="hidden lg:flex absolute -right-3 top-24 w-6 h-6 bg-white border border-slate-200 rounded-full items-center justify-center text-slate-400 hover:text-primary hover:border-primary shadow-sm z-30 transition-all opacity-0 group-hover/sidebar:opacity-100"
+      [ngClass]="{'rotate-180': isSidebarCollapsed}">
+      <mat-icon class="text-sm">chevron_left</mat-icon>
+    </button>
+    <div class="lg:sticky lg:top-0 transition-all duration-300"
+         [ngClass]="isSidebarCollapsed ? 'p-4' : 'p-6'">
+      <div class="flex items-center justify-between mb-8 lg:mb-8 px-2 overflow-hidden">
+        <div class="flex items-center"
+             [ngClass]="isSidebarCollapsed ? 'justify-center w-full' : 'gap-3'">
+          <div class="w-10 h-10 bg-primary rounded-xl flex-shrink-0 flex items-center justify-center shadow-lg shadow-primary/20 transition-all duration-300">
+            <mat-icon class="text-white">dashboard</mat-icon>
+          </div>
+          <h1 class="text-xl font-bold text-slate-800 tracking-tight whitespace-nowrap transition-all duration-300 overflow-hidden"
+              [ngClass]="isSidebarCollapsed ? 'opacity-0 w-0 ml-0' : 'opacity-100 w-auto ml-3'">
+            {{ AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TITLE }}
+          </h1>
+        </div>
+        <!-- Mobile Toggle -->
+        <button (click)="toggleSidebar()" class="lg:hidden p-2 text-slate-400 hover:text-primary transition-all"
+                [ngClass]="{'rotate-180': isSidebarCollapsed}">
+          <mat-icon>{{ isSidebarCollapsed ? 'menu_open' : 'menu' }}</mat-icon>
         </button>
-      </li>
+      </div>
 
-      <li>
-        <button class="py-3 font-medium border-b-2 border-transparent hover:text-cyan-600" [ngClass]="{
-          'text-cyan-600 border-cyan-500 font-bold': activeTab === 'menus',
-          'text-gray-500': activeTab !== 'menus'
-        }" (click)="setActiveTab('menus')" role="tab" type="button">
-          Menus
+      <nav class="flex flex-row lg:flex-col gap-2 overflow-x-auto lg:overflow-x-visible pb-4 lg:pb-0 no-scrollbar">
+        <!-- ORDERS -->
+        <button (click)="setActiveTab(AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.ORDERS)"
+          class="flex items-center rounded-2xl text-[15px] font-semibold transition-all duration-300 whitespace-nowrap group relative overflow-hidden h-12"
+          [ngClass]="[
+            activeTab === AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.ORDERS ? 'bg-primary-light/50 text-primary-dark' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900',
+            isSidebarCollapsed ? 'lg:justify-center w-full px-0' : 'px-4 gap-3'
+          ]">
+          <div *ngIf="activeTab === AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.ORDERS"
+            class="absolute left-0 top-1/4 bottom-1/4 w-1 bg-primary rounded-r-lg hidden lg:block"></div>
+          <mat-icon class="group-hover:scale-110 transition-transform flex-shrink-0">receipt_long</mat-icon>
+          <span class="transition-all duration-300 whitespace-nowrap" 
+                [ngClass]="isSidebarCollapsed ? 'opacity-0 w-0' : 'opacity-100 w-auto'">
+            {{ AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.LABELS.ORDERS }}
+          </span>
         </button>
-      </li>
 
-      <li>
-        <button *ngIf="admintype === 1" class="py-3 font-medium border-b-2 border-transparent hover:text-cyan-600"
-          [ngClass]="{
-          'text-cyan-600 border-cyan-500 font-bold': activeTab === 'usuaris',
-          'text-gray-500': activeTab !== 'usuaris'
-        }" (click)="setActiveTab('usuaris')" role="tab" type="button">
-          Usuaris
+        <!-- MENUS -->
+        <button (click)="setActiveTab(AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.MENUS)"
+          class="flex items-center rounded-2xl text-[15px] font-semibold transition-all duration-300 whitespace-nowrap group relative overflow-hidden h-12"
+          [ngClass]="[
+            activeTab === AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.MENUS ? 'bg-primary-light/50 text-primary-dark' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900',
+            isSidebarCollapsed ? 'lg:justify-center w-full px-0' : 'px-4 gap-3'
+          ]">
+          <div *ngIf="activeTab === AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.MENUS"
+            class="absolute left-0 top-1/4 bottom-1/4 w-1 bg-primary rounded-r-lg hidden lg:block"></div>
+          <mat-icon class="group-hover:scale-110 transition-transform flex-shrink-0">restaurant_menu</mat-icon>
+          <span class="transition-all duration-300 whitespace-nowrap"
+                [ngClass]="isSidebarCollapsed ? 'opacity-0 w-0' : 'opacity-100 w-auto'">
+            {{ AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.LABELS.MENUS }}
+          </span>
         </button>
-      </li>
 
-    </ul>
-  </nav>
+        <!-- USERS -->
+        <button *ngIf="admintype === 1"
+          (click)="setActiveTab(AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.USERS)"
+          class="flex items-center rounded-2xl text-[15px] font-semibold transition-all duration-300 whitespace-nowrap group relative overflow-hidden h-12"
+          [ngClass]="[
+            activeTab === AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.USERS ? 'bg-primary-light/50 text-primary-dark' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900',
+            isSidebarCollapsed ? 'lg:justify-center w-full px-0' : 'px-4 gap-3'
+          ]">
+          <div *ngIf="activeTab === AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.USERS"
+            class="absolute left-0 top-1/4 bottom-1/4 w-1 bg-primary rounded-r-lg hidden lg:block"></div>
+          <mat-icon class="group-hover:scale-110 transition-transform flex-shrink-0">people</mat-icon>
+          <span class="transition-all duration-300 whitespace-nowrap"
+                [ngClass]="isSidebarCollapsed ? 'opacity-0 w-0' : 'opacity-100 w-auto'">
+            {{ AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.LABELS.USERS }}
+          </span>
+        </button>
+      </nav>
+    </div>
+  </aside>
 
-  <div class="flex justify-between items-center mb-6"
-    *ngIf="activeTab !== 'json' && activeTab !== 'export' && activeTab !== 'usuaris'">
-    <div class="flex items-center gap-3">
-      <button class="p-2 bg-white border border-gray-200 rounded cursor-pointer flex items-center justify-center"
-        aria-label="Open calendar" type="button" (click)="dateInput?.focus()">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-          <path d="M3 4H21V8H3V4Z" stroke="currentColor" stroke-width="2"></path>
-          <path d="M4 8V20H20V8" stroke="currentColor" stroke-width="2"></path>
-          <path d="M8 12H16" stroke="currentColor" stroke-width="2"></path>
-        </svg>
-      </button>
-      <input #dateInput type="date" class="px-3 py-2 border border-gray-200 rounded text-sm" [value]="selectedDate"
-        (change)="onDateChange($event)" aria-label="Selected date" />
+  <!-- Main Content -->
+  <main class="flex-1 p-4 lg:p-8 overflow-y-auto">
+
+    <!-- HEADER ACTIONS -->
+    <div class="flex flex-col gap-6 mb-8" *ngIf="activeTab !== 'json' && activeTab !== 'export'">
+
+      <!-- Title + Date -->
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <h2 class="text-2xl font-bold text-slate-800">
+            <ng-container [ngSwitch]="activeTab">
+              <span *ngSwitchCase="AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.ORDERS">
+                {{ AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.ORDERS.TITLE }}
+              </span>
+              <span *ngSwitchCase="AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.MENUS">
+                {{ AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.MENUS.TITLE }}
+              </span>
+              <span *ngSwitchCase="AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.USERS">
+                {{ AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.USERS.TITLE }}
+              </span>
+            </ng-container>
+          </h2>
+
+          <p *ngIf="activeTab === AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.ORDERS"
+            class="text-sm text-slate-500">
+            {{ selectedDate | date:'dd/MM/yyyy' }}
+          </p>
+        </div>
+      </div>
+
+      <!-- ACTIONS -->
+      <div class="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4 w-full">
+        <!-- LEFT: Navigation + Datepicker -->
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+          <!-- Day/Week Navigation -->
+          <div class="flex gap-2">
+            <ng-container [ngSwitch]="activeTab">
+              <!-- Orders: Day Navigation -->
+              <ng-container *ngSwitchCase="AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.ORDERS">
+                <button (click)="changeDay(-1)"
+                  class="h-12 flex items-center gap-2 px-4 bg-white border border-slate-200 rounded-2xl text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-all shadow-sm">
+                  <mat-icon class="text-lg">chevron_left</mat-icon>
+                  <span class="hidden sm:inline">{{
+                    AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.ORDERS.PREVIOUS_DAY }}</span>
+                </button>
+                <button (click)="changeDay(1)"
+                  class="h-12 flex items-center gap-2 px-4 bg-white border border-slate-200 rounded-2xl text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-all shadow-sm">
+                  <span class="hidden sm:inline">{{ AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.ORDERS.NEXT_DAY
+                    }}</span>
+                  <mat-icon class="text-lg">chevron_right</mat-icon>
+                </button>
+              </ng-container>
+
+              <!-- Menus: Week Navigation -->
+              <ng-container *ngSwitchCase="AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.MENUS">
+                <button (click)="changeWeek(-1)"
+                  class="h-12 flex items-center gap-2 px-4 bg-white border border-slate-200 rounded-2xl text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-all shadow-sm">
+                  <mat-icon class="text-lg">chevron_left</mat-icon>
+                  <span class="hidden sm:inline">{{
+                    AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.MENUS.PREVIOUS_WEEK }}</span>
+                </button>
+                <button (click)="changeWeek(1)"
+                  class="h-12 flex items-center gap-2 px-4 bg-white border border-slate-200 rounded-2xl text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-all shadow-sm">
+                  <span class="hidden sm:inline">{{ AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.MENUS.NEXT_WEEK
+                    }}</span>
+                  <mat-icon class="text-lg">chevron_right</mat-icon>
+                </button>
+              </ng-container>
+            </ng-container>
+          </div>
+
+          <!-- Datepicker -->
+          <mat-form-field *ngIf="activeTab !== AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.USERS"
+            appearance="outline" class="admin-datepicker-field">
+            <mat-label>Selecciona una data</mat-label>
+            <input matInput [matDatepicker]="picker" [(ngModel)]="selectedDate" readonly
+              (dateChange)="onDateChange($event)" (click)="picker.open()">
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+
+          <!-- Kanban/Table Toggle -->
+          <div *ngIf="activeTab === AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.ORDERS" 
+               class="flex bg-white border border-slate-200 p-1 rounded-2xl shadow-sm h-12">
+            <button (click)="ordersViewMode = 'table'"
+                    class="flex items-center gap-2 px-4 rounded-xl transition-all"
+                    [ngClass]="ordersViewMode === 'table' ? 'bg-primary text-white shadow-md' : 'text-slate-500 hover:bg-slate-50'">
+              <mat-icon class="text-lg">view_list</mat-icon>
+              <span class="text-xs font-bold hidden md:inline">Llista</span>
+            </button>
+            <button (click)="ordersViewMode = 'kanban'"
+                    class="flex items-center gap-2 px-4 rounded-xl transition-all"
+                    [ngClass]="ordersViewMode === 'kanban' ? 'bg-primary text-white shadow-md' : 'text-slate-500 hover:bg-slate-50'">
+              <mat-icon class="text-lg">view_kanban</mat-icon>
+              <span class="text-xs font-bold hidden md:inline">Kanban</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- RIGHT: Export/Import Controls -->
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+          <select [(ngModel)]="selectedExportFormat"
+            class="h-12 bg-white border border-slate-200 rounded-2xl px-4 text-sm font-semibold text-slate-700 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all shadow-sm">
+            <option value="json">JSON</option>
+            <option value="csv">CSV</option>
+            <option value="xlsx">Excel</option>
+          </select>
+
+          <button (click)="activeTab === AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.ORDERS
+              ? exportOrdersData()
+              : (activeTab === AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.MENUS
+                ? exportMenuData()
+                : exportUserData())"
+            class="h-12 flex items-center justify-center gap-2 bg-primary hover:bg-primary-dark text-white px-6 rounded-2xl font-semibold shadow-lg shadow-primary/20 transition-all active:scale-95 whitespace-nowrap">
+            <mat-icon>download</mat-icon>
+            <span>{{ AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.ORDERS.EXPORT }}</span>
+          </button>
+
+          <button *ngIf="activeTab === AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.MENUS
+                       || activeTab === AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.USERS"
+            (click)="openImportPopup(activeTab === AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.MENUS ? 'menus' : 'usuaris')"
+            class="h-12 flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-6 rounded-2xl font-semibold shadow-lg shadow-emerald-200 transition-all active:scale-95 whitespace-nowrap">
+            <mat-icon>upload</mat-icon>
+            <span>{{ activeTab === AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.MENUS ?
+              AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.MENUS.IMPORT :
+              AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.USERS.IMPORT }}</span>
+          </button>
+        </div>
+      </div>
     </div>
 
-    <div class="flex items-center gap-2" *ngIf="activeTab === 'ordres'">
-      <select class="border border-gray-300 rounded px-2 py-1 text-sm" [(ngModel)]="selectedExportFormat"
-        aria-label="Format d'exportació">
-        <option value="json">JSON</option>
-        <option value="csv">CSV</option>
-        <option value="xlsx">Excel</option>
-      </select>
-      <button
-        class="text-white px-4 py-2 rounded cursor-pointer flex items-center gap-2 text-sm bg-cyan-600 hover:bg-cyan-700"
-        aria-label="Export data" (click)="exportOrdersData()" type="button">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-          <path d="M4 16V17C4 18.7 5.3 20 7 20H17C18.7 20 20 18.7 20 17V16" stroke="white" stroke-width="2"></path>
-          <path d="M12 4V16M12 16L8 12M12 16L16 12" stroke="white" stroke-width="2"></path>
-        </svg>
-        <span>Exportar</span>
-      </button>
-    </div>
-  </div>
+    <!-- Tab Content -->
+    <div [ngSwitch]="activeTab">
 
-  <!-- ORDRES -->
-  <div *ngIf="activeTab === 'ordres'" class="bg-white rounded-lg shadow overflow-hidden">
-    <div class="flex gap-2">
-      <button class="text-sm px-3 py-1 bg-white border border-gray-300 rounded hover:bg-gray-100 text-cyan-600"
-        (click)="changeDay(-1)">
-        ← Dia anterior
-      </button>
-
-      <button
-        class="text-sm px-3 py-1 bg-white border border-gray-300 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed text-cyan-600"
-        (click)="changeDay(1)">
-        Dia següent →
-      </button>
-    </div>
-
-    <table class="w-full border-collapse text-left text-sm">
-      <thead class="bg-gray-50 border-b border-gray-200">
-        <tr>
-          <th class="px-6 py-3 text-gray-500 font-medium">Usuari</th>
-          <th class="px-6 py-3 text-gray-500 font-medium">Email</th>
-          <th class="px-6 py-3 text-gray-500 font-medium">Data</th>
-          <th class="px-6 py-3 text-gray-500 font-medium">Tipus</th>
-          <th class="px-6 py-3 text-gray-500 font-medium">Alergies</th>
-          <th class="px-6 py-3 text-gray-500 font-medium">Primer plat</th>
-          <th class="px-6 py-3 text-gray-500 font-medium">Segon plat</th>
-          <th class="px-6 py-3 text-gray-500 font-medium">Postre</th>
-          <th class="px-6 py-3 text-gray-500 font-medium">Estat</th>
-          <th class="px-6 py-3 text-gray-500 font-medium">Porta Tupper</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let order of orders" class="border-b border-gray-200">
-          <td class="px-6 py-3">{{ order.userData.name }} {{ order.userData.last_name }}</td>
-          <td class="px-6 py-3">{{ order.userData.email }}</td>
-          <td class="px-6 py-3">{{ order.order_date }}</td>
-          <td class="px-6 py-3">{{ order.orderType.name }}</td>
-          <td class="px-6 py-3">{{ order.allergies || '—' }}</td>
-          <td class="px-6 py-3">{{ order.orderDetail.option1 || '—' }}</td>
-          <td class="px-6 py-3">{{ order.orderDetail.option2 || '—' }}</td>
-          <td class="px-6 py-3">{{ order.orderDetail.option3 || '—' }}</td>
-          <td class="px-6 py-3">
-            <div class="flex items-center gap-2">
-              <div class="w-4 h-4 rounded-sm" [ngClass]="{
-                  'bg-yellow-400': order.orderStatus.id === 1,
-                  'bg-blue-400': order.orderStatus.id === 2,
-                  'bg-green-400': order.orderStatus.id === 3,
-                  'bg-red-400': order.orderStatus.id === 4
-                }">
-              </div>
-              <select [(ngModel)]="order.orderStatus.id" name="statusSelect{{ order.id }}"
-                class="rounded px-2 py-1 text-sm" (change)="onStatusChange(order)">
-                <option *ngFor="let option of statusOptions" [value]="option.value">
-                  {{ option.label }}
-                </option>
-              </select>
+      <!-- ORDRES -->
+      <div *ngSwitchCase="AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.ORDERS" class="space-y-6">
+        
+        <!-- View Toggle: Table -->
+        <ng-container *ngIf="ordersViewMode === 'table'">
+          <!-- Desktop Table -->
+          <div class="hidden xl:block bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
+            <table class="w-full text-left text-sm border-separate border-spacing-0">
+              <thead>
+                <tr class="bg-slate-50/50">
+                  <th class="px-6 py-4 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100">{{
+                    AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.ORDERS.TABLE.USER }}</th>
+                  <th class="px-6 py-4 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100">{{
+                    AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.ORDERS.TABLE.TYPE }}</th>
+                  <th class="px-6 py-4 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100">{{
+                    AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.ORDERS.TABLE.ALLERGIES }}</th>
+                  <th class="px-6 py-4 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100">{{
+                    AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.ORDERS.TABLE.FIRST_DISH }}</th>
+                  <th class="px-6 py-4 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100">{{
+                    AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.ORDERS.TABLE.SECOND_DISH }}</th>
+                  <th class="px-6 py-4 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100">{{
+                    AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.ORDERS.TABLE.DESSERT }}</th>
+                  <th class="px-6 py-4 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100">{{
+                    AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.ORDERS.TABLE.STATUS }}</th>
+                  <th class="px-6 py-4 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100">{{
+                    AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.ORDERS.TABLE.TUPPER }}</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100">
+                <tr *ngFor="let order of orders" class="hover:bg-slate-50/50 transition-colors">
+                  <td class="px-6 py-4">
+                    <div class="flex flex-col">
+                      <span class="font-bold text-slate-800">{{ order.userData.name }} {{ order.userData.last_name
+                        }}</span>
+                      <span class="text-xs text-slate-400">{{ order.userData.email }}</span>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4">
+                    <span class="px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-100 text-slate-600 uppercase">
+                      {{ order.orderType.name }}
+                    </span>
+                  </td>
+                  <td class="px-6 py-4">
+                    <span class="text-slate-600" [class.text-red-500]="order.allergies"
+                      [class.font-bold]="order.allergies">
+                      {{ order.allergies || '—' }}
+                    </span>
+                  </td>
+                  <td class="px-6 py-4 text-slate-600">{{ order.orderDetail.option1 || '—' }}</td>
+                  <td class="px-6 py-4 text-slate-600">{{ order.orderDetail.option2 || '—' }}</td>
+                  <td class="px-6 py-4 text-slate-600">{{ order.orderDetail.option3 || '—' }}</td>
+                  <td class="px-6 py-4">
+                    <div class="flex items-center gap-2">
+                      <div class="w-2 h-2 rounded-full" [ngClass]="{
+                          'bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.5)]': order.orderStatus.id === 1,
+                          'bg-primary shadow-[0_0_8px_rgba(0,156,166,0.5)]': order.orderStatus.id === 2,
+                          'bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.5)]': order.orderStatus.id === 3,
+                          'bg-rose-400 shadow-[0_0_8px_rgba(251,113,133,0.5)]': order.orderStatus.id === 4
+                        }">
+                      </div>
+                      <select [(ngModel)]="order.orderStatus.id" (change)="onStatusChange(order)"
+                        class="bg-transparent border-none text-xs font-bold text-slate-700 focus:ring-0 cursor-pointer p-0">
+                        <option *ngFor="let option of statusOptions" [value]="option.value">
+                          {{ option.label }}
+                        </option>
+                      </select>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4">
+                    <span *ngIf="order.has_tupper === 1" class="flex items-center gap-1 text-emerald-600 font-bold">
+                      <mat-icon class="text-sm w-4 h-4">check_circle</mat-icon> Sí
+                    </span>
+                    <span *ngIf="order.has_tupper !== 1" class="text-slate-300">No</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div *ngIf="orders.length === 0" class="p-12 text-center">
+              <mat-icon class="text-slate-200 text-5xl w-12 h-12 mb-4">receipt_long</mat-icon>
+              <p class="text-slate-400 font-medium">{{ AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.ORDERS.NO_ORDERS
+                }}</p>
             </div>
-          </td>
+          </div>
 
-          <td class="px-6 py-3">{{ order.has_tupper === 1 ? 'Sí' : 'No' }}</td>
-        </tr>
-        <tr *ngIf="orders.length === 0">
-          <td colspan="10" class="px-6 py-12 text-center text-gray-500">
-            No orders found for {{ selectedDate }}.
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <!-- MENUS -->
-  <div *ngIf="activeTab === 'menus'" class="mt-4">
-    <div class="flex justify-between items-center mb-4">
-      <!-- Botones de cambiar semana -->
-      <div class="flex gap-2">
-        <button class="text-sm px-4 py-2 bg-white border border-gray-300 rounded hover:bg-gray-100 text-cyan-600"
-          (click)="changeWeek(-1)">
-          ← Setmana anterior
-        </button>
-        <button class="text-sm px-4 py-2 bg-white border border-gray-300 rounded hover:bg-gray-100 text-cyan-600"
-          (click)="changeWeek(1)">
-          Setmana següent →
-        </button>
-      </div>
-
-      <!-- Select + Botón Exportar -->
-      <div class="flex items-center gap-2">
-        <select class="border border-gray-300 rounded px-2 py-1 text-sm" [(ngModel)]="selectedExportFormat"
-          aria-label="Format d'exportació">
-          <option value="json">JSON</option>
-          <option value="csv">CSV</option>
-          <option value="xlsx">Excel</option>
-        </select>
-        <button
-          class="text-white px-4 py-2 rounded cursor-pointer flex items-center gap-2 text-sm bg-cyan-600 hover:bg-cyan-700"
-          aria-label="Export data" (click)="exportMenuData()" type="button">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-            <path d="M4 16V17C4 18.7 5.3 20 7 20H17C18.7 20 20 18.7 20 17V16" stroke="white" stroke-width="2"></path>
-            <path d="M12 4V16M12 16L8 12M12 16L16 12" stroke="white" stroke-width="2"></path>
-          </svg>
-          <span>Exportar</span>
-        </button>
-        <button
-          class="text-white px-4 py-2 rounded cursor-pointer flex items-center gap-2 text-sm bg-green-600 hover:bg-green-700"
-          (click)="openImportPopup('menus')">
-          Importar Menús
-        </button>
-      </div>
-    </div>
-
-
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 w-full">
-      <div *ngFor="let date of weeklyMenus" class="bg-white rounded-lg shadow overflow-hidden">
-        <!-- Cabecera con la fecha -->
-        <div class="bg-gray-100 px-4 py-2 border-b border-gray-200 font-semibold text-gray-700 text-center">
-          {{ date.date }}
-        </div>
-
-        <!-- Tabla si hay menús -->
-        <table *ngIf="date.menus && date.menus.length > 0" class="w-full border-collapse text-left text-sm">
-          <thead class="bg-gray-50 border-b border-gray-200">
-            <tr>
-              <th class="px-4 py-2 text-gray-500 font-medium">Tipus</th>
-              <th class="px-4 py-2 text-gray-500 font-medium">Plat</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let menu of date.menus" class="border-b border-gray-200">
-              <td class="px-4 py-2">{{ menu.type }}</td>
-              <td class="px-4 py-2">{{ menu.name }}</td>
-            </tr>
-          </tbody>
-        </table>
-
-        <!-- Mensaje si no hay menús -->
-        <div *ngIf="!date.menus || date.menus.length === 0" class="px-4 py-6 text-center text-gray-500 text-sm">
-          No hi han menus per la data seleccionada
-        </div>
-      </div>
-    </div>
-  </div>
-
-
-  <!-- USUARIS -->
-  <div *ngIf="activeTab === 'usuaris' && admintype === 1" class="bg-white rounded-lg shadow overflow-hidden mt-4">
-    <div class="flex justify-end items-center gap-2">
-      <select class="border border-gray-300 rounded px-2 py-1 text-sm" [(ngModel)]="selectedExportFormat"
-        aria-label="Format d'exportació">
-        <option value="json">JSON</option>
-        <option value="csv">CSV</option>
-        <option value="xlsx">Excel</option>
-      </select>
-      <button
-        class="text-white px-4 py-2 rounded cursor-pointer flex items-center gap-2 text-sm bg-cyan-600 hover:bg-cyan-700"
-        aria-label="Export data" (click)="exportUserData()" type="button">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-          <path d="M4 16V17C4 18.7 5.3 20 7 20H17C18.7 20 20 18.7 20 17V16" stroke="white" stroke-width="2"></path>
-          <path d="M12 4V16M12 16L8 12M12 16L16 12" stroke="white" stroke-width="2"></path>
-        </svg>
-        <span>Exportar</span>
-      </button>
-      <button *ngIf="admintype === 1 && activeTab === 'usuaris'"
-        class="text-white px-4 py-2 rounded cursor-pointer flex items-center gap-2 text-sm bg-green-600 hover:bg-green-700"
-        (click)="openImportPopup('usuaris')">
-        Importar Usuaris
-      </button>
-    </div>
-    <table class="w-full border-collapse text-left text-sm">
-      <thead class="bg-gray-50 border-b border-gray-200">
-        <tr>
-          <th class="px-6 py-3 text-gray-500 font-medium">ID</th>
-          <th class="px-6 py-3 text-gray-500 font-medium">Name</th>
-          <th class="px-6 py-3 text-gray-500 font-medium">Last Name</th>
-          <th class="px-6 py-3 text-gray-500 font-medium">Email</th>
-          <th class="px-6 py-3 text-gray-500 font-medium">Actiu</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let student of students" class="border-b border-gray-200">
-          <td class="px-6 py-3">{{ student.id }}</td>
-          <td class="px-6 py-3">{{ student.name }}</td>
-          <td class="px-6 py-3">{{ student.lastName }}</td>
-          <td class="px-6 py-3">{{ student.email }}</td>
-          <td class="px-6 py-3">
-            <label class="inline-flex items-center"
-              [class.cursor-pointer]="!isProtectedUser(student)"
-              [class.cursor-not-allowed]="isProtectedUser(student)"
-              [class.opacity-50]="isProtectedUser(student)">
-              <input type="checkbox" class="sr-only peer" [checked]="student.status === 1"
-                [disabled]="isProtectedUser(student)" (change)="toggleUserStatus(student)" />
-              <div
-                class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:bg-green-500 transition-colors duration-300">
+          <!-- Mobile/Tablet Cards -->
+          <div class="xl:hidden grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-6">
+            <div *ngFor="let order of orders"
+              class="bg-white p-5 rounded-3xl shadow-sm border border-slate-200 space-y-4">
+              <div class="flex justify-between items-start">
+                <div class="flex flex-col">
+                  <span class="font-bold text-slate-800 text-lg">{{ order.userData.name }} {{ order.userData.last_name
+                    }}</span>
+                  <span class="text-sm text-slate-400">{{ order.userData.email }}</span>
+                </div>
+                <span
+                  class="px-2.5 py-1 rounded-lg text-[10px] font-black bg-slate-100 text-slate-600 uppercase tracking-wider">
+                  {{ order.orderType.name }}
+                </span>
               </div>
-              <span class="ml-2 text-sm text-gray-600">{{ student.status === 1 ? 'Actiu' : 'Inactiu' }}</span>
-            </label>
-          </td>
 
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</section>
+              <div class="grid grid-cols-2 gap-4 text-sm">
+                <div class="flex flex-col gap-1">
+                  <span class="text-slate-400 font-bold uppercase text-[10px] tracking-widest">{{
+                    AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.ORDERS.TABLE.ALLERGIES }}</span>
+                  <span class="text-slate-700" [class.text-red-500]="order.allergies">{{ order.allergies || '—' }}</span>
+                </div>
+                <div class="flex flex-col gap-1">
+                  <span class="text-slate-400 font-bold uppercase text-[10px] tracking-widest">{{
+                    AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.ORDERS.TABLE.TUPPER }}</span>
+                  <span class="text-slate-700 font-bold" [class.text-emerald-600]="order.has_tupper === 1">
+                    {{ order.has_tupper === 1 ? 'Sí' : 'No' }}
+                  </span>
+                </div>
+              </div>
+
+              <div class="bg-slate-50 rounded-2xl p-4 space-y-2">
+                <div class="flex justify-between text-sm">
+                  <span class="text-slate-400">{{
+                    AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.ORDERS.TABLE.FIRST_DISH }}</span>
+                  <span class="text-slate-700 font-semibold text-right">{{ order.orderDetail.option1 || '—' }}</span>
+                </div>
+                <div class="flex justify-between text-sm">
+                  <span class="text-slate-400">{{
+                    AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.ORDERS.TABLE.SECOND_DISH }}</span>
+                  <span class="text-slate-700 font-semibold text-right">{{ order.orderDetail.option2 || '—' }}</span>
+                </div>
+                <div class="flex justify-between text-sm">
+                  <span class="text-slate-400">{{ AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.ORDERS.TABLE.DESSERT
+                    }}</span>
+                  <span class="text-slate-700 font-semibold text-right">{{ order.orderDetail.option3 || '—' }}</span>
+                </div>
+              </div>
+
+              <div class="pt-2">
+                <select [(ngModel)]="order.orderStatus.id" (change)="onStatusChange(order)"
+                  class="w-full bg-slate-100 border-none rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-primary/20">
+                  <option *ngFor="let option of statusOptions" [value]="option.value">
+                    {{ option.label }}
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div *ngIf="orders.length === 0"
+              class="col-span-full p-12 text-center bg-white rounded-3xl border border-dashed border-slate-200">
+              <p class="text-slate-400 font-medium">{{ AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.ORDERS.NO_ORDERS
+                }}</p>
+            </div>
+          </div>
+        </ng-container>
+
+        <!-- View Toggle: Kanban -->
+        <ng-container *ngIf="ordersViewMode === 'kanban'">
+          <div class="flex flex-col lg:flex-row gap-6 h-[calc(100vh-280px)] overflow-x-auto pb-4 custom-scrollbar"
+               cdkDropListGroup>
+            
+            <div *ngFor="let column of kanbanColumns" 
+                 class="flex-1 min-w-[300px] flex flex-col bg-slate-100/50 rounded-3xl border border-slate-200 p-4 transition-all duration-300">
+              
+              <!-- Column Header -->
+              <div class="flex items-center justify-between mb-4 px-2">
+                <div class="flex items-center gap-2">
+                  <div class="w-2.5 h-2.5 rounded-full" [ngClass]="{
+                    'bg-amber-400': column.status === 1,
+                    'bg-primary': column.status === 2,
+                    'bg-emerald-400': column.status === 3,
+                    'bg-rose-400': column.status === 4
+                  }"></div>
+                  <h3 class="font-bold text-slate-700 uppercase tracking-wider text-xs">{{ column.label }}</h3>
+                </div>
+                <span class="bg-white px-2 py-0.5 rounded-lg text-[10px] font-black text-slate-400 border border-slate-200">
+                  {{ column.orders.length }}
+                </span>
+              </div>
+
+              <!-- Draggable Area -->
+              <div [id]="'status-' + column.status"
+                   cdkDropList
+                   [cdkDropListData]="column.orders"
+                   (cdkDropListDropped)="onDrop($event)"
+                   class="flex-1 space-y-3 overflow-y-auto no-scrollbar min-h-[50px] p-1">
+                
+                <div *ngFor="let order of column.orders" 
+                     cdkDrag
+                     class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 group hover:border-primary/50 transition-all cursor-grab active:cursor-grabbing">
+                  
+                  <!-- Card Header -->
+                  <div class="flex justify-between items-start mb-3">
+                    <div class="flex flex-col">
+                      <span class="font-bold text-slate-800 text-sm leading-tight">{{ order.userData.name }} {{ order.userData.last_name }}</span>
+                      <span class="text-[10px] text-slate-400">{{ order.userData.email }}</span>
+                    </div>
+                    <div class="flex flex-col items-end gap-1">
+                      <span *ngIf="order.has_tupper === 1" class="text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded-md text-[9px] font-black uppercase flex items-center gap-1">
+                        <mat-icon class="text-[10px] w-3 h-3">takeout_dining</mat-icon> Tupper
+                      </span>
+                      <span class="px-1.5 py-0.5 rounded-md text-[9px] font-black bg-slate-100 text-slate-500 uppercase tracking-tighter">
+                        {{ order.orderType.name }}
+                      </span>
+                    </div>
+                  </div>
+
+                  <!-- Allergies Alert -->
+                  <div *ngIf="order.allergies" class="mb-3 p-2 bg-rose-50 rounded-xl border border-rose-100 flex items-center gap-2">
+                    <mat-icon class="text-rose-500 text-sm w-4 h-4">warning</mat-icon>
+                    <span class="text-[10px] font-bold text-rose-600 leading-tight">{{ order.allergies }}</span>
+                  </div>
+
+                  <!-- Dishes -->
+                  <div class="space-y-1.5 pt-2 border-t border-slate-50">
+                    <div class="flex items-center gap-2 text-[11px]" *ngIf="order.orderDetail.option1">
+                      <mat-icon class="text-[14px] w-4 h-4 text-slate-300">soup_kitchen</mat-icon>
+                      <span class="text-slate-600 font-medium truncate">{{ order.orderDetail.option1 }}</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-[11px]" *ngIf="order.orderDetail.option2">
+                      <mat-icon class="text-[14px] w-4 h-4 text-slate-300">restaurant</mat-icon>
+                      <span class="text-slate-600 font-medium truncate">{{ order.orderDetail.option2 }}</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-[11px]" *ngIf="order.orderDetail.option3">
+                      <mat-icon class="text-[14px] w-4 h-4 text-slate-300">icecream</mat-icon>
+                      <span class="text-slate-600 font-medium truncate">{{ order.orderDetail.option3 }}</span>
+                    </div>
+                  </div>
+
+                  <!-- Drag Placeholder -->
+                  <div class="cdk-drag-placeholder" *cdkDragPlaceholder></div>
+                </div>
+
+                <!-- Empty State within column -->
+                <div *ngIf="column.orders.length === 0" 
+                     class="h-32 flex flex-col items-center justify-center border-2 border-dashed border-slate-200 rounded-2xl">
+                  <mat-icon class="text-slate-200 text-2xl">inbox</mat-icon>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+
+      <!-- MENUS -->
+      <div *ngSwitchCase="AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.MENUS" class="space-y-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+          <div *ngFor="let dateItem of weeklyMenus"
+            class="bg-white rounded-[2.5rem] shadow-sm border border-slate-200 overflow-hidden flex flex-col group hover:shadow-xl hover:shadow-primary/5 transition-all duration-500 hover:-translate-y-1">
+            
+            <div class="bg-slate-50/80 px-6 py-5 border-b border-slate-100 flex justify-between items-center group-hover:bg-primary-light/30 transition-colors">
+              <div class="flex flex-col">
+                <span class="text-[10px] font-black text-primary uppercase tracking-[0.2em] mb-1">
+                  {{ dateItem.date | date:'EEEE' : '' : 'ca' }}
+                </span>
+                <h3 class="text-xl font-black text-slate-800 tracking-tight">{{ dateItem.date | date:'dd' }} <span class="text-slate-400 font-medium">{{ dateItem.date | date:'MMM' : '' : 'ca' }}</span></h3>
+              </div>
+              <div class="w-10 h-10 rounded-2xl bg-white border border-slate-200 flex items-center justify-center text-slate-400 group-hover:text-primary group-hover:border-primary/20 transition-all">
+                <mat-icon class="text-xl">calendar_today</mat-icon>
+              </div>
+            </div>
+
+            <div class="p-6 flex-1 space-y-6">
+              <ng-container *ngIf="dateItem.menus && dateItem.menus.length > 0; else noMenus">
+                <div *ngFor="let menu of dateItem.menus" class="relative pl-6">
+                  <!-- Vertical Line -->
+                  <div class="absolute left-0 top-0 bottom-0 w-1 rounded-full opacity-20"
+                       [ngClass]="{
+                          'bg-amber-500': menu.type === AppConstants.DISH_TYPES[1],
+                          'bg-primary': menu.type === AppConstants.DISH_TYPES[2],
+                          'bg-emerald-500': menu.type === AppConstants.DISH_TYPES[3]
+                       }"></div>
+
+                  <div class="flex items-center gap-2 mb-2">
+                    <mat-icon class="text-xs w-4 h-4" [ngClass]="{
+                      'text-amber-500': menu.type === AppConstants.DISH_TYPES[1],
+                      'text-primary': menu.type === AppConstants.DISH_TYPES[2],
+                      'text-emerald-500': menu.type === AppConstants.DISH_TYPES[3]
+                    }">
+                      {{ 
+                        menu.type === AppConstants.DISH_TYPES[1] ? 'soup_kitchen' : 
+                        menu.type === AppConstants.DISH_TYPES[2] ? 'restaurant' : 'icecream' 
+                      }}
+                    </mat-icon>
+                    <span class="text-[10px] font-black uppercase tracking-widest"
+                          [ngClass]="{
+                            'text-amber-600': menu.type === AppConstants.DISH_TYPES[1],
+                            'text-primary-dark': menu.type === AppConstants.DISH_TYPES[2],
+                            'text-emerald-600': menu.type === AppConstants.DISH_TYPES[3]
+                          }">
+                      {{ menu.type }}
+                    </span>
+                  </div>
+
+                  <div class="flex flex-wrap gap-2">
+                    <span *ngFor="let option of menu.options"
+                      class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all"
+                      [ngClass]="{
+                        'bg-amber-50 text-amber-700 border border-amber-100/50': menu.type === AppConstants.DISH_TYPES[1],
+                        'bg-primary-light text-primary-dark border border-primary-light': menu.type === AppConstants.DISH_TYPES[2],
+                        'bg-emerald-50 text-emerald-700 border border-emerald-100/50': menu.type === AppConstants.DISH_TYPES[3]
+                      }">
+                      {{ option }}
+                    </span>
+                  </div>
+                </div>
+              </ng-container>
+              <ng-template #noMenus>
+                <div class="h-full flex flex-col items-center justify-center py-12 text-center bg-slate-50/50 rounded-3xl border border-dashed border-slate-200">
+                  <mat-icon class="text-slate-200 mb-3 text-4xl w-10 h-10">event_busy</mat-icon>
+                  <p class="text-xs text-slate-400 font-bold uppercase tracking-widest">{{
+                    AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.MENUS.NO_MENUS }}</p>
+                </div>
+              </ng-template>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- USUARIS -->
+      <div *ngSwitchCase="AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.USERS" class="space-y-6">
+        <!-- Desktop Table -->
+        <div class="hidden lg:block bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
+          <table class="w-full text-left text-sm border-separate border-spacing-0">
+            <thead>
+              <tr class="bg-slate-50/50">
+                <th class="px-6 py-4 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100">{{
+                  AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.USERS.TABLE.ID }}</th>
+                <th class="px-6 py-4 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100">{{
+                  AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.USERS.TABLE.NAME }}</th>
+                <th class="px-6 py-4 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100">{{
+                  AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.USERS.TABLE.EMAIL }}</th>
+                <th
+                  class="px-6 py-4 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100 text-right">
+                  {{ AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.USERS.TABLE.STATUS }}</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+              <tr *ngFor="let student of students" class="hover:bg-slate-50/50 transition-colors">
+                <td class="px-6 py-4 font-mono text-xs text-slate-400">#{{ student.id }}</td>
+                <td class="px-6 py-4">
+                  <span class="font-bold text-slate-800">{{ student.name }} {{ student.lastName }}</span>
+                </td>
+                <td class="px-6 py-4 text-slate-600">{{ student.email }}</td>
+                <td class="px-6 py-4 text-right">
+                  <label class="inline-flex items-center gap-3 cursor-pointer group"
+                    [class.opacity-50]="isProtectedUser(student)" [class.cursor-not-allowed]="isProtectedUser(student)">
+                    <span class="text-xs font-bold transition-colors"
+                      [ngClass]="student.status === 1 ? 'text-emerald-600' : 'text-slate-400'">
+                      {{ student.status === 1 ? AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.USERS.ACTIVE :
+                      AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.USERS.INACTIVE }}
+                    </span>
+                    <div class="relative">
+                      <input type="checkbox" class="sr-only peer" [checked]="student.status === 1"
+                        [disabled]="isProtectedUser(student)" (change)="toggleUserStatus(student)" />
+                      <div
+                        class="w-10 h-5 bg-slate-200 rounded-full peer peer-checked:bg-emerald-500 transition-all duration-300 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-5">
+                      </div>
+                    </div>
+                  </label>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Mobile Cards -->
+        <div class="lg:hidden grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div *ngFor="let student of students"
+            class="bg-white p-5 rounded-3xl shadow-sm border border-slate-200 space-y-4">
+            <div class="flex justify-between items-start">
+              <div class="flex flex-col">
+                <span class="text-[10px] font-mono text-slate-400">#{{ student.id }}</span>
+                <span class="font-bold text-slate-800 text-lg">{{ student.name }} {{ student.lastName }}</span>
+                <span class="text-sm text-slate-500">{{ student.email }}</span>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between pt-2 border-t border-slate-50">
+              <span class="text-sm font-bold text-slate-400">{{
+                AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.USERS.TABLE.STATUS }}</span>
+              <label class="inline-flex items-center gap-3 cursor-pointer" [class.opacity-50]="isProtectedUser(student)"
+                [class.cursor-not-allowed]="isProtectedUser(student)">
+                <span class="text-xs font-bold"
+                  [ngClass]="student.status === 1 ? 'text-emerald-600' : 'text-slate-400'">
+                  {{ student.status === 1 ? AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.USERS.ACTIVE :
+                  AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.USERS.INACTIVE }}
+                </span>
+                <div class="relative">
+                  <input type="checkbox" class="sr-only peer" [checked]="student.status === 1"
+                    [disabled]="isProtectedUser(student)" (change)="toggleUserStatus(student)" />
+                  <div
+                    class="w-10 h-5 bg-slate-200 rounded-full peer peer-checked:bg-emerald-500 transition-all duration-300 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-5">
+                  </div>
+                </div>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>

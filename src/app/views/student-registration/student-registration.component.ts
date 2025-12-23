@@ -18,6 +18,9 @@ import { Messages } from '../../config/messages.config';
 import { AppConstants } from '../../config/app-constants.config';
 import { UILabels } from '../../config/ui-labels.config';
 
+import { MatIconModule } from '@angular/material/icon';
+import { animate, style, transition, trigger } from '@angular/animations';
+
 @Component({
   selector: 'app-student-registration',
   templateUrl: './student-registration.component.html',
@@ -26,9 +29,17 @@ import { UILabels } from '../../config/ui-labels.config';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    IconComponent,
     OtpInputComponent,
     PasswordStrengthComponent,
+    MatIconModule
+  ],
+  animations: [
+    trigger('fadeIn', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(10px)' }),
+        animate('400ms ease-out', style({ opacity: 1, transform: 'translateY(0)' })),
+      ]),
+    ]),
   ],
 })
 export class StudentRegistrationComponent {

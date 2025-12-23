@@ -9,4 +9,6 @@ export const NavigationConfig = {
   MENU: 'menu-selection',
 
   PROFILE: 'profile',
+  ADMIN_CONFIG: 'admin/config',
+  MAINTENANCE: 'maintenance',
 };
