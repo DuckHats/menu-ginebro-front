@@ -13,9 +13,14 @@ app-weekly-calendar {
   display: block !important;
 }
 
-
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
 
 /* Global Material UI Overrides */
 .mat-mdc-form-field {
@@ -86,7 +91,8 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .user-card-panel {
   border-radius: 1.25rem !important;
   margin-top: 8px !important;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1) !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1),
+    0 8px 10px -6px rgba(0, 0, 0, 0.1) !important;
   border: 1px solid #f1f5f9 !important;
 }
 
@@ -112,4 +118,52 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .user-card-panel .mat-pseudo-checkbox-checked {
   background-color: var(--color-primary) !important;
   border-color: var(--color-primary) !important;
+}
+
+/* Material Datepicker Overrides */
+.mat-datepicker-content {
+  border-radius: 1.5rem !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1),
+    0 8px 10px -6px rgba(0, 0, 0, 0.1) !important;
+  border: 1px solid #f1f5f9 !important;
+  overflow: hidden;
+}
+
+.mat-calendar-body-selected {
+  background-color: var(--color-primary) !important;
+  color: white !important;
+}
+
+.mat-calendar-body-today:not(.mat-calendar-body-selected):not(
+    .mat-calendar-body-comparison-identical
+  ) {
+  border-color: var(--color-primary) !important;
+}
+
+.mat-calendar-body-cell:hover .mat-calendar-body-cell-content {
+  background-color: var(--color-primary-light) !important;
+}
+
+.mat-calendar-header {
+  padding: 8px 8px 0 8px !important;
+}
+
+.mat-calendar-table-header-divider::after {
+  display: none !important;
+}
+
+.mat-calendar-arrow {
+  fill: #64748b !important;
+}
+
+.mat-datepicker-toggle-active {
+  color: var(--color-primary) !important;
+}
+
+.mat-calendar-body-label {
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #94a3b8;
+  letter-spacing: 0.05em;
 }

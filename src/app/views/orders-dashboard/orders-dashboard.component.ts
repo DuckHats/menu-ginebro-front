@@ -13,9 +13,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatNativeDateModule } from '@angular/material/core';
+import { DragDropModule, CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { BulkUploadModalComponent } from '../../components/bulk-upload-modal/bulk-upload-modal.component';
+
+
 import { Messages } from '../../config/messages.config';
+import { SidebarService } from '../../Services/Sidebar/sidebar.service';
 import { AppConstants } from '../../config/app-constants.config';
 import { ConsoleMessages } from '../../config/console-messages.config';
 import { animate, style, transition, trigger } from '@angular/animations';
@@ -33,8 +36,10 @@ import { animate, style, transition, trigger } from '@angular/animations';
     MatDatepickerModule,
     MatInputModule,
     MatFormFieldModule,
-    MatNativeDateModule,
+    DragDropModule,
   ],
+
+
   animations: [
     trigger('fadeIn', [
       transition(':enter', [
@@ -51,6 +56,12 @@ export class OrdersDashboardComponent implements OnInit {
   selectedDate: Date = new Date();
   weeklyMenus: { date: string; menus: MenuItem[] }[] = [];
   selectedExportFormat = 'json';
+  
+  // Kitchen View Toggles
+  ordersViewMode: 'table' | 'kanban' = 'table';
+  kanbanColumns: { status: number; label: string; orders: Order[] }[] = [];
+  isSidebarCollapsed = false;
+
 
   students: Student[] = [];
   orders: Order[] = [];
@@ -72,17 +83,25 @@ export class OrdersDashboardComponent implements OnInit {
     private menusService: MenusService,
     private alertService: AlertService,
     private userService: UserService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private sidebarService: SidebarService
   ) { }
 
   ngOnInit(): void {
     this.admintype = this.userService.getLocalUser()?.user_type_id || 1;
+    this.sidebarService.isCollapsed$.subscribe(collapsed => {
+      this.isSidebarCollapsed = collapsed;
+    });
     this.loadAllData();
   }
 
   setActiveTab(tab: string): void {
     this.activeTab = tab;
     this.loadAllData();
+  }
+
+  toggleSidebar(): void {
+    this.sidebarService.toggle();
   }
 
   loadAllData(): void {
@@ -189,8 +208,10 @@ export class OrdersDashboardComponent implements OnInit {
           orders = orders.flat();
         }
         this.orders = orders;
+        this.updateKanbanColumns();
         this.loadingOrders = false;
       },
+
       error: (err) => {
         console.error(ConsoleMessages.ERRORS.FETCHING_ORDERS, err);
         this.loadingOrders = false;
@@ -292,6 +313,42 @@ export class OrdersDashboardComponent implements OnInit {
       this.loadAllData();
     }
   }
+
+  updateKanbanColumns(): void {
+    const statuses = [
+      { id: 1, label: 'Pendent' },
+      { id: 2, label: 'En preparació' },
+      { id: 3, label: 'Entregat' },
+      { id: 4, label: 'No recollit' }
+    ];
+
+    this.kanbanColumns = statuses.map(s => ({
+      status: s.id,
+      label: s.label,
+      orders: this.orders.filter(o => o.orderStatus.id === s.id)
+    }));
+  }
+
+  onDrop(event: CdkDragDrop<Order[]>): void {
+    if (event.previousContainer === event.container) {
+      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+    } else {
+      const order = event.previousContainer.data[event.previousIndex];
+      const newStatusId = Number(event.container.id.replace('status-', ''));
+      
+      transferArrayItem(
+        event.previousContainer.data,
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex
+      );
+
+      // Update backend
+      order.orderStatus.id = newStatusId;
+      this.onStatusChange(order);
+    }
+  }
+
 
   onStatusChange(order: Order): void {
     this.ordersService.updateStatus(order.id, order.orderStatus.id).subscribe({

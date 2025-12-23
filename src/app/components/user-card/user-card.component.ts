@@ -21,6 +21,7 @@ import { Messages } from '../../config/messages.config';
 import { AppConstants } from '../../config/app-constants.config';
 import { AssetsConfig } from '../../config/assets.config';
 import { AdminConfigurationComponent } from '../../views/admin-configuration/admin-configuration.component';
+import { SidebarService } from '../../Services/Sidebar/sidebar.service';
 
 import { ViewEncapsulation } from '@angular/core';
 
@@ -44,7 +45,8 @@ export class UserCardComponent implements OnInit {
   student!: User;
   profileForm: FormGroup;
   allergies: Allergy[] = [];
-  activeTab: 'profile' | 'allergies' | 'security' | 'config' = 'profile';
+  activeTab: 'profile' | 'allergies' | 'config' = 'profile';
+  isSidebarCollapsed = false;
 
   avatarSvg: string = AssetsConfig.SVG.USER_AVATAR;
 
@@ -54,7 +56,8 @@ export class UserCardComponent implements OnInit {
     private authService: AuthService,
     private allergyService: AllergyService,
     private alertService: AlertService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private sidebarService: SidebarService
   ) {
     this.profileForm = this.fb.group({
       allergies: [[]],
@@ -62,11 +65,18 @@ export class UserCardComponent implements OnInit {
     });
   }
 
-  setActiveTab(tab: 'profile' | 'allergies' | 'security' | 'config') {
+  setActiveTab(tab: 'profile' | 'allergies' | 'config') {
     this.activeTab = tab;
   }
 
+  toggleSidebar() {
+    this.sidebarService.toggle();
+  }
+
   ngOnInit(): void {
+    this.sidebarService.isCollapsed$.subscribe(collapsed => {
+      this.isSidebarCollapsed = collapsed;
+    });
     this.loadData();
   }
 

@@ -1,52 +1,84 @@
 <div *ngIf="student" class="profile-container min-h-screen bg-gray-50 flex flex-col md:flex-row">
   <!-- Sidebar -->
-  <aside class="w-full md:w-72 bg-white border-r border-gray-200 flex flex-col shadow-sm z-10">
-    <div class="p-8 border-b border-gray-100 flex items-center gap-4 bg-gray-50/30">
-      <div class="w-12 h-12 rounded-2xl bg-primary text-white flex items-center justify-center shadow-lg shadow-primary/20">
-        <mat-icon class="scale-110">person</mat-icon>
+  <aside 
+    class="bg-white border-r border-gray-200 flex flex-col shadow-sm z-10 transition-all duration-300 relative group/sidebar"
+    [ngClass]="{
+      'w-full md:w-72': !isSidebarCollapsed,
+      'w-full md:w-20': isSidebarCollapsed
+    }">
+    
+    <!-- Collapse Toggle (Desktop) -->
+    <button 
+      (click)="toggleSidebar()"
+      class="hidden md:flex absolute -right-3 top-24 w-6 h-6 bg-white border border-gray-200 rounded-full items-center justify-center text-gray-400 hover:text-primary hover:border-primary shadow-sm z-30 transition-all opacity-0 group-hover/sidebar:opacity-100"
+      [ngClass]="{'rotate-180': isSidebarCollapsed}">
+      <mat-icon class="text-sm">chevron_left</mat-icon>
+    </button>
+    <div class="border-b border-gray-100 flex items-center justify-between bg-gray-50/30 overflow-hidden transition-all duration-300"
+         [ngClass]="isSidebarCollapsed ? 'p-4' : 'p-6'">
+      <div class="flex items-center"
+           [ngClass]="isSidebarCollapsed ? 'justify-center w-full' : 'gap-4'">
+        <div class="rounded-2xl bg-primary text-white flex-shrink-0 flex items-center justify-center shadow-lg shadow-primary/20 transition-all duration-300"
+             [ngClass]="isSidebarCollapsed ? 'w-10 h-10' : 'w-12 h-12'">
+          <mat-icon [ngClass]="isSidebarCollapsed ? 'scale-90' : 'scale-110'">person</mat-icon>
+        </div>
+        <div class="overflow-hidden transition-all duration-300" 
+             [ngClass]="isSidebarCollapsed ? 'opacity-0 w-0 ml-0' : 'opacity-100 w-auto ml-4'">
+          <p class="font-bold text-gray-900 truncate leading-tight">{{ student.name }}</p>
+          <p class="text-xs text-gray-400 truncate mt-0.5 font-medium">{{ student.email }}</p>
+        </div>
       </div>
-      <div class="overflow-hidden">
-        <p class="font-bold text-gray-900 truncate leading-tight">{{ student.name }}</p>
-        <p class="text-xs text-gray-400 truncate mt-0.5 font-medium">{{ student.email }}</p>
-      </div>
+      <!-- Mobile Toggle -->
+      <button (click)="toggleSidebar()" class="md:hidden p-2 text-slate-400 hover:text-primary transition-all"
+              [ngClass]="{'rotate-180': isSidebarCollapsed}">
+        <mat-icon>{{ isSidebarCollapsed ? 'menu_open' : 'menu' }}</mat-icon>
+      </button>
     </div>
 
     <nav class="flex-1 p-4 flex flex-col gap-2 mt-2 md:flex-col md:overflow-y-auto scrollbar-none">
       <button (click)="setActiveTab('profile')" 
         [class.active]="activeTab === 'profile'" 
-        class="nav-item relative flex items-center gap-4 px-5 py-3.5 rounded-2xl text-[15px] font-semibold text-slate-500 transition-all duration-300 hover:bg-slate-50 hover:text-slate-900 hover:pl-6 group [&.active]:bg-primary-light/50 [&.active]:text-primary-dark [&.active]:pl-6">
-        <div class="absolute left-0 top-[20%] bottom-[20%] w-1 bg-primary rounded-r-lg opacity-0 -translate-x-1 transition-all duration-300 group-[.active]:opacity-100 group-[.active]:translate-x-0 group-hover:opacity-50 group-hover:translate-x-0 group-[.active]:group-hover:opacity-100"></div>
-        <mat-icon class="text-slate-400 transition-all duration-300 group-hover:scale-110 group-[.active]:text-primary">account_circle</mat-icon>
-        <span>El meu perfil</span>
+        class="nav-item relative flex items-center rounded-2xl text-[15px] font-semibold text-slate-500 transition-all duration-300 hover:bg-slate-50 hover:text-slate-900 group [&.active]:bg-primary-light/50 [&.active]:text-primary-dark overflow-hidden h-12"
+        [ngClass]="isSidebarCollapsed ? 'justify-center w-full px-0 gap-0' : 'pl-5 pr-4 gap-4'">
+        <div *ngIf="activeTab === 'profile' && !isSidebarCollapsed"
+             class="absolute left-0 top-1/4 bottom-1/4 w-1 bg-primary rounded-r-lg"></div>
+        <mat-icon [ngClass]="activeTab === 'profile' ? 'text-primary' : 'text-slate-400'"
+                  class="transition-all duration-300 group-hover:scale-110 flex-shrink-0">account_circle</mat-icon>
+        <span class="transition-all duration-300 whitespace-nowrap"
+              [ngClass]="isSidebarCollapsed ? 'opacity-0 w-0' : 'opacity-100 w-auto'">El meu perfil</span>
       </button>
 
       <button *ngIf="student.user_type_id == 2" (click)="setActiveTab('allergies')"
         [class.active]="activeTab === 'allergies'" 
-        class="nav-item relative flex items-center gap-4 px-5 py-3.5 rounded-2xl text-[15px] font-semibold text-slate-500 transition-all duration-300 hover:bg-slate-50 hover:text-slate-900 hover:pl-6 group [&.active]:bg-primary-light/50 [&.active]:text-primary-dark [&.active]:pl-6">
-        <div class="absolute left-0 top-[20%] bottom-[20%] w-1 bg-primary rounded-r-lg opacity-0 -translate-x-1 transition-all duration-300 group-[.active]:opacity-100 group-[.active]:translate-x-0 group-hover:opacity-50 group-hover:translate-x-0 group-[.active]:group-hover:opacity-100"></div>
-        <mat-icon class="text-slate-400 transition-all duration-300 group-hover:scale-110 group-[.active]:text-primary">warning</mat-icon>
-        <span>Al·lèrgies</span>
-      </button>
-
-      <button (click)="setActiveTab('security')" [class.active]="activeTab === 'security'" 
-        class="nav-item relative flex items-center gap-4 px-5 py-3.5 rounded-2xl text-[15px] font-semibold text-slate-500 transition-all duration-300 hover:bg-slate-50 hover:text-slate-900 hover:pl-6 group [&.active]:bg-primary-light/50 [&.active]:text-primary-dark [&.active]:pl-6">
-        <div class="absolute left-0 top-[20%] bottom-[20%] w-1 bg-primary rounded-r-lg opacity-0 -translate-x-1 transition-all duration-300 group-[.active]:opacity-100 group-[.active]:translate-x-0 group-hover:opacity-50 group-hover:translate-x-0 group-[.active]:group-hover:opacity-100"></div>
-        <mat-icon class="text-slate-400 transition-all duration-300 group-hover:scale-110 group-[.active]:text-primary">security</mat-icon>
-        <span>Seguretat</span>
+        class="nav-item relative flex items-center rounded-2xl text-[15px] font-semibold text-slate-500 transition-all duration-300 hover:bg-slate-50 hover:text-slate-900 group [&.active]:bg-primary-light/50 [&.active]:text-primary-dark overflow-hidden h-12"
+        [ngClass]="isSidebarCollapsed ? 'md:justify-center w-full px-0 gap-0' : 'pl-5 pr-4 gap-4'">
+        <div *ngIf="activeTab === 'allergies' && !isSidebarCollapsed"
+             class="absolute left-0 top-1/4 bottom-1/4 w-1 bg-primary rounded-r-lg"></div>
+        <mat-icon [ngClass]="activeTab === 'allergies' ? 'text-primary' : 'text-slate-400'"
+                  class="transition-all duration-300 group-hover:scale-110 flex-shrink-0">warning</mat-icon>
+        <span class="transition-all duration-300 whitespace-nowrap"
+              [ngClass]="isSidebarCollapsed ? 'opacity-0 w-0' : 'opacity-100 w-auto'">Al·lèrgies</span>
       </button>
 
       <button *ngIf="student.user_type_id == 1" (click)="setActiveTab('config')" [class.active]="activeTab === 'config'"
-        class="nav-item relative flex items-center gap-4 px-5 py-3.5 rounded-2xl text-[15px] font-semibold text-slate-500 transition-all duration-300 hover:bg-slate-50 hover:text-slate-900 hover:pl-6 group [&.active]:bg-primary-light/50 [&.active]:text-primary-dark [&.active]:pl-6">
-        <div class="absolute left-0 top-[20%] bottom-[20%] w-1 bg-primary rounded-r-lg opacity-0 -translate-x-1 transition-all duration-300 group-[.active]:opacity-100 group-[.active]:translate-x-0 group-hover:opacity-50 group-hover:translate-x-0 group-[.active]:group-hover:opacity-100"></div>
-        <mat-icon class="text-slate-400 transition-all duration-300 group-hover:scale-110 group-[.active]:text-primary">settings</mat-icon>
-        <span>Configuració</span>
+        class="nav-item relative flex items-center rounded-2xl text-[15px] font-semibold text-slate-500 transition-all duration-300 hover:bg-slate-50 hover:text-slate-900 group [&.active]:bg-primary-light/50 [&.active]:text-primary-dark overflow-hidden h-12"
+        [ngClass]="isSidebarCollapsed ? 'md:justify-center w-full px-0 gap-0' : 'pl-5 pr-4 gap-4'">
+        <div *ngIf="activeTab === 'config' && !isSidebarCollapsed"
+             class="absolute left-0 top-1/4 bottom-1/4 w-1 bg-primary rounded-r-lg"></div>
+        <mat-icon [ngClass]="activeTab === 'config' ? 'text-primary' : 'text-slate-400'"
+                  class="transition-all duration-300 group-hover:scale-110 flex-shrink-0">settings</mat-icon>
+        <span class="transition-all duration-300 whitespace-nowrap"
+              [ngClass]="isSidebarCollapsed ? 'opacity-0 w-0' : 'opacity-100 w-auto'">Configuració</span>
       </button>
     </nav>
 
     <div class="p-4 border-t border-gray-100 bg-gray-50/30">
-      <button (click)="logout()" class="relative flex items-center gap-4 px-5 py-3.5 rounded-2xl text-[15px] font-bold text-red-500 transition-all duration-300 hover:bg-red-50 w-full group">
-        <mat-icon class="group-hover:rotate-12 transition-transform">logout</mat-icon>
-        <span>Tancar sessió</span>
+      <button (click)="logout()" 
+        class="relative flex items-center rounded-2xl text-[15px] font-bold text-red-500 transition-all duration-300 hover:bg-red-50 w-full group overflow-hidden h-12"
+        [ngClass]="isSidebarCollapsed ? 'md:justify-center px-0 gap-0' : 'pl-5 pr-4 gap-4'">
+        <mat-icon class="group-hover:rotate-12 transition-transform flex-shrink-0">logout</mat-icon>
+        <span class="transition-all duration-300 whitespace-nowrap"
+              [ngClass]="isSidebarCollapsed ? 'opacity-0 w-0' : 'opacity-100 w-auto'">Tancar sessió</span>
       </button>
     </div>
   </aside>
@@ -69,6 +101,7 @@
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div class="md:col-span-2 space-y-6">
+            <!-- Personal Info Card -->
             <div class="bg-white rounded-3xl shadow-sm border border-slate-200/60 overflow-hidden">
               <div class="p-6 border-b border-slate-100 bg-slate-50/50 flex items-center gap-3">
                 <mat-icon class="text-slate-400">badge</mat-icon>
@@ -92,8 +125,44 @@
                 </div>
               </div>
             </div>
+
+            <!-- Security Card -->
+            <div class="bg-white rounded-3xl shadow-sm border border-slate-200/60 overflow-hidden">
+              <div class="p-6 border-b border-slate-100 bg-slate-50/50 flex items-center gap-3">
+                <mat-icon class="text-slate-400">shield</mat-icon>
+                <h2 class="font-bold text-slate-800">Seguretat i Compte</h2>
+              </div>
+              <div class="p-8 grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div class="flex flex-col items-start gap-4 p-6 bg-slate-50 rounded-2xl border border-slate-100 group hover:border-primary-light transition-colors">
+                  <div class="w-10 h-10 rounded-xl bg-primary-light text-primary flex items-center justify-center">
+                    <mat-icon>lock</mat-icon>
+                  </div>
+                  <div>
+                    <h3 class="font-bold text-slate-800">Contrasenya</h3>
+                    <p class="text-xs text-slate-500 mt-1">Canvia la clau d'accés.</p>
+                  </div>
+                  <button (click)="forgotPassword()" class="w-full mt-2 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-50 transition-all">
+                    Configurar
+                  </button>
+                </div>
+                
+                <div class="flex flex-col items-start gap-4 p-6 bg-red-50/30 rounded-2xl border border-red-100/50 group hover:border-red-200 transition-colors">
+                  <div class="w-10 h-10 rounded-xl bg-red-50 text-red-600 flex items-center justify-center">
+                    <mat-icon>logout</mat-icon>
+                  </div>
+                  <div>
+                    <h3 class="font-bold text-red-900">Sessió</h3>
+                    <p class="text-xs text-red-600/60 mt-1">Surt del compte.</p>
+                  </div>
+                  <button (click)="logout()" class="w-full mt-2 py-2.5 bg-red-50 text-red-600 rounded-xl text-xs font-bold hover:bg-red-100 transition-all">
+                    Tancar sessió
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
 
+          <!-- Account Status Card -->
           <div class="space-y-6">
             <div class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-3xl p-8 text-white shadow-xl shadow-slate-200 relative overflow-hidden group">
               <div class="absolute -right-4 -top-4 w-24 h-24 bg-white/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
@@ -164,42 +233,6 @@
               </button>
             </div>
           </form>
-        </div>
-      </div>
-
-      <!-- Security Tab -->
-      <div *ngIf="activeTab === 'security'" class="space-y-8 animate-fade-in">
-        <header>
-          <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">Seguretat</h1>
-          <p class="text-slate-500 mt-1 font-medium">Gestiona la teva contrasenya i la privacitat del teu compte.</p>
-        </header>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div class="bg-white p-10 rounded-3xl shadow-sm border border-slate-200/60 flex flex-col items-center text-center space-y-6 group hover:border-primary-light transition-colors">
-            <div class="w-16 h-16 rounded-2xl bg-primary-light text-primary flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
-              <mat-icon class="scale-125">lock</mat-icon>
-            </div>
-            <div>
-              <h3 class="font-bold text-xl text-slate-900">Canviar contrasenya</h3>
-              <p class="text-sm text-slate-500 mt-2 font-medium">Actualitza la teva clau d'accés per mantenir el teu compte segur.</p>
-            </div>
-            <button (click)="forgotPassword()" class="w-full py-3.5 border-2 border-slate-100 rounded-2xl text-sm font-bold text-slate-700 hover:bg-slate-50 hover:border-slate-200 transition-all">
-              Configurar ara
-            </button>
-          </div>
-
-          <div class="bg-white p-10 rounded-3xl shadow-sm border border-slate-200/60 flex flex-col items-center text-center space-y-6 group hover:border-red-100 transition-colors">
-            <div class="w-16 h-16 rounded-2xl bg-red-50 text-red-600 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
-              <mat-icon class="scale-125">logout</mat-icon>
-            </div>
-            <div>
-              <h3 class="font-bold text-xl text-slate-900">Tancar sessió</h3>
-              <p class="text-sm text-slate-500 mt-2 font-medium">Surt de la teva sessió de forma segura en aquest dispositiu.</p>
-            </div>
-            <button (click)="logout()" class="w-full py-3.5 bg-red-50 text-red-600 rounded-2xl text-sm font-bold hover:bg-red-100 transition-all">
-              Sortir del compte
-            </button>
-          </div>
         </div>
       </div>
 

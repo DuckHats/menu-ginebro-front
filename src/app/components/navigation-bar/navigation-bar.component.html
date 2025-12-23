@@ -1,36 +1,53 @@
-<nav class="flex w-full h-[60px] px-[26px] mb-8 justify-center items-center shadow-[...] bg-white sm:px-4">
-  <div class="flex w-[328px] h-[60px] px-[23px] py-[12px] justify-center items-start gap-[46px] max-w-full md:gap-[30px] sm:px-4 sm:gap-[20px]">
+<nav class="fixed top-6 left-1/2 -translate-x-1/2 z-[100] w-auto pointer-events-none">
+  <div class="flex items-center gap-2 p-2 bg-white/70 backdrop-blur-xl border border-white/20 rounded-3xl shadow-2xl shadow-primary/10 pointer-events-auto">
     
     <!-- Food -->
     <button
       *ngIf="!isAdmin"
-      [ngClass]="getNavClasses('food')"
-      (click)="navigate('food')">
-      <mat-icon>restaurant</mat-icon>
+      (click)="navigate('food')"
+      class="flex items-center justify-center w-12 h-12 rounded-2xl transition-all duration-300 relative group"
+      [class.active]="activeTab === 'food'">
+      <div *ngIf="activeTab === 'food'" class="absolute -bottom-1 left-1.5 right-1.5 h-1 bg-primary rounded-full blur-[2px]"></div>
+      <mat-icon class="group-hover:scale-110 transition-transform" 
+                [ngClass]="activeTab === 'food' ? 'text-primary' : 'text-slate-400'">restaurant</mat-icon>
     </button>
 
     <!-- History -->
     <button
       *ngIf="!isAdmin"
-      [ngClass]="getNavClasses('history')"
-      (click)="navigate('history')">
-      <mat-icon>history</mat-icon>
+      (click)="navigate('history')"
+      class="flex items-center justify-center w-12 h-12 rounded-2xl transition-all duration-300 relative group"
+      [class.active]="activeTab === 'history'">
+      <div *ngIf="activeTab === 'history'" class="absolute -bottom-1 left-1.5 right-1.5 h-1 bg-primary rounded-full blur-[2px]"></div>
+      <mat-icon class="group-hover:scale-110 transition-transform"
+                [ngClass]="activeTab === 'history' ? 'text-primary' : 'text-slate-400'">history</mat-icon>
     </button>
 
-    <!-- Admin (solo si es admin) -->
+    <!-- Admin -->
     <button
       *ngIf="isAdmin"
-      [ngClass]="getNavClasses('admin')"
-      (click)="navigate('admin')">
-      <mat-icon>admin_panel_settings</mat-icon>
+      (click)="navigate('admin')"
+      class="flex items-center justify-center w-12 h-12 rounded-2xl transition-all duration-300 relative group"
+      [class.active]="activeTab === 'admin'">
+      <div *ngIf="activeTab === 'admin'" class="absolute -bottom-1 left-1.5 right-1.5 h-1 bg-primary rounded-full blur-[2px]"></div>
+      <mat-icon class="group-hover:scale-110 transition-transform"
+                [ngClass]="activeTab === 'admin' ? 'text-primary' : 'text-slate-400'">dashboard_customize</mat-icon>
     </button>
+
+    <div class="w-px h-6 bg-slate-200 mx-1"></div>
 
     <!-- Profile -->
     <button
-      [ngClass]="getNavClasses('profile')"
-      (click)="navigate('profile')">
-      <mat-icon>person</mat-icon>
+      (click)="navigate('profile')"
+      class="flex items-center justify-center w-12 h-12 rounded-2xl transition-all duration-300 relative group"
+      [class.active]="activeTab === 'profile'">
+      <div *ngIf="activeTab === 'profile'" class="absolute -bottom-1 left-1.5 right-1.5 h-1 bg-primary rounded-full blur-[2px]"></div>
+      <mat-icon class="group-hover:scale-110 transition-transform"
+                [ngClass]="activeTab === 'profile' ? 'text-primary' : 'text-slate-400'">person_outline</mat-icon>
     </button>
 
   </div>
 </nav>
+
+<!-- Push content down since nav is fixed -->
+<div class="h-20"></div>
