@@ -20,6 +20,8 @@ import {
 import { Messages } from '../../config/messages.config';
 import { AppConstants } from '../../config/app-constants.config';
 import { AssetsConfig } from '../../config/assets.config';
+import { AdminConfigurationComponent } from '../../views/admin-configuration/admin-configuration.component';
+import { SidebarService } from '../../Services/Sidebar/sidebar.service';
 
 import { ViewEncapsulation } from '@angular/core';
 
@@ -36,12 +38,15 @@ import { ViewEncapsulation } from '@angular/core';
     FormsModule,
     MatSelectModule,
     MatFormFieldModule,
+    AdminConfigurationComponent
   ],
 })
 export class UserCardComponent implements OnInit {
   student!: User;
   profileForm: FormGroup;
   allergies: Allergy[] = [];
+  activeTab: 'profile' | 'allergies' | 'config' = 'profile';
+  isSidebarCollapsed = false;
 
   avatarSvg: string = AssetsConfig.SVG.USER_AVATAR;
 
@@ -51,7 +56,8 @@ export class UserCardComponent implements OnInit {
     private authService: AuthService,
     private allergyService: AllergyService,
     private alertService: AlertService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private sidebarService: SidebarService
   ) {
     this.profileForm = this.fb.group({
       allergies: [[]],
@@ -59,7 +65,18 @@ export class UserCardComponent implements OnInit {
     });
   }
 
+  setActiveTab(tab: 'profile' | 'allergies' | 'config') {
+    this.activeTab = tab;
+  }
+
+  toggleSidebar() {
+    this.sidebarService.toggle();
+  }
+
   ngOnInit(): void {
+    this.sidebarService.isCollapsed$.subscribe(collapsed => {
+      this.isSidebarCollapsed = collapsed;
+    });
     this.loadData();
   }
 
@@ -121,6 +138,24 @@ export class UserCardComponent implements OnInit {
           console.error(err);
         },
       });
+  }
+
+  toggleAllergy(allergyId: number) {
+    const currentAllergies = this.profileForm.get('allergies')?.value as number[];
+    const index = currentAllergies.indexOf(allergyId);
+    
+    if (index > -1) {
+      currentAllergies.splice(index, 1);
+    } else {
+      currentAllergies.push(allergyId);
+    }
+    
+    this.profileForm.get('allergies')?.setValue([...currentAllergies]);
+  }
+
+  isAllergySelected(allergyId: number): boolean {
+    const currentAllergies = this.profileForm.get('allergies')?.value as number[];
+    return currentAllergies.includes(allergyId);
   }
 
   logout() {

@@ -11,7 +11,9 @@ import { DayInfo } from "../../interfaces/day-info";
 })
 export class WeeklyCalendarComponent implements OnInit {
   @Input() initialDate: Date = new Date();
+  @Input() disabledDates: string[] = []; // Format YYYY-MM-DD
   @Output() daySelected = new EventEmitter<Date>();
+  @Output() weekChanged = new EventEmitter<Date>(); // Emits Monday of the week
 
   days: DayInfo[] = [];
   currentWeekDisplay: string = "";
@@ -32,6 +34,7 @@ export class WeeklyCalendarComponent implements OnInit {
     this.currentWeekStartDate = new Date(currentDate.setDate(diff));
     this.updateWeekDisplay();
     this.generateDays();
+    this.weekChanged.emit(this.currentWeekStartDate);
   }
 
   updateWeekDisplay() {
@@ -63,15 +66,26 @@ export class WeeklyCalendarComponent implements OnInit {
         currentDate.getFullYear() === today.getFullYear() &&
         currentDate.getDay() >= 1 && currentDate.getDay() <= 5;
 
+      const formattedDate = this.formatDate(currentDate);
+      const isDisabled = this.disabledDates.includes(formattedDate);
+
       this.days.push({
         dayName: this.dayNames[i],
         dayNumber: currentDate.getDate(),
         isSelected,
         isHighlighted,
         isToday,
+        isDisabled
       });
     }
 
+  }
+
+  private formatDate(date: Date): string {
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
 
 
@@ -81,6 +95,7 @@ export class WeeklyCalendarComponent implements OnInit {
     this.currentWeekStartDate = newStartDate;
     this.updateWeekDisplay();
     this.generateDays();
+    this.weekChanged.emit(this.currentWeekStartDate);
   }
 
   navigateNextWeek() {
@@ -89,9 +104,12 @@ export class WeeklyCalendarComponent implements OnInit {
     this.currentWeekStartDate = newStartDate;
     this.updateWeekDisplay();
     this.generateDays();
+    this.weekChanged.emit(this.currentWeekStartDate);
   }
 
   selectDay(day: DayInfo) {
+    if (day.isDisabled) return;
+
     // Deselect all days
     this.days.forEach((d) => (d.isSelected = false));
 

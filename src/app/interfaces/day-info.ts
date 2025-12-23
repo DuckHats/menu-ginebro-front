@@ -4,5 +4,6 @@ export interface DayInfo {
     isSelected: boolean;
     isHighlighted: boolean;
     isToday: boolean;
+    isDisabled?: boolean;
   }
   

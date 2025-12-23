@@ -12,31 +12,190 @@ import { Messages } from '../../config/messages.config';
 import { AppConstants } from '../../config/app-constants.config';
 import { ConsoleMessages } from '../../config/console-messages.config';
 
+import { ConfigurationService } from '../../Services/Admin/configuration/configuration.service';
+import { ImageService } from '../../Services/Admin/image/image.service';
+import { MatIconModule } from '@angular/material/icon';
+import { animate, style, transition, trigger } from '@angular/animations';
+import { UILabels } from '../../config/ui-labels.config';
+
 @Component({
   selector: 'app-menu-selection',
   templateUrl: './menu-selection.component.html',
   styleUrls: ['./menu-selection.component.css'],
   standalone: true,
-  imports: [CommonModule, WeeklyCalendarComponent],
+  imports: [CommonModule, WeeklyCalendarComponent, MatIconModule],
+  animations: [
+    trigger('fadeIn', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(10px)' }),
+        animate('400ms ease-out', style({ opacity: 1, transform: 'translateY(0)' })),
+      ]),
+    ]),
+  ],
 })
 export default class MenuSelectionComponent implements OnInit {
+  UILabels = UILabels;
   orderTypes: { id: number; name: string }[] = [];
   menuTypes: { id: number; name: string; selected: boolean }[] = [];
   menuSections: MenuSection[] = [];
   taperSelected = false;
   selectedDate: Date = new Date();
+  
+  // Validation state
+  isRestricted = false;
+  restrictionReason = '';
+  orderDeadlineTime = '10:00';
+  orderDeadlineDaysAhead = 1;
+  orderExists = false;
+  configLoading = true;
+  disabledDates: string[] = [];
+  userOrders: any[] = [];
+  
+  // Modal state
+  showIntroModal = false;
+  showConfirmModal = false;
+
+  // Images logic
+  allImages: any[] = [];
+  activeMenuImage: any = null;
 
   constructor(
     private http: HttpClient,
     private ordersService: OrdersService,
     private alertService: AlertService,
     private route: Router,
-    private menusService: MenusService
+    private menusService: MenusService,
+    private configService: ConfigurationService,
+    private imageService: ImageService
   ) {}
 
   ngOnInit(): void {
     this.loadOrderTypes();
+    this.loadConfigs();
+    this.loadImages();
     this.loadMenuFromBackend();
+    
+    // Check if we should show intro modal (e.g., first time this session)
+    const hasSeenIntro = sessionStorage.getItem('menu_intro_seen');
+    if (!hasSeenIntro) {
+      this.showIntroModal = true;
+    }
+  }
+
+  closeIntroModal(): void {
+    this.showIntroModal = false;
+    sessionStorage.setItem('menu_intro_seen', 'true');
+  }
+
+  loadConfigs(): void {
+    this.configService.getConfigurations().subscribe({
+      next: (res) => {
+        if (res.status === 'success') {
+          this.orderDeadlineTime = res.data.order_deadline_time || '10:00';
+          this.orderDeadlineDaysAhead = Number(res.data.order_deadline_days_ahead ?? 1);
+        }
+        this.configLoading = false;
+        this.loadUserOrders();
+      },
+      error: () => {
+        this.configLoading = false;
+      }
+    });
+  }
+
+  loadUserOrders(): void {
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    if (!user.id) return;
+
+    this.ordersService.getByUser(user.id).subscribe({
+      next: (res) => {
+        this.userOrders = res.data || [];
+        this.calculateDisabledDatesForCurrentWeek();
+        this.checkAvailability();
+      }
+    });
+  }
+
+  loadImages(): void {
+    this.imageService.getImages().subscribe({
+      next: (res) => {
+        if (res.status === 'success') {
+          this.allImages = res.data || [];
+          this.updateActiveImage();
+        }
+      }
+    });
+  }
+
+  updateActiveImage(): void {
+    if (!this.selectedDate || this.allImages.length === 0) {
+      this.activeMenuImage = null;
+      return;
+    }
+
+    const formatted = this.formatDate(this.selectedDate);
+    
+    // An image is active if formatted date is between start_date and end_date (inclusive)
+    this.activeMenuImage = this.allImages.find(img => {
+      return formatted >= img.start_date && formatted <= img.end_date;
+    }) || null;
+  }
+
+  onWeekChanged(monday: Date): void {
+    this.calculateDisabledDatesForWeek(monday);
+  }
+
+  calculateDisabledDatesForCurrentWeek(): void {
+    // Determine the Monday of the current selectedDate's week
+    const d = new Date(this.selectedDate);
+    const day = d.getDay();
+    const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+    const monday = new Date(d.setDate(diff));
+    this.calculateDisabledDatesForWeek(monday);
+  }
+
+  calculateDisabledDatesForWeek(monday: Date): void {
+    this.disabledDates = [];
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    for (let i = 0; i < 5; i++) {
+      const d = new Date(monday);
+      d.setDate(monday.getDate() + i);
+      const formatted = this.formatDate(d);
+
+      // 1. Check if order exists
+      const hasOrder = this.userOrders.some(o => o.order_date === formatted);
+      
+      // 2. Check deadline logic
+      const isDeadlinePassed = this.isDateDeadlinePassed(d);
+
+      if (hasOrder || isDeadlinePassed) {
+        this.disabledDates.push(formatted);
+      }
+    }
+  }
+
+  isDateDeadlinePassed(date: Date): boolean {
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const dateMidnight = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+
+    if (dateMidnight < today) return true;
+
+    if (Number(this.orderDeadlineDaysAhead) === 0) {
+      if (dateMidnight.getTime() === today.getTime()) {
+        const [hours, minutes] = this.orderDeadlineTime.split(':').map(Number);
+        const deadline = new Date(today);
+        deadline.setHours(hours, minutes, 0, 0);
+        return now > deadline;
+      }
+    } else {
+      const diffTime = dateMidnight.getTime() - today.getTime();
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      return diffDays < Number(this.orderDeadlineDaysAhead);
+    }
+    return false;
   }
 
   loadOrderTypes(): void {
@@ -60,7 +219,63 @@ export default class MenuSelectionComponent implements OnInit {
 
   onDateSelected(date: Date): void {
     this.selectedDate = date;
-    this.loadMenuFromBackend();
+    this.updateActiveImage();
+    this.checkAvailability();
+  }
+
+  checkAvailability(): void {
+    if (!this.selectedDate) return;
+
+    const formattedDate = this.formatDate(this.selectedDate);
+    
+    // Reset state
+    this.isRestricted = false;
+    this.restrictionReason = '';
+    this.orderExists = false;
+
+    // 1. Check existing order from local data
+    const hasOrder = this.userOrders.some(o => o.order_date === formattedDate);
+    if (hasOrder) {
+      this.isRestricted = true;
+      this.orderExists = true;
+      this.restrictionReason = "Ja tens una comanda per aquest dia";
+    } else {
+      // 2. Check Deadline logic
+      this.validateDeadline();
+    }
+
+    if (!this.isRestricted) {
+      this.loadMenuFromBackend();
+    } else {
+      this.menuSections = [];
+    }
+  }
+
+  validateDeadline(): void {
+    this.isRestricted = this.isDateDeadlinePassed(this.selectedDate);
+    if (this.isRestricted) {
+      if (this.orderDeadlineDaysAhead === 0) {
+        const now = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const selectedDateMidnight = new Date(this.selectedDate.getFullYear(), this.selectedDate.getMonth(), this.selectedDate.getDate());
+        
+        if (selectedDateMidnight.getTime() === today.getTime()) {
+          this.restrictionReason = "L'hora límit per demanar per avui ha passat";
+        } else {
+          this.restrictionReason = "No es poden fer comandes per a dies passats";
+        }
+      } else {
+        const now = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const selectedDateMidnight = new Date(this.selectedDate.getFullYear(), this.selectedDate.getMonth(), this.selectedDate.getDate());
+        
+        if (selectedDateMidnight < today) {
+           this.restrictionReason = "No es poden fer comandes per a dies passats";
+        } else {
+           this.restrictionReason = `Cal demanar amb ${this.orderDeadlineDaysAhead} dia/es d'antelació`;
+        }
+      }
+    }
   }
 
   loadMenuFromBackend(): void {
@@ -132,7 +347,12 @@ export default class MenuSelectionComponent implements OnInit {
     const today = toLocalMidnight(new Date());
     const selectedDateCopy = toLocalMidnight(this.selectedDate);
 
-    if (selectedDateCopy <= today) {
+    if (this.isDateDeadlinePassed(selectedDateCopy)) {
+      this.alertService.show('error', this.restrictionReason || "La data seleccionada no és vàlida segons l'antelació configurada.", '');
+      return;
+    }
+
+    if (selectedDateCopy < today) {
       this.alertService.show('error', Messages.ORDERS.NO_PAST_ORDERS, '');
       return;
     }
@@ -146,6 +366,24 @@ export default class MenuSelectionComponent implements OnInit {
       return;
     }
 
+    // Show confirmation modal instead of submitting directly
+    this.showConfirmModal = true;
+  }
+
+  cancelConfirmation(): void {
+    this.showConfirmModal = false;
+  }
+
+  submitOrder(): void {
+    const selectedMenuType = this.menuTypes.find((type) => type.selected);
+    if (!selectedMenuType) return;
+
+    const toLocalMidnight = (d: Date | string | number): Date => {
+      const dt = new Date(d);
+      return new Date(dt.getFullYear(), dt.getMonth(), dt.getDate());
+    };
+
+    const selectedDateCopy = toLocalMidnight(this.selectedDate);
     const order_type_id = selectedMenuType.id;
 
     const option1 =
@@ -175,35 +413,34 @@ export default class MenuSelectionComponent implements OnInit {
       option3,
     };
 
-    this.ordersService.checkDateAvailability(order_date).subscribe({
+    this.ordersService.createOrder(payload).subscribe({
       next: (response) => {
-        if (response.data?.available) {
-          this.ordersService.createOrder(payload).subscribe({
-            next: (response) => {
-              this.alertService.show(
-                'success',
-                Messages.ORDERS.ORDER_SUCCESS,
-                ''
-              );
-              this.route.navigate(['/']);
-            },
-            error: (err) => {
-              this.alertService.show('error', Messages.ORDERS.ORDER_ERROR, '');
-              console.error(err);
-            },
-          });
-        } else {
-          this.alertService.show('error', Messages.ORDERS.DUPLICATE_ORDER, '');
-        }
-      },
-      error: (err) => {
+        this.showConfirmModal = false;
         this.alertService.show(
-          'error',
-          Messages.ORDERS.DATE_AVAILABILITY_ERROR,
+          'success',
+          Messages.ORDERS.ORDER_SUCCESS,
           ''
         );
+        this.route.navigate(['/history']);
+      },
+      error: (err) => {
+        this.alertService.show('error', Messages.ORDERS.ORDER_ERROR, '');
+        console.error(err);
       },
     });
+  }
+
+  getSelectedOptionsSummary(): string[] {
+    const options: string[] = [];
+    this.filteredMenuSections().forEach(section => {
+      const selected = section.options.find(o => o.selected);
+      if (selected) options.push(selected.name);
+    });
+    return options;
+  }
+
+  getSelectedMenuTypeName(): string {
+    return this.menuTypes.find(t => t.selected)?.name || '';
   }
 
   hasSelectedMenuType(): boolean {
@@ -242,5 +479,28 @@ export default class MenuSelectionComponent implements OnInit {
     const month = (date.getMonth() + 1).toString().padStart(2, '0');
     const day = date.getDate().toString().padStart(2, '0');
     return `${year}-${month}-${day}`;
+  }
+
+  downloadActiveImage(): void {
+    if (!this.activeMenuImage) return;
+    
+    this.imageService.downloadImage(this.activeMenuImage.path).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `menu-${this.formatDate(this.selectedDate)}.jpg`;
+        document.body.appendChild(link);
+        link.click();
+        
+        // Cleanup
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+      },
+      error: (err) => {
+        console.error('Error downloading image', err);
+        this.alertService.show('error', 'Error en descarregar la imatge', '');
+      }
+    });
   }
 }

@@ -31,7 +31,7 @@ export class NavigationBarComponent {
   }
 
   updateActiveTab(url: string) {
-    if (url.includes('food')) {
+    if (url.includes('food') || url.includes('menu-selection') || url === '/' || url === '') {
       this.activeTab = 'food';
     } else if (url.includes('history')) {
       this.activeTab = 'history';

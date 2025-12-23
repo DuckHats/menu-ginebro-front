@@ -1,28 +1,47 @@
-<main class="flex flex-col items-center min-h-screen px-4 py-6 font-sans">
-  <div class="w-full max-w-[359px] md:max-w-3xl">
-    <header class="flex justify-between items-center mb-6">
-      <div class="flex items-center gap-2">
-        <div [innerHTML]="clockIcon"></div>
-        <div class="flex flex-col">
-          <h1 class="text-[#009a93] text-[20px] md:text-[24px] font-bold leading-8 m-0">
-            Historial de Comandes
-          </h1>
+<main class="min-h-screen bg-slate-50/50 flex items-center justify-center p-6" @fadeIn>
+  <section class="w-full max-w-3xl bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
+    <div class="p-8 lg:p-10">
+      <!-- Header -->
+      <header class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-10">
+        <div class="flex items-center gap-4">
+          <div class="w-14 h-14 bg-primary rounded-2xl flex items-center justify-center shadow-lg shadow-primary/20">
+            <mat-icon class="text-white text-2xl">history</mat-icon>
+          </div>
+          <div class="flex flex-col">
+            <h1 class="text-2xl font-bold text-slate-800 tracking-tight">
+              {{ UILabels.HISTORY.TITLE }}
+            </h1>
+            <p class="text-slate-500 font-medium text-sm">
+              Consulta les teves comandes anteriors
+            </p>
+          </div>
         </div>
-      </div>
-      <button (click)="goToHomePage()" class="flex flex-col text-[#009a93] text-sm md:text-base leading-6 bg-none border-none p-0 cursor-pointer text-left">
-        <span>Tornar al menú</span>
-      </button>
-    </header>
+        
+        <button (click)="goToHomePage()" class="flex items-center gap-2 px-6 py-3 bg-slate-50 hover:bg-slate-100 text-slate-600 font-bold rounded-2xl transition-all active:scale-[0.98]">
+          <mat-icon class="text-[20px] w-5 h-5">arrow_back</mat-icon>
+          <span>{{ UILabels.HISTORY.BACK_TO_MENU }}</span>
+        </button>
+      </header>
 
-    <!-- Order List -->
-    <section class="flex flex-col gap-4">
-      <app-order-card
-        *ngFor="let order of orders; index as i"
-        [date]="order.order_date"
-        [tupper]="order.tupper"
-        [menuItems]="order.menuItems || []"
-      >
-      </app-order-card>
-    </section>
-  </div>
+      <!-- Order List -->
+      <section class="space-y-4 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
+        <app-order-card
+          *ngFor="let order of orders; index as i"
+          [date]="order.order_date"
+          [tupper]="order.tupper"
+          [menuType]="order.orderType.name || ''"
+          [menuItems]="order.menuItems || []"
+          class="block transform transition-all hover:scale-[1.01]"
+        >
+        </app-order-card>
+        
+        <div *ngIf="orders.length === 0" class="py-20 text-center">
+          <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-4">
+            <mat-icon class="text-slate-300 text-4xl w-10 h-10">receipt_long</mat-icon>
+          </div>
+          <p class="text-slate-400 font-bold">{{ UILabels.HISTORY.NO_ORDERS }}</p>
+        </div>
+      </section>
+    </div>
+  </section>
 </main>

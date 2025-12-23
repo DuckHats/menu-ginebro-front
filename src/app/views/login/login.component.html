@@ -1,70 +1,80 @@
-<main class="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
-  <section class="w-full max-w-sm bg-white rounded-lg shadow-[0_4px_6px_-4px_rgba(0,0,0,0.1),0_10px_15px_-3px_rgba(0,0,0,0.1)] px-10 py-10">
+<main class="min-h-screen bg-slate-50/50 flex items-center justify-center p-6" @fadeIn>
+  <section class="w-full max-w-md bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
+    <div class="p-10 lg:p-12">
+      <!-- Header -->
+      <header class="flex flex-col items-center text-center mb-10">
+        <h1 class="text-3xl font-bold text-slate-800 tracking-tight mb-2">
+          {{ UILabels.LOGIN.TITLE }}
+        </h1>
+        <p class="text-slate-500 font-medium">
+          {{ UILabels.LOGIN.SUBTITLE }}
+        </p>
+      </header>
 
-    <!-- Encabezado -->
-    <header class="flex flex-col items-center gap-2 mb-6">
-      <h1 class="text-[#009ca6] text-[20.4px] font-bold leading-8 font-sans">{{ UILabels.LOGIN.TITLE }}</h1>
-      <p class="text-gray-600 text-sm leading-6 font-sans">{{ UILabels.LOGIN.SUBTITLE }}</p>
-    </header>
-
-    <!-- Formulario -->
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="flex flex-col gap-6">
-
-      <!-- Usuari -->
-      <div class="flex flex-col gap-1">
-        <label for="email" class="text-gray-700 text-xs font-medium leading-5 font-sans">{{ UILabels.LOGIN.EMAIL_LABEL }}</label>
-        <div class="relative">
-          <div class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5">
-            <app-icon name="email"></app-icon>
+      <!-- Form -->
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-6">
+        <!-- Email Field -->
+        <div class="space-y-2">
+          <label for="email" class="text-sm font-bold text-slate-700 ml-1">
+            {{ UILabels.LOGIN.EMAIL_LABEL }}
+          </label>
+          <div class="relative group">
+            <div class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors">
+              <mat-icon class="text-[20px] w-5 h-5">mail_outline</mat-icon>
+            </div>
+            <input
+              id="email"
+              type="email"
+              formControlName="user"
+              [placeholder]="UILabels.LOGIN.EMAIL_PLACEHOLDER"
+              class="w-full pl-12 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-slate-700 placeholder:text-slate-400 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all outline-none font-medium"
+            />
           </div>
-          <input
-            id="email"
-            type="email"
-            formControlName="user"
-            [placeholder]="UILabels.LOGIN.EMAIL_PLACEHOLDER"
-            class="w-full h-[41px] pl-10 pr-3 py-2 rounded-md border border-gray-300 text-base font-sans focus:outline-none focus:ring-2 focus:ring-[#009ca6]"
-          />
         </div>
-      </div>
 
-      <!-- Contrasenya -->
-      <div class="flex flex-col gap-1">
-        <label for="password" class="text-gray-700 text-xs font-medium leading-5 font-sans">{{ UILabels.LOGIN.PASSWORD_LABEL }}</label>
-        <div class="relative">
-          <div class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5">
-            <app-icon name="lock"></app-icon>
+        <!-- Password Field -->
+        <div class="space-y-2">
+          <label for="password" class="text-sm font-bold text-slate-700 ml-1">
+            {{ UILabels.LOGIN.PASSWORD_LABEL }}
+          </label>
+          <div class="relative group">
+            <div class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors">
+              <mat-icon class="text-[20px] w-5 h-5">lock_outline</mat-icon>
+            </div>
+            <input
+              id="password"
+              type="password"
+              formControlName="password"
+              [placeholder]="UILabels.LOGIN.PASSWORD_PLACEHOLDER"
+              class="w-full pl-12 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-slate-700 placeholder:text-slate-400 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all outline-none font-medium"
+            />
           </div>
-          <input
-            id="password"
-            type="password"
-            formControlName="password"
-            [placeholder]="UILabels.LOGIN.PASSWORD_PLACEHOLDER"
-            class="w-full h-[41px] pl-10 pr-3 py-2 rounded-md border border-gray-300 text-base font-sans focus:outline-none focus:ring-2 focus:ring-[#009ca6]"
-          />
         </div>
-      </div>
 
-      <!-- Botó -->
-      <button
-        type="submit"
-        [disabled]="isSubmitting"
-        class="flex items-center justify-center gap-2 w-full h-10 bg-[#009ca6] text-white text-sm font-semibold rounded-md hover:bg-[#00838f] transition"
-      >
-        <div class="flex items-center justify-center">
-          <app-icon name="user"></app-icon>
+        <!-- Submit Button -->
+        <button
+          type="submit"
+          [disabled]="isSubmitting"
+          class="w-full bg-primary hover:bg-primary-dark disabled:bg-slate-300 text-white py-4 rounded-2xl font-bold shadow-lg shadow-primary/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2"
+        >
+          <mat-icon *ngIf="!isSubmitting" class="text-[20px] w-5 h-5">login</mat-icon>
+          <div *ngIf="isSubmitting" class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+          <span>{{ isSubmitting ? UILabels.LOGIN.SUBMIT_BUTTON_LOADING : UILabels.LOGIN.SUBMIT_BUTTON }}</span>
+        </button>
+
+        <!-- Links -->
+        <div class="flex flex-col gap-4 pt-4">
+          <button type="button" (click)="forgotPassword()" class="text-sm font-bold text-primary hover:text-primary-dark transition-colors">
+            {{ UILabels.LOGIN.FORGOT_PASSWORD_LINK }}
+          </button>
+          
+          <div class="h-px bg-slate-100 w-full"></div>
+          
+          <button type="button" (click)="register()" class="text-sm font-bold text-slate-500 hover:text-slate-700 transition-colors">
+            {{ UILabels.LOGIN.REGISTER_LINK }}
+          </button>
         </div>
-        <span>{{ isSubmitting ? UILabels.LOGIN.SUBMIT_BUTTON_LOADING : UILabels.LOGIN.SUBMIT_BUTTON }}</span>
-      </button>
-
-      <!-- Enllaç registre -->
-      <a (click)="forgotPassword()" class="text-center text-[#009ca6] text-sm leading-6 font-sans hover:underline cursor-pointer">
-        {{ UILabels.LOGIN.FORGOT_PASSWORD_LINK }}
-      </a>
-
-      <a (click)="register()" class="text-center text-[#009ca6] text-sm leading-6 font-sans hover:underline cursor-pointer">
-        {{ UILabels.LOGIN.REGISTER_LINK }}
-      </a>
-    </form>
-
+      </form>
+    </div>
   </section>
 </main>

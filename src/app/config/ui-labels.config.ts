@@ -60,4 +60,27 @@ export const UILabels = {
     CONFIRM: 'Confirmar',
     BACK: 'Tornar',
   },
+
+  // History Page
+  HISTORY: {
+    TITLE: 'Historial de Comandes',
+    BACK_TO_MENU: 'Tornar al menú',
+    NO_ORDERS: 'No tens comandes a l\'historial.',
+  },
+
+  // Welcome Page
+  WELCOME: {
+    SELECT_MENU: 'Seleccionar Menú',
+  },
+
+  // Menu Selection Page
+  MENU_SELECTION: {
+    TITLE: 'Selecció de Menú',
+    SUBTITLE: 'Tria els teus plats preferits per a cada dia',
+    TAPER_LABEL: 'Opció de Tàper',
+    CONFIRM_BUTTON: 'Confirmar Selecció',
+    TAPER_YES: 'Portaré Tàper',
+    TAPER_NO: 'No portaré Tàper',
+    CONFIRM: 'Confirmar'
+  },
 };
