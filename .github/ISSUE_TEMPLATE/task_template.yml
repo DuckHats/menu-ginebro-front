@@ -1,0 +1,12 @@
+name: 🧱 Tasca
+description: Tasques generals per backlog o sprint
+title: "[TASK] Descripció breu"
+labels: [task]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Descripció de la tasca
+      description: Explica què s’ha de fer
+    validations:
+      required: true

@@ -1,0 +1,15 @@
+name: 🚀 Feature Request
+description: Suggeriment per una nova funcionalitat
+title: "[FEATURE] Descripció breu"
+labels: [enhancement]
+body:
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Motivació
+      description: Per què és útil aquesta funcionalitat?
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposta
+      description: Explica com hauria de funcionar
