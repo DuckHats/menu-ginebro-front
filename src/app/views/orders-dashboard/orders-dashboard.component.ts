@@ -432,6 +432,10 @@ export class OrdersDashboardComponent implements OnInit {
           type === 'menus'
             ? AppConstants.IMPORT_DESCRIPTIONS.MENUS
             : AppConstants.IMPORT_DESCRIPTIONS.USERS,
+        plantillaCsvUrl:
+          type === 'menus'
+            ? AppConstants.IMPORT_TEMPLATES.MENUS_CSV
+            : undefined,
       },
     });
 

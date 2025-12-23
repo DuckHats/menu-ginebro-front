@@ -61,8 +61,8 @@ export const Messages = {
     MENUS_IMPORT_ERROR: 'Error durant la importació dels menús',
     USERS_IMPORT_SUCCESS: 'Usuaris importats correctament',
     USERS_IMPORT_ERROR: 'Error durant la importació dels usuaris',
-    INVALID_JSON: 'El fitxer no és un JSON vàlid',
-    SELECT_VALID_JSON: 'Has de seleccionar un json vàlid',
+    INVALID_JSON: 'El fitxer no és un JSON o CSV vàlid',
+    SELECT_VALID_JSON: 'Has de seleccionar un fitxer JSON o CSV vàlid',
   },
 
   // User management messages
