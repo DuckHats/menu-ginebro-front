@@ -92,6 +92,13 @@ export const Messages = {
     IMAGE_DELETE_ERROR: 'Error eliminant la imatge',
   },
 
+  // Payment messages
+  PAYMENT: {
+    INITIATE_ERROR: "No s'ha pogut iniciar el pagament.",
+    REDSYS_REDIRECT_ERROR: "No s'ha pogut redirigir a la passarel·la de pagament.",
+    SERVER_CONNECTION_ERROR: "No s'ha pogut connectar amb el servidor.",
+  },
+
   // Generic messages
   GENERIC: {
     ERROR: 'Error',

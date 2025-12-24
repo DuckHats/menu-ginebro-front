@@ -176,5 +176,32 @@ export const AppConstants = {
         },
       }
     }
+  },
+  // Payment constants
+  TOP_UP: {
+    PREDEFINED_AMOUNTS: [10, 20, 50, 100],
+    MAX_TRANSACTION_AMOUNT: 150,
+    MODES: {
+      DIRECT: 'direct',
+      PACKS: 'packs',
+    },
+    LABELS: {
+      TITLE: 'Afegir Saldo',
+      BACK_BUTTON: 'Tornar al perfil',
+      DIRECT_MODE_TITLE: 'Suma Directa',
+      PACKS_MODE_TITLE: 'Paquets de Menús',
+      DIRECT_MODE_DESC: 'Selecciona la quantitat que vols afegir',
+      PACKS_MODE_DESC: 'Calcula el total segons els teus menús',
+      CUSTOM_AMOUNT_PLACEHOLDER: 'Altre quantitat',
+      FULL_MENU_LABEL: 'Menú Complet',
+      TAPER_LABEL: 'Suplement Tàper',
+      HALF_MENU_FIRST_LABEL: 'Mig Menú (1r plat)',
+      HALF_MENU_SECOND_LABEL: 'Mig Menú (2n plat)',
+      UNIT: 'unitat',
+      TOTAL_LABEL: 'Total a pagar',
+      LIMIT_WARNING: 'El límit màxim per transacció és de 150,00€',
+      ADD_BALANCE_BUTTON: 'Afegir al saldo',
+      PROCESSING: 'Processant...',
+    }
   }
 } as const;

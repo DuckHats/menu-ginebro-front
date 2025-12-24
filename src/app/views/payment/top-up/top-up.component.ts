@@ -6,80 +6,50 @@ import { API_CONFIG } from '../../../config/api.config';
 import { MatIconModule } from '@angular/material/icon';
 import { AlertService } from '../../../Services/Alert/alert.service';
 import { AuthService } from '../../../Services/Auth/auth.service';
+import { animate, style, transition, trigger } from '@angular/animations';
+
+import { ConfigurationService } from '../../../Services/Admin/configuration/configuration.service';
+
+import { AppConstants } from '../../../config/app-constants.config';
+import { Messages } from '../../../config/messages.config';
 
 @Component({
   selector: 'app-top-up',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, MatIconModule],
-  template: `
-    <div class="min-h-screen bg-slate-50 pb-20 pt-24 px-4 sm:px-6">
-      <div class="max-w-md mx-auto space-y-8">
-        <!-- Back Button -->
-        <button (click)="goBack()" class="flex items-center gap-2 text-slate-500 hover:text-slate-800 transition-colors">
-          <mat-icon>arrow_back</mat-icon>
-          <span class="font-medium">Tornar al perfil</span>
-        </button>
-
-        <div class="bg-white rounded-[2rem] shadow-xl shadow-slate-200/50 p-8 space-y-8 relative overflow-hidden">
-          <!-- Header -->
-          <div class="space-y-2 text-center">
-            <h1 class="text-3xl font-black text-slate-800 tracking-tight">Afegir Saldo</h1>
-            <p class="text-slate-500 text-lg">Selecciona la quantitat que vols afegir al teu compte</p>
-          </div>
-
-          <!-- Amount Selection Grid -->
-          <div class="grid grid-cols-2 gap-4">
-            <button *ngFor="let amount of predefinedAmounts"
-                    (click)="selectAmount(amount)"
-                    [class.ring-2]="selectedAmount === amount && !isCustomAmount"
-                    [class.ring-primary]="selectedAmount === amount && !isCustomAmount"
-                    [class.bg-slate-50]="selectedAmount !== amount"
-                    [class.bg-primary-50]="selectedAmount === amount && !isCustomAmount"
-                    class="p-4 rounded-2xl border border-slate-200 hover:border-primary/30 transition-all duration-300 flex flex-col items-center justify-center gap-1 group">
-              <span class="text-2xl font-black" [class.text-primary]="selectedAmount === amount && !isCustomAmount" [class.text-slate-700]="selectedAmount !== amount">{{ amount }}€</span>
-            </button>
-          </div>
-
-          <!-- Custom Amount Input -->
-          <div class="relative">
-            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <span class="text-slate-400 font-bold">€</span>
-            </div>
-            <input type="number"
-                   [formControl]="customAmountControl"
-                   (focus)="onCustomAmountFocus()"
-                   placeholder="Altre quantitat"
-                   class="w-full pl-10 pr-4 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all font-bold text-lg text-slate-800">
-          </div>
-
-          <!-- Pay Button -->
-          <button (click)="initiatePayment()"
-                  [disabled]="!isValidAmount() || isLoading"
-                  class="w-full bg-primary text-white py-4 rounded-2xl font-bold text-lg shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 hover:-translate-y-1 active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none transition-all duration-300 flex items-center justify-center gap-2">
-            <span *ngIf="!isLoading">Pagar {{ getCurrentAmount() | currency:'EUR' }}</span>
-            <span *ngIf="isLoading" class="flex items-center gap-2">
-              <div class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-              Processant...
-            </span>
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Hidden Form for Redsys -->
-    <form #redsysForm method="POST" [action]="redsysUrl" *ngIf="redsysParams">
-      <input type="hidden" name="Ds_SignatureVersion" [value]="redsysParams.version"/>
-      <input type="hidden" name="Ds_MerchantParameters" [value]="redsysParams.params"/>
-      <input type="hidden" name="Ds_Signature" [value]="redsysParams.signature"/>
-    </form>
-  `
+  animations: [
+    trigger('fadeIn', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(10px)' }),
+        animate('400ms ease-out', style({ opacity: 1, transform: 'translateY(0)' })),
+      ]),
+    ]),
+  ],
+  templateUrl: './top-up.component.html'
 })
 export class TopUpComponent {
-  predefinedAmounts = [10, 20, 50, 100];
+  AppConstants = AppConstants;
+  predefinedAmounts = AppConstants.TOP_UP.PREDEFINED_AMOUNTS;
   selectedAmount: number | null = null;
   isCustomAmount = false;
   customAmountControl;
   isLoading = false;
+  
+  topUpMode: 'direct' | 'packs' = AppConstants.TOP_UP.MODES.DIRECT as any;
+  
+  prices = {
+    menu_price: 0,
+    taper_price: 0,
+    half_menu_first_price: 0,
+    half_menu_second_price: 0
+  };
+
+  quantities = {
+    full_menu: 0,
+    taper: 0,
+    half_menu_first: 0,
+    half_menu_second: 0
+  };
 
   redsysUrl: string = '';
   redsysParams: any = null;
@@ -88,14 +58,67 @@ export class TopUpComponent {
     private fb: FormBuilder,
     private http: HttpClient,
     private alertService: AlertService,
-    private authService: AuthService
+    private authService: AuthService,
+    private configService: ConfigurationService
   ) {
-    this.customAmountControl = this.fb.control('', [Validators.min(1)]);
+    this.customAmountControl = this.fb.control('', [Validators.min(1), Validators.max(150)]);
+    this.loadPrices();
     this.customAmountControl.valueChanges.subscribe(() => {
       if (this.isCustomAmount) {
         this.selectedAmount = this.customAmountControl.value ? parseFloat(this.customAmountControl.value) : null;
       }
     });
+  }
+
+  loadPrices() {
+    this.configService.getConfigurations().subscribe({
+      next: (res) => {
+        if (res.status === 'success') {
+          this.prices = {
+            menu_price: parseFloat(res.data.menu_price) || 0,
+            taper_price: parseFloat(res.data.taper_price) || 0,
+            half_menu_first_price: parseFloat(res.data.half_menu_first_price) || 0,
+            half_menu_second_price: parseFloat(res.data.half_menu_second_price) || 0
+          };
+        }
+      }
+    });
+  }
+
+  setMode(mode: 'direct' | 'packs') {
+    this.topUpMode = mode;
+    this.selectedAmount = null;
+    this.isCustomAmount = false;
+    this.customAmountControl.setValue('');
+    if (mode === 'direct') {
+      this.resetQuantities();
+    }
+  }
+
+  updateQuantity(type: keyof typeof TopUpComponent.prototype.quantities, delta: number) {
+    const newVal = this.quantities[type] + delta;
+    if (newVal >= 0) {
+      this.quantities[type] = newVal;
+      this.calculatePacksAmount();
+    }
+  }
+
+  resetQuantities() {
+    this.quantities = {
+      full_menu: 0,
+      taper: 0,
+      half_menu_first: 0,
+      half_menu_second: 0
+    };
+  }
+
+  calculatePacksAmount() {
+    const total = (this.quantities.full_menu * this.prices.menu_price) +
+                  (this.quantities.taper * this.prices.taper_price) +
+                  (this.quantities.half_menu_first * this.prices.half_menu_first_price) +
+                  (this.quantities.half_menu_second * this.prices.half_menu_second_price);
+    
+    this.selectedAmount = Math.round(total * 100) / 100;
   }
 
   selectAmount(amount: number) {
@@ -115,7 +138,11 @@ export class TopUpComponent {
 
   isValidAmount(): boolean {
     const amount = this.getCurrentAmount();
-    return amount > 0;
+    return amount > 0 && amount <= 150;
+  }
+
+  isExceedingLimit(): boolean {
+    return this.getCurrentAmount() > 150;
   }
 
   goBack() {
@@ -142,19 +169,19 @@ export class TopUpComponent {
               if (form) {
                 form.submit();
               } else {
-                 this.alertService.show('error', 'Error', 'No s\'ha pogut redirigir a la passarel·la de pagament.');
+                 this.alertService.show('error', Messages.GENERIC.ERROR, Messages.PAYMENT.REDSYS_REDIRECT_ERROR);
                  this.isLoading = false;
               }
             }, 100);
           },
           error: (err) => {
-            this.alertService.show('error', 'Error', 'No s\'ha pogut iniciar el pagament.');
+            this.alertService.show('error', Messages.GENERIC.ERROR, Messages.PAYMENT.INITIATE_ERROR);
             this.isLoading = false;
           }
         });
       },
       error: () => {
-        this.alertService.show('error', 'Error', 'No s\'ha pogut connectar amb el servidor.');
+        this.alertService.show('error', Messages.GENERIC.ERROR, Messages.PAYMENT.SERVER_CONNECTION_ERROR);
         this.isLoading = false;
       }
     });
