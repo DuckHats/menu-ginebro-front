@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { API_CONFIG } from '../../../config/api.config';
 import { MatIconModule } from '@angular/material/icon';
 import { AlertService } from '../../../Services/Alert/alert.service';
+import { AuthService } from '../../../Services/Auth/auth.service';
 
 @Component({
   selector: 'app-top-up',
@@ -86,7 +87,8 @@ export class TopUpComponent {
   constructor(
     private fb: FormBuilder,
     private http: HttpClient,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private authService: AuthService
   ) {
     this.customAmountControl = this.fb.control('', [Validators.min(1)]);
     this.customAmountControl.valueChanges.subscribe(() => {
@@ -126,24 +128,33 @@ export class TopUpComponent {
     this.isLoading = true;
     const amount = this.getCurrentAmount();
 
-    this.http.post<any>(`${API_CONFIG.baseUrl}/payment/initiate`, { amount }).subscribe({
-      next: (response) => {
-        this.redsysUrl = response.url;
-        this.redsysParams = response;
-        
-        // Wait for change detection to render the form, then submit
-        setTimeout(() => {
-          const form = document.querySelector('form') as HTMLFormElement;
-          if (form) {
-            form.submit();
-          } else {
-             this.alertService.show('error', 'Error', 'No s\'ha pogut redirigir a la passarel·la de pagament.');
-             this.isLoading = false;
+    // Ensure CSRF cookie is present for the stateful API request
+    this.authService.getCsrfCookie().subscribe({
+      next: () => {
+        this.http.post<any>(`${API_CONFIG.baseUrl}/payment/initiate`, { amount }).subscribe({
+          next: (response) => {
+            this.redsysUrl = response.url;
+            this.redsysParams = response;
+            
+            // Wait for change detection to render the form, then submit
+            setTimeout(() => {
+              const form = document.querySelector('form') as HTMLFormElement;
+              if (form) {
+                form.submit();
+              } else {
+                 this.alertService.show('error', 'Error', 'No s\'ha pogut redirigir a la passarel·la de pagament.');
+                 this.isLoading = false;
+              }
+            }, 100);
+          },
+          error: (err) => {
+            this.alertService.show('error', 'Error', 'No s\'ha pogut iniciar el pagament.');
+            this.isLoading = false;
           }
-        }, 100);
+        });
       },
-      error: (err) => {
-        this.alertService.show('error', 'Error', 'No s\'ha pogut iniciar el pagament.');
+      error: () => {
+        this.alertService.show('error', 'Error', 'No s\'ha pogut connectar amb el servidor.');
         this.isLoading = false;
       }
     });
