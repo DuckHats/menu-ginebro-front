@@ -25,7 +25,7 @@ export class AppComponent {
 
   constructor(private router: Router) {
     this.router.events.subscribe(() => {
-      const url = this.router.url;
+      const url = this.router.url.split('?')[0];
 
       this.showNav = !(
         url === '/' + NavigationConfig.LOGIN ||
