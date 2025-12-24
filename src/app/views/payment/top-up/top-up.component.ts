@@ -9,7 +9,7 @@ import { AuthService } from '../../../Services/Auth/auth.service';
 import { animate, style, transition, trigger } from '@angular/animations';
 
 import { ConfigurationService } from '../../../Services/Admin/configuration/configuration.service';
-
+import { ActivatedRoute } from '@angular/router';
 import { AppConstants } from '../../../config/app-constants.config';
 import { Messages } from '../../../config/messages.config';
 
@@ -59,10 +59,24 @@ export class TopUpComponent {
     private http: HttpClient,
     private alertService: AlertService,
     private authService: AuthService,
-    private configService: ConfigurationService
+    private configService: ConfigurationService,
+    private route: ActivatedRoute
   ) {
     this.customAmountControl = this.fb.control('', [Validators.min(1), Validators.max(150)]);
     this.loadPrices();
+
+    // Check for amount in query params
+    this.route.queryParams.subscribe(params => {
+      if (params['amount']) {
+        const amount = parseFloat(params['amount']);
+        if (!isNaN(amount) && amount > 0) {
+          this.isCustomAmount = true;
+          this.selectedAmount = amount;
+          this.customAmountControl.setValue(amount.toString());
+        }
+      }
+    });
+
     this.customAmountControl.valueChanges.subscribe(() => {
       if (this.isCustomAmount) {
         this.selectedAmount = this.customAmountControl.value ? parseFloat(this.customAmountControl.value) : null;

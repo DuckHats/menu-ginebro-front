@@ -77,6 +77,7 @@ export const Messages = {
     ALLERGIES_ERROR: "No s'han pogut guardar les al·lèrgies.",
     PROTECTED_USER_ERROR:
       'No es pot desactivar aquest usuari (Admin, Cuina o Usuari Actual).',
+    INSUFFICIENT_BALANCE: 'No tens prou saldo per fer aquesta comanda.',
   },
 
   // Configuration messages

@@ -11,9 +11,10 @@ import { Router } from '@angular/router';
 import { Messages } from '../../config/messages.config';
 import { AppConstants } from '../../config/app-constants.config';
 import { ConsoleMessages } from '../../config/console-messages.config';
-
 import { ConfigurationService } from '../../Services/Admin/configuration/configuration.service';
+import { AuthService } from '../../Services/Auth/auth.service';
 import { ImageService } from '../../Services/Admin/image/image.service';
+import { NavigationConfig } from '../../config/navigation.config';
 import { IntroModalComponent } from '../../components/modals/intro-modal/intro-modal.component';
 import { ConfirmModalComponent } from '../../components/modals/confirm-modal/confirm-modal.component';
 import { MenuOptionCardComponent } from '../../components/shared/menu-option-card/menu-option-card.component';
@@ -60,6 +61,19 @@ export default class MenuSelectionComponent implements OnInit {
   configLoading = true;
   disabledDates: string[] = [];
   userOrders: any[] = [];
+  userBalance = 0;
+  
+  prices = {
+    menu_price: 0,
+    taper_price: 0,
+    half_menu_first_price: 0,
+    half_menu_second_price: 0
+  };
+  
+  orderPrice = 0;
+  orderBasePrice = 0;
+  orderTaperSurcharge = 0;
+  hasEnoughBalance = true;
   
   // Modal state
   showIntroModal = false;
@@ -76,6 +90,7 @@ export default class MenuSelectionComponent implements OnInit {
     private route: Router,
     private menusService: MenusService,
     private configService: ConfigurationService,
+    private authService: AuthService,
     private imageService: ImageService
   ) {}
 
@@ -103,12 +118,24 @@ export default class MenuSelectionComponent implements OnInit {
         if (res.status === 'success') {
           this.orderDeadlineTime = res.data.order_deadline_time || '10:00';
           this.orderDeadlineDaysAhead = Number(res.data.order_deadline_days_ahead ?? 1);
+          this.prices = {
+            menu_price: parseFloat(res.data.menu_price) || 0,
+            taper_price: parseFloat(res.data.taper_price) || 0,
+            half_menu_first_price: parseFloat(res.data.half_menu_first_price) || 0,
+            half_menu_second_price: parseFloat(res.data.half_menu_second_price) || 0
+          };
         }
         this.configLoading = false;
         this.loadUserOrders();
       },
       error: () => {
         this.configLoading = false;
+      }
+    });
+
+    this.authService.checkAuth().subscribe({
+      next: (user) => {
+        this.userBalance = user.balance || 0;
       }
     });
   }
@@ -376,8 +403,62 @@ export default class MenuSelectionComponent implements OnInit {
       return;
     }
 
-    // Show confirmation modal instead of submitting directly
+    const price = this.calculateOrderPrice();
+    this.orderPrice = price;
+    
+    // Detailed breakdown
+    this.orderBasePrice = this.calculateBasePrice();
+    this.orderTaperSurcharge = this.taperSelected ? this.prices.taper_price : 0;
+
+    console.log('Price calculation:', {
+      orderPrice: this.orderPrice,
+      basePrice: this.orderBasePrice,
+      taperSurcharge: this.orderTaperSurcharge,
+      userBalance: this.userBalance,
+      pricesObj: this.prices
+    });
+
+    this.hasEnoughBalance = this.userBalance >= this.orderPrice;
+
+    // Show confirmation modal
     this.showConfirmModal = true;
+  }
+
+  calculateBasePrice(): number {
+    const selectedType = this.getSelectedMenuTypeName();
+    let basePrice = 0;
+
+    if (selectedType.includes('Primer plat') && selectedType.includes('Segon plat')) {
+      basePrice = this.prices.menu_price;
+    } else if (selectedType.includes('Primer plat')) {
+      basePrice = this.prices.half_menu_first_price;
+    } else if (selectedType.includes('Segon plat')) {
+      basePrice = this.prices.half_menu_second_price;
+    }
+    return basePrice;
+  }
+
+  calculateOrderPrice(): number {
+    const selectedType = this.getSelectedMenuTypeName();
+    let basePrice = 0;
+
+    if (selectedType.includes('Primer plat') && selectedType.includes('Segon plat')) {
+      basePrice = this.prices.menu_price;
+    } else if (selectedType.includes('Primer plat')) {
+      basePrice = this.prices.half_menu_first_price;
+    } else if (selectedType.includes('Segon plat')) {
+      basePrice = this.prices.half_menu_second_price;
+    }
+
+    const taperSurcharge = this.taperSelected ? this.prices.taper_price : 0;
+    return Math.round((basePrice + taperSurcharge) * 100) / 100;
+  }
+
+  onRecharge(): void {
+    this.showConfirmModal = false;
+    this.route.navigate([NavigationConfig.PAYMENT_TOP_UP], { 
+      queryParams: { amount: this.orderPrice } 
+    });
   }
 
   cancelConfirmation(): void {
