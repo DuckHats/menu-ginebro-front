@@ -60,4 +60,53 @@ export const UILabels = {
     CONFIRM: 'Confirmar',
     BACK: 'Tornar',
   },
+
+  // History Page
+  HISTORY: {
+    TITLE: 'Historial de Comandes',
+    BACK_TO_MENU: 'Tornar al menú',
+    NO_ORDERS: 'No tens comandes a l\'historial.',
+  },
+
+  // Welcome Page
+  WELCOME: {
+    SELECT_MENU: 'Seleccionar Menú',
+  },
+
+  // Menu Selection Page
+  MENU_SELECTION: {
+    TITLE: 'Selecció de Menú',
+    SUBTITLE: 'Tria els teus plats preferits per a cada dia',
+    TAPER_LABEL: 'Opció de Tàper',
+    TAPER_SUBTITLE: 'Portaré el meu propi',
+    SELECT_DAY: 'Selecciona el dia',
+    MENU_TYPE_TITLE: 'Tipus de menú',
+    RESTRICTED_DATE_TITLE: 'Data no disponible',
+    EMPTY_STATE: 'Tria un tipus de menú per començar a configurar la teva reserva',
+    DOWNLOAD_BUTTON: 'Descarregar Menú',
+    CONFIRM_BUTTON: 'Confirmar Selecció',
+    TAPER_YES: 'Portaré Tàper',
+    TAPER_NO: 'No portaré Tàper',
+    CONFIRM: 'Confirmar'
+  },
+
+  // Modals
+  MODALS: {
+    INTRO: {
+      TITLE: 'Benvingut/da al Menjador!',
+      DESCRIPTION: 'Tria el teu menú diari de forma fàcil i ràpida. Recorda revisar les hores de tall i antelació per assegurar la teva comanda.',
+      BUTTON: 'Començar ara'
+    },
+    CONFIRM: {
+      TITLE: 'Confirmar comanda',
+      DATE: 'Data',
+      MENU_TYPE: 'Tipus de Menú',
+      OPTIONS: 'Opcions triades',
+      OWN_TUPPER: 'Amb tàper propi',
+      QUESTION_1: 'Estàs segur/a que vols confirmar aquesta selecció?',
+      QUESTION_2: 'Ara pots tornar enrere per fer canvis però després no podràs modificar res.',
+      BACK: 'Tornar enrere',
+      CONFIRM: 'SÍ, CONFIRMAR'
+    }
+  }
 };

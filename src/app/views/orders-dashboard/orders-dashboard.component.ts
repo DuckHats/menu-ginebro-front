@@ -9,23 +9,59 @@ import { MenusService } from '../../Services/Menus/menu.service';
 import { AlertService } from '../../Services/Alert/alert.service';
 import { UserService } from '../../Services/User/user.service';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { DragDropModule, CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { BulkUploadModalComponent } from '../../components/bulk-upload-modal/bulk-upload-modal.component';
+
+
 import { Messages } from '../../config/messages.config';
+import { SidebarService } from '../../Services/Sidebar/sidebar.service';
 import { AppConstants } from '../../config/app-constants.config';
 import { ConsoleMessages } from '../../config/console-messages.config';
+import { animate, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-orders-dashboard',
   templateUrl: './orders-dashboard.component.html',
   styleUrls: ['./orders-dashboard.component.css'],
   standalone: true,
-  imports: [CommonModule, FormsModule, MatDialogModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatDialogModule,
+    MatIconModule,
+    MatDatepickerModule,
+    MatInputModule,
+    MatFormFieldModule,
+    DragDropModule,
+  ],
+
+
+  animations: [
+    trigger('fadeIn', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(10px)' }),
+        animate('400ms ease-out', style({ opacity: 1, transform: 'translateY(0)' })),
+      ]),
+    ]),
+  ],
 })
 export class OrdersDashboardComponent implements OnInit {
-  activeTab = 'ordres';
-  selectedDate = new Date().toISOString().split('T')[0];
+  AppConstants = AppConstants;
+  activeTab: string = AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.ORDERS;
+  // Keep this as a Date object so Angular Material datepicker formats correctly
+  selectedDate: Date = new Date();
   weeklyMenus: { date: string; menus: MenuItem[] }[] = [];
   selectedExportFormat = 'json';
+  
+  // Kitchen View Toggles
+  ordersViewMode: 'table' | 'kanban' = 'table';
+  kanbanColumns: { status: number; label: string; orders: Order[] }[] = [];
+  isSidebarCollapsed = false;
+
 
   students: Student[] = [];
   orders: Order[] = [];
@@ -47,25 +83,33 @@ export class OrdersDashboardComponent implements OnInit {
     private menusService: MenusService,
     private alertService: AlertService,
     private userService: UserService,
-    private dialog: MatDialog
-  ) {}
+    private dialog: MatDialog,
+    private sidebarService: SidebarService
+  ) { }
 
   ngOnInit(): void {
     this.admintype = this.userService.getLocalUser()?.user_type_id || 1;
+    this.sidebarService.isCollapsed$.subscribe(collapsed => {
+      this.isSidebarCollapsed = collapsed;
+    });
     this.loadAllData();
   }
 
-  setActiveTab(tab: 'ordres' | 'menus' | 'usuaris' | 'json' | 'export'): void {
+  setActiveTab(tab: string): void {
     this.activeTab = tab;
     this.loadAllData();
   }
 
+  toggleSidebar(): void {
+    this.sidebarService.toggle();
+  }
+
   loadAllData(): void {
-    if (this.activeTab === 'menus') {
+    if (this.activeTab === AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.MENUS) {
       this.loadMenusWeek();
-    } else if (this.activeTab === 'ordres') {
-      this.loadOrders(this.selectedDate);
-    } else if (this.activeTab === 'usuaris') {
+    } else if (this.activeTab === AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.ORDERS) {
+      this.loadOrders(this.formatDate(this.selectedDate));
+    } else if (this.activeTab === AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.USERS) {
       this.loadUsers();
     }
   }
@@ -80,7 +124,7 @@ export class OrdersDashboardComponent implements OnInit {
     const datesOfWeek = Array.from({ length: 5 }, (_, i) => {
       const d = new Date(startOfWeek);
       d.setDate(d.getDate() + i);
-      return d.toISOString().split('T')[0];
+      return this.formatDate(d);
     });
 
     const menuPromises = datesOfWeek.map((date) =>
@@ -164,8 +208,10 @@ export class OrdersDashboardComponent implements OnInit {
           orders = orders.flat();
         }
         this.orders = orders;
+        this.updateKanbanColumns();
         this.loadingOrders = false;
       },
+
       error: (err) => {
         console.error(ConsoleMessages.ERRORS.FETCHING_ORDERS, err);
         this.loadingOrders = false;
@@ -254,13 +300,55 @@ export class OrdersDashboardComponent implements OnInit {
     });
   }
 
-  onDateChange(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    if (input.value) {
-      this.selectedDate = input.value;
+  onDateChange(event: any): void {
+    const value = event.value || (event.target as HTMLInputElement).value;
+    if (value) {
+      // prefer Date object from the picker
+      if (value instanceof Date) {
+        this.selectedDate = value;
+      } else {
+        // fallback: try to parse string to Date
+        this.selectedDate = new Date(value);
+      }
       this.loadAllData();
     }
   }
+
+  updateKanbanColumns(): void {
+    const statuses = [
+      { id: 1, label: 'Pendent' },
+      { id: 2, label: 'En preparació' },
+      { id: 3, label: 'Entregat' },
+      { id: 4, label: 'No recollit' }
+    ];
+
+    this.kanbanColumns = statuses.map(s => ({
+      status: s.id,
+      label: s.label,
+      orders: this.orders.filter(o => o.orderStatus.id === s.id)
+    }));
+  }
+
+  onDrop(event: CdkDragDrop<Order[]>): void {
+    if (event.previousContainer === event.container) {
+      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+    } else {
+      const order = event.previousContainer.data[event.previousIndex];
+      const newStatusId = Number(event.container.id.replace('status-', ''));
+      
+      transferArrayItem(
+        event.previousContainer.data,
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex
+      );
+
+      // Update backend
+      order.orderStatus.id = newStatusId;
+      this.onStatusChange(order);
+    }
+  }
+
 
   onStatusChange(order: Order): void {
     this.ordersService.updateStatus(order.id, order.orderStatus.id).subscribe({
@@ -270,7 +358,7 @@ export class OrdersDashboardComponent implements OnInit {
           Messages.ORDERS.STATUS_UPDATE_SUCCESS,
           ''
         );
-        this.loadOrders(this.selectedDate);
+        this.loadOrders(this.formatDate(this.selectedDate));
       },
       error: (err) => {
         this.alertService.show(
@@ -285,15 +373,24 @@ export class OrdersDashboardComponent implements OnInit {
   changeWeek(offset: number): void {
     const current = new Date(this.selectedDate);
     current.setDate(current.getDate() + offset * 7);
-    this.selectedDate = current.toISOString().split('T')[0];
+    this.selectedDate = current;
     this.loadMenusWeek();
   }
 
   changeDay(offset: number): void {
     const current = new Date(this.selectedDate);
     current.setDate(current.getDate() + offset);
-    this.selectedDate = current.toISOString().split('T')[0];
-    this.loadOrders(this.selectedDate);
+    this.selectedDate = current;
+    this.loadOrders(this.formatDate(this.selectedDate));
+  }
+
+  // Helper: format a Date into YYYY-MM-DD (API expects this format)
+  formatDate(d: Date): string {
+    if (!d) return '';
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
 
   toggleUserStatus(student: Student): void {
@@ -335,6 +432,10 @@ export class OrdersDashboardComponent implements OnInit {
           type === 'menus'
             ? AppConstants.IMPORT_DESCRIPTIONS.MENUS
             : AppConstants.IMPORT_DESCRIPTIONS.USERS,
+        plantillaCsvUrl:
+          type === 'menus'
+            ? AppConstants.IMPORT_TEMPLATES.MENUS_CSV
+            : undefined,
       },
     });
 

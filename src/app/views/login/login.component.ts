@@ -5,44 +5,77 @@ import {
   Validators,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../Services/Auth/auth.service';
 import { UserService } from '../../Services/User/user.service';
 import { ErrorMessages } from '../../config/errors.config';
 import { AlertService } from '../../Services/Alert/alert.service';
 import { NavigationConfig } from '../../config/navigation.config';
-import { IconComponent } from '../../components/icon/icon.component';
 import { Messages } from '../../config/messages.config';
 // App uses session cookies; token constants removed
 import { UILabels } from '../../config/ui-labels.config';
+
+import { MatIconModule } from '@angular/material/icon';
+import { animate, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-login',
   standalone: true,
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
-  imports: [CommonModule, ReactiveFormsModule, IconComponent],
+  imports: [CommonModule, ReactiveFormsModule, MatIconModule],
+  animations: [
+    trigger('fadeIn', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(10px)' }),
+        animate('400ms ease-out', style({ opacity: 1, transform: 'translateY(0)' })),
+      ]),
+    ]),
+  ],
 })
 export class LoginComponent {
   loginForm: FormGroup;
   alertMessage: string | null = null;
   isSubmitting = false;
   UILabels = UILabels;
+  googleAuthUrl: string;
 
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
     private userService: UserService,
     private router: Router,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private route: ActivatedRoute
   ) {
     this.loginForm = this.fb.group({
       user: ['', [Validators.required]],
       password: ['', [Validators.required]],
     });
 
-    // No token-based check here: authentication is session/cookie-based, not JWT.
+    this.googleAuthUrl = this.authService.getGoogleAuthUrl();
+  }
+
+  ngOnInit(): void {
+    this.route.queryParams.subscribe(params => {
+      if (params['error']) {
+        if (params['error'] === 'invalid_domain') {
+          this.alertService.show(
+            'error',
+            ErrorMessages.ACCESS_DENIED,
+            ErrorMessages.INVALID_DOMAIN
+          );
+        }
+        
+        // Clear the query parameters from the URL
+        this.router.navigate([], {
+          relativeTo: this.route,
+          queryParams: {},
+          replaceUrl: true
+        });
+      }
+    });
   }
 
   onSubmit(): void {

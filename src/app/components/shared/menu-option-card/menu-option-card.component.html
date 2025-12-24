@@ -1,0 +1,14 @@
+<button
+  (click)="onSelect()"
+  class="group relative w-full px-4 sm:px-5 py-3 sm:py-4 rounded-xl sm:rounded-2xl border-2 transition-all flex items-center justify-between text-left overflow-hidden min-h-[4rem]"
+  [ngClass]="option.selected ? 'bg-white border-primary border-2 shadow-md' : 'bg-slate-50/50 border-transparent hover:border-slate-200'"
+>
+  <div class="space-y-0.5">
+    <span class="block font-black text-[11px] sm:text-xs transition-colors leading-tight" [ngClass]="option.selected ? 'text-primary' : 'text-slate-600'">{{ option.name }}</span>
+    <span class="block text-[7px] sm:text-[8px] font-black text-slate-400 uppercase tracking-widest">{{ sectionTitle }}</span>
+  </div>
+  
+  <div class="w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 flex items-center justify-center transition-all shrink-0 ml-2"
+    [ngClass]="option.selected ? 'border-primary bg-primary shadow-sm shadow-primary/20' : 'border-slate-100 bg-white group-hover:border-slate-200'">
+  </div>
+</button>

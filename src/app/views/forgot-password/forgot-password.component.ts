@@ -9,6 +9,10 @@ import { NavigationConfig } from '../../config/navigation.config';
 import { OtpInputComponent } from '../../components/otp-input/otp-input.component';
 import { PasswordStrengthComponent } from '../../components/password-strength/password-strength.component';
 import { Messages } from '../../config/messages.config';
+import { UILabels } from '../../config/ui-labels.config';
+
+import { MatIconModule } from '@angular/material/icon';
+import { animate, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-forgot-password',
@@ -20,6 +24,15 @@ import { Messages } from '../../config/messages.config';
     ReactiveFormsModule,
     OtpInputComponent,
     PasswordStrengthComponent,
+    MatIconModule
+  ],
+  animations: [
+    trigger('fadeIn', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(10px)' }),
+        animate('400ms ease-out', style({ opacity: 1, transform: 'translateY(0)' })),
+      ]),
+    ]),
   ],
 })
 export class ForgotPasswordComponent {
@@ -28,6 +41,7 @@ export class ForgotPasswordComponent {
   resetForm: FormGroup;
   isSubmitting = false;
   passwordValid = false;
+  UILabels = UILabels;
 
   constructor(
     private fb: FormBuilder,
@@ -48,6 +62,10 @@ export class ForgotPasswordComponent {
       },
       { validators: this.passwordsMatchValidator }
     );
+  }
+
+  navigateToLogin(): void {
+    this.router.navigate([NavigationConfig.LOGIN]);
   }
 
   sendResetCode(): void {

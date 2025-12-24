@@ -1,100 +1,132 @@
-<main class="flex items-center justify-center min-h-screen bg-gray-100 px-4 font-sans">
-  <section
-    class="w-full max-w-sm lg:max-w-md bg-white rounded-lg shadow-[0_4px_4px_rgba(0,0,0,0.25),0_4px_6px_-4px_rgba(0,0,0,0.1),0_10px_15px_-3px_rgba(0,0,0,0.1),0_-10px_15px_rgba(0,0,0,0.1)]">
+<main class="min-h-screen bg-slate-50/50 flex items-center justify-center p-6" @fadeIn>
+  <section class="w-full max-w-md bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
+    <div class="p-10 lg:p-12">
+      <!-- Header -->
+      <header class="flex flex-col items-center text-center mb-10">
+        <h1 class="text-3xl font-bold text-slate-800 tracking-tight mb-2">
+          {{ UILabels.REGISTRATION.TITLE }}
+        </h1>
+        <p class="text-slate-500 font-medium">
+          {{ UILabels.REGISTRATION.SUBTITLE }}
+        </p>
+      </header>
 
-    <header class="flex flex-col items-center pt-8 pb-6 text-center">
-      <h1 class="text-[#009ca6] text-[20.4px] font-bold leading-8">{{ UILabels.REGISTRATION.TITLE }}</h1>
-      <p class="text-gray-600 text-sm leading-6">{{ UILabels.REGISTRATION.SUBTITLE }}</p>
-    </header>
-
-    <!-- PAS 1: Email -->
-    <form *ngIf="step === 1" [formGroup]="emailForm" (ngSubmit)="sendCode()" class="px-10 pb-6 flex flex-col gap-6">
-      <div class="flex flex-col gap-1">
-        <label for="email" class="text-gray-700 text-xs font-medium">{{ UILabels.REGISTRATION.EMAIL_LABEL }}</label>
-        <div class="relative">
-          <app-icon name="email" class="absolute left-3 top-2.5 w-5 h-5 text-gray-400"></app-icon>
-          <input type="email" id="email" formControlName="email" [placeholder]="UILabels.REGISTRATION.EMAIL_PLACEHOLDER"
-            class="w-full h-[41px] pl-10 pr-3 py-2 rounded-md border border-gray-300 text-base focus:outline-none focus:ring-2 focus:ring-[#009ca6]" />
+      <!-- PAS 1: Email -->
+      <form *ngIf="step === 1" [formGroup]="emailForm" (ngSubmit)="sendCode()" class="space-y-6">
+        <div class="space-y-2">
+          <label for="email" class="text-sm font-bold text-slate-700 ml-1">
+            {{ UILabels.REGISTRATION.EMAIL_LABEL }}
+          </label>
+          <div class="relative group">
+            <div class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors">
+              <mat-icon class="text-[20px] w-5 h-5">mail_outline</mat-icon>
+            </div>
+            <input
+              type="email"
+              id="email"
+              formControlName="email"
+              [placeholder]="UILabels.REGISTRATION.EMAIL_PLACEHOLDER"
+              class="w-full pl-12 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-slate-700 placeholder:text-slate-400 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all outline-none font-medium"
+            />
+          </div>
+          <div *ngIf="emailForm.get('email')?.touched && emailForm.get('email')?.errors" class="px-1">
+            <p class="text-xs text-rose-500 font-bold" *ngIf="emailForm.get('email')?.errors?.['required']">{{ UILabels.REGISTRATION.EMAIL_REQUIRED_ERROR }}</p>
+            <p class="text-xs text-rose-500 font-bold" *ngIf="emailForm.get('email')?.errors?.['email']">{{ UILabels.REGISTRATION.EMAIL_FORMAT_ERROR }}</p>
+            <p class="text-xs text-rose-500 font-bold" *ngIf="emailForm.get('email')?.errors?.['ginebroEmail']">{{ UILabels.REGISTRATION.EMAIL_DOMAIN_ERROR }}</p>
+          </div>
         </div>
-      </div>
-      <button type="submit"
-        class="w-full h-10 bg-[#009ca6] text-white text-sm font-medium rounded-md flex items-center justify-center gap-2 hover:bg-[#00838f] transition"
-        [disabled]="emailForm.invalid || isSubmitting">
-        <app-icon name="add-user" class="w-5 h-5"></app-icon>
-        <span *ngIf="!isSubmitting">{{ UILabels.REGISTRATION.SEND_CODE_BUTTON }}</span>
-        <span *ngIf="isSubmitting">{{ UILabels.REGISTRATION.SEND_CODE_BUTTON_LOADING }}</span>
-      </button>
-      <div *ngIf="emailForm.get('email')?.touched && emailForm.get('email')?.errors"
-        class="text-sm text-red-500 font-normal">
-        <small class="text-danger" *ngIf="emailForm.get('email') && emailForm.get('email')?.errors?.['required']">{{ UILabels.REGISTRATION.EMAIL_REQUIRED_ERROR }}</small>
-        <small class="text-danger" *ngIf="emailForm.get('email')?.errors?.['email']">{{ UILabels.REGISTRATION.EMAIL_FORMAT_ERROR }}</small>
-        <small class="text-danger" *ngIf="emailForm.get('email')?.errors?.['ginebroEmail']">{{ UILabels.REGISTRATION.EMAIL_DOMAIN_ERROR }}</small>
-      </div>
-    </form>
 
-    <!-- PAS 2: Dades i codi -->
-    <form *ngIf="step === 2" [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="px-10 pb-6 flex flex-col gap-6">
-      <div class="flex flex-col gap-1">
-        <label for="name" class="text-gray-700 text-xs font-medium">{{ UILabels.REGISTRATION.NAME_LABEL }}</label>
-        <div class="relative">
-          <app-icon name="user" class="absolute left-3 top-2.5 w-5 h-5 text-gray-400"></app-icon>
-          <input type="text" id="name" formControlName="name" [placeholder]="UILabels.REGISTRATION.NAME_PLACEHOLDER"
-            class="w-full h-[41px] pl-10 pr-3 py-2 rounded-md border border-gray-300 text-base focus:outline-none focus:ring-2 focus:ring-[#009ca6]" />
+        <button
+          type="submit"
+          [disabled]="emailForm.invalid || isSubmitting"
+          class="w-full bg-primary hover:bg-primary-dark disabled:bg-slate-300 text-white py-4 rounded-2xl font-bold shadow-lg shadow-primary/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2"
+        >
+          <mat-icon *ngIf="!isSubmitting" class="text-[20px] w-5 h-5">send</mat-icon>
+          <div *ngIf="isSubmitting" class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+          <span>{{ isSubmitting ? UILabels.REGISTRATION.SEND_CODE_BUTTON_LOADING : UILabels.REGISTRATION.SEND_CODE_BUTTON }}</span>
+        </button>
+      </form>
+
+      <!-- PAS 2: Dades i codi -->
+      <form *ngIf="step === 2" [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="space-y-6">
+        <div class="grid grid-cols-1 gap-4">
+          <!-- Name -->
+          <div class="space-y-2">
+            <label for="name" class="text-sm font-bold text-slate-700 ml-1">{{ UILabels.REGISTRATION.NAME_LABEL }}</label>
+            <div class="relative group">
+              <div class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors">
+                <mat-icon class="text-[20px] w-5 h-5">person_outline</mat-icon>
+              </div>
+              <input type="text" id="name" formControlName="name" [placeholder]="UILabels.REGISTRATION.NAME_PLACEHOLDER"
+                class="w-full pl-12 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-slate-700 placeholder:text-slate-400 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all outline-none font-medium" />
+            </div>
+          </div>
+
+          <!-- Last Name -->
+          <div class="space-y-2">
+            <label for="last_name" class="text-sm font-bold text-slate-700 ml-1">{{ UILabels.REGISTRATION.LAST_NAME_LABEL }}</label>
+            <div class="relative group">
+              <div class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors">
+                <mat-icon class="text-[20px] w-5 h-5">badge</mat-icon>
+              </div>
+              <input type="text" id="last_name" formControlName="last_name" [placeholder]="UILabels.REGISTRATION.LAST_NAME_PLACEHOLDER"
+                class="w-full pl-12 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-slate-700 placeholder:text-slate-400 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all outline-none font-medium" />
+            </div>
+          </div>
         </div>
-      </div>
 
-      <div class="flex flex-col gap-1">
-        <label for="last_name" class="text-gray-700 text-xs font-medium">{{ UILabels.REGISTRATION.LAST_NAME_LABEL }}</label>
-        <div class="relative">
-          <app-icon name="user" class="absolute left-3 top-2.5 w-5 h-5 text-gray-400"></app-icon>
-          <input type="text" id="last_name" formControlName="last_name" [placeholder]="UILabels.REGISTRATION.LAST_NAME_PLACEHOLDER"
-            class="w-full h-[41px] pl-10 pr-3 py-2 rounded-md border border-gray-300 text-base focus:outline-none focus:ring-2 focus:ring-[#009ca6]" />
+        <!-- Verification Code -->
+        <div class="space-y-3">
+          <label class="text-sm font-bold text-slate-700 ml-1 block text-center">{{ UILabels.REGISTRATION.VERIFICATION_CODE_LABEL }}</label>
+          <div class="flex justify-center">
+            <app-otp-input (codeChange)="registerForm.get('verification_code')?.setValue($event)"></app-otp-input>
+          </div>
         </div>
-      </div>
 
-      <div class="flex flex-col gap-1">
-        <label for="verification_code" class="text-gray-700 text-xs font-medium">{{ UILabels.REGISTRATION.VERIFICATION_CODE_LABEL }}</label>
-        <div class="relative">
-          <app-otp-input (codeChange)="registerForm.get('verification_code')?.setValue($event)"></app-otp-input>
+        <!-- Password -->
+        <div class="space-y-2">
+          <label for="password" class="text-sm font-bold text-slate-700 ml-1">{{ UILabels.REGISTRATION.PASSWORD_LABEL }}</label>
+          <div class="relative group">
+            <div class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors">
+              <mat-icon class="text-[20px] w-5 h-5">lock_outline</mat-icon>
+            </div>
+            <input type="password" id="password" formControlName="password" [placeholder]="UILabels.REGISTRATION.PASSWORD_PLACEHOLDER"
+              class="w-full pl-12 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-slate-700 placeholder:text-slate-400 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all outline-none font-medium" />
+          </div>
+          <app-password-strength [password]="passwordValue" (strengthChange)="passwordValid = $event"></app-password-strength>
         </div>
-      </div>
 
-      <div class="flex flex-col gap-1">
-        <label for="password" class="text-gray-700 text-xs font-medium">{{ UILabels.REGISTRATION.PASSWORD_LABEL }}</label>
-        <div class="relative">
-          <app-icon name="lock" class="absolute left-3 top-2.5 w-5 h-5 text-gray-400"></app-icon>
-          <input type="password" id="password" formControlName="password" [placeholder]="UILabels.REGISTRATION.PASSWORD_PLACEHOLDER"
-            class="w-full h-[41px] pl-10 pr-3 py-2 rounded-md border border-gray-300 text-base focus:outline-none focus:ring-2 focus:ring-[#009ca6]" />
+        <!-- Password Confirmation -->
+        <div class="space-y-2">
+          <label for="password_confirmation" class="text-sm font-bold text-slate-700 ml-1">{{ UILabels.REGISTRATION.PASSWORD_CONFIRMATION_LABEL }}</label>
+          <div class="relative group">
+            <div class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors">
+              <mat-icon class="text-[20px] w-5 h-5">lock_reset</mat-icon>
+            </div>
+            <input type="password" id="password_confirmation" formControlName="password_confirmation"
+              [placeholder]="UILabels.REGISTRATION.PASSWORD_CONFIRMATION_PLACEHOLDER"
+              class="w-full pl-12 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-2xl text-slate-700 placeholder:text-slate-400 focus:bg-white focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all outline-none font-medium" />
+          </div>
+          <p class="text-xs text-rose-500 font-bold px-1" *ngIf="registerForm.errors?.['passwordsMismatch']">{{ UILabels.REGISTRATION.PASSWORDS_MISMATCH_ERROR }}</p>
         </div>
+
+        <button
+          type="submit"
+          [disabled]="registerForm.invalid || isSubmitting"
+          class="w-full bg-primary hover:bg-primary-dark disabled:bg-slate-300 text-white py-4 rounded-2xl font-bold shadow-lg shadow-primary/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2"
+        >
+          <mat-icon *ngIf="!isSubmitting" class="text-[20px] w-5 h-5">check_circle</mat-icon>
+          <div *ngIf="isSubmitting" class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+          <span>{{ isSubmitting ? UILabels.REGISTRATION.COMPLETE_REGISTRATION_BUTTON_LOADING : UILabels.REGISTRATION.COMPLETE_REGISTRATION_BUTTON }}</span>
+        </button>
+      </form>
+
+      <!-- Footer Link -->
+      <div class="mt-8 pt-6 border-t border-slate-100 text-center">
+        <button type="button" (click)="navigateToLogin()" class="text-sm font-bold text-slate-500 hover:text-primary transition-colors">
+          {{ UILabels.REGISTRATION.LOGIN_LINK }}
+        </button>
       </div>
-
-      <app-password-strength [password]="passwordValue" (strengthChange)="passwordValid = $event">
-      </app-password-strength>
-
-      <div class="flex flex-col gap-1">
-        <label for="password_confirmation" class="text-gray-700 text-xs font-medium">{{ UILabels.REGISTRATION.PASSWORD_CONFIRMATION_LABEL }}</label>
-        <div class="relative">
-          <app-icon name="lock" class="absolute left-3 top-2.5 w-5 h-5 text-gray-400"></app-icon>
-          <input type="password" id="password_confirmation" formControlName="password_confirmation"
-            [placeholder]="UILabels.REGISTRATION.PASSWORD_CONFIRMATION_PLACEHOLDER"
-            class="w-full h-[41px] pl-10 pr-3 py-2 rounded-md border border-gray-300 text-base focus:outline-none focus:ring-2 focus:ring-[#009ca6]" />
-        </div>
-      </div>
-
-      <small class="text-red-500" *ngIf="registerForm.errors?.['passwordsMismatch']">{{ UILabels.REGISTRATION.PASSWORDS_MISMATCH_ERROR }}</small>
-
-      <button type="submit"
-        class="w-full h-10 bg-[#009ca6] text-white text-sm font-medium rounded-md flex items-center justify-center gap-2 hover:bg-[#00838f] transition"
-        [disabled]="registerForm.invalid || isSubmitting">
-        <app-icon name="add-user" class="w-5 h-5"></app-icon>
-        <span *ngIf="!isSubmitting">{{ UILabels.REGISTRATION.COMPLETE_REGISTRATION_BUTTON }}</span>
-        <span *ngIf="isSubmitting">{{ UILabels.REGISTRATION.COMPLETE_REGISTRATION_BUTTON_LOADING }}</span>
-      </button>
-    </form>
-
-    <a href="#" class="text-[#009ca6] text-sm font-normal text-center block pb-6 hover:underline"
-      (click)="navigateToLogin(); $event.preventDefault()">
-      {{ UILabels.REGISTRATION.LOGIN_LINK }}
-    </a>
+    </div>
   </section>
 </main>

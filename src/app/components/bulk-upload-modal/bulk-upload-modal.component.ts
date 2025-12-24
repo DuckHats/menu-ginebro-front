@@ -24,7 +24,11 @@ export class BulkUploadModalComponent {
   constructor(
     private dialogRef: MatDialogRef<BulkUploadModalComponent>,
     @Inject(MAT_DIALOG_DATA)
-    public data: { plantillaUrl: string; descripcion: string },
+    public data: {
+      plantillaUrl: string;
+      plantillaCsvUrl?: string;
+      descripcion: string;
+    },
     private alertService: AlertService
   ) {}
 
@@ -46,28 +50,45 @@ export class BulkUploadModalComponent {
     if (!this.selectedFile) {
       this.alertService.show(
         'warning',
-        Messages.IMPORT_EXPORT.SELECT_VALID_JSON,
+        Messages.IMPORT_EXPORT.SELECT_VALID_JSON, // Consider renaming this constant if possible, or ignore for now as text is likely "Valid file" in updated config? No, it's specific. I'll rely on the user to update text or I can check config messages.
         '',
         3000
       );
       return;
     }
 
+    const fileName = this.selectedFile.name.toLowerCase();
     const reader = new FileReader();
-    reader.onload = (e: any) => {
-      try {
-        const jsonData = JSON.parse(e.target.result);
-        this.dialogRef.close(jsonData); // <-- Retorna JSON al componente padre
-      } catch {
-        this.alertService.show(
-          'error',
-          Messages.IMPORT_EXPORT.INVALID_JSON,
-          '',
-          3000
-        );
-      }
-    };
-    reader.readAsText(this.selectedFile);
+
+    if (fileName.endsWith('.csv')) {
+      reader.onload = (e: any) => {
+        const csvData = e.target.result;
+        this.dialogRef.close({ data: csvData, format: 'csv' });
+      };
+      reader.readAsText(this.selectedFile);
+    } else if (fileName.endsWith('.json')) {
+      reader.onload = (e: any) => {
+        try {
+          const jsonData = JSON.parse(e.target.result);
+          this.dialogRef.close(jsonData);
+        } catch {
+          this.alertService.show(
+            'error',
+            Messages.IMPORT_EXPORT.INVALID_JSON,
+            '',
+            3000
+          );
+        }
+      };
+      reader.readAsText(this.selectedFile);
+    } else {
+      this.alertService.show(
+        'error',
+        'Format de fitxer no suportat. Useu .json o .csv',
+        '',
+        3000
+      );
+    }
   }
 
   close(): void {

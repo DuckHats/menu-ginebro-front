@@ -61,8 +61,8 @@ export const Messages = {
     MENUS_IMPORT_ERROR: 'Error durant la importació dels menús',
     USERS_IMPORT_SUCCESS: 'Usuaris importats correctament',
     USERS_IMPORT_ERROR: 'Error durant la importació dels usuaris',
-    INVALID_JSON: 'El fitxer no és un JSON vàlid',
-    SELECT_VALID_JSON: 'Has de seleccionar un json vàlid',
+    INVALID_JSON: 'El fitxer no és un JSON o CSV vàlid',
+    SELECT_VALID_JSON: 'Has de seleccionar un fitxer JSON o CSV vàlid',
   },
 
   // User management messages
@@ -77,6 +77,19 @@ export const Messages = {
     ALLERGIES_ERROR: "No s'han pogut guardar les al·lèrgies.",
     PROTECTED_USER_ERROR:
       'No es pot desactivar aquest usuari (Admin, Cuina o Usuari Actual).',
+  },
+
+  // Configuration messages
+  CONFIGURATION: {
+    LOAD_ERROR: 'Error carregant la configuració',
+    SAVE_SUCCESS: 'Configuració guardada correctament',
+    SAVE_ERROR: 'Error guardant la configuració',
+    IMAGES_LOAD_ERROR: 'Error carregant les imatges',
+    IMAGE_UPLOAD_SUCCESS: 'Imatge pujada correctament',
+    IMAGE_UPLOAD_ERROR: 'Error pujant la imatge',
+    IMAGE_DELETE_CONFIRM: 'Estàs segur que vols eliminar aquesta imatge?',
+    IMAGE_DELETE_SUCCESS: 'Imatge eliminada correctament',
+    IMAGE_DELETE_ERROR: 'Error eliminant la imatge',
   },
 
   // Generic messages
