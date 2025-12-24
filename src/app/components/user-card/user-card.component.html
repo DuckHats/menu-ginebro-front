@@ -210,6 +210,18 @@
                     <span class="text-[11px] font-bold">Menjador escolar actiu</span>
                   </div>
                 </div>
+
+                <!-- Balance Section -->
+                <div class="pt-6 border-t border-white/10">
+                   <div class="flex items-center justify-between mb-2">
+                     <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Saldo acual</span>
+                     <span class="text-2xl font-black text-white">{{ student.balance | currency:'EUR' }}</span>
+                   </div>
+                   <button (click)="goToTopUp()" class="w-full py-3 bg-primary text-white rounded-xl font-bold uppercase tracking-widest text-[10px] hover:bg-primary-dark transition-colors flex items-center justify-center gap-2">
+                     <mat-icon class="text-sm">add_circle</mat-icon>
+                     Afegir Saldo
+                   </button>
+                </div>
               </div>
             </div>
           </div>

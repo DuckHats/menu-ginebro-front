@@ -40,7 +40,11 @@ export class AdminConfigurationComponent implements OnInit {
     order_deadline_time: '',
     order_deadline_days_ahead: '',
     menu_price: '',
-    app_active: '1'
+    app_active: '1',
+    redsys_url: '',
+    redsys_merchant_code: '',
+    redsys_terminal: '',
+    redsys_key: ''
   };
   loading = false;
   saving = false;

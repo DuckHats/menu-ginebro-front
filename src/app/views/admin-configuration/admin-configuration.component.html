@@ -30,6 +30,14 @@
       <mat-icon class="text-lg">settings_ethernet</mat-icon>
       <span class="hidden sm:inline">{{ AppConstants.CONFIGURATION.LABELS.STATUS_TAB }}</span>
     </button>
+    <button
+      (click)="setActiveTab(AppConstants.CONFIGURATION.TABS.REDSYS)"
+      class="px-6 sm:px-8 py-3 rounded-full font-black text-[10px] sm:text-xs uppercase tracking-widest transition-all duration-300 flex items-center gap-3"
+      [ngClass]="activeTab === AppConstants.CONFIGURATION.TABS.REDSYS ? 'bg-white text-primary shadow-lg shadow-primary/5' : 'text-slate-400 hover:text-slate-600'"
+    >
+      <mat-icon class="text-lg">credit_card</mat-icon>
+      <span class="hidden sm:inline">{{ AppConstants.CONFIGURATION.LABELS.REDSYS_TAB }}</span>
+    </button>
   </div>
 
   <!-- Tab Content: Imatges -->
@@ -183,6 +191,79 @@
           >
             <span *ngIf="saving" class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
             <mat-icon *ngIf="!saving" class="group-hover:rotate-12 transition-transform">cloud_sync</mat-icon>
+            {{ saving ? AppConstants.CONFIGURATION.LABELS.SAVING : AppConstants.CONFIGURATION.LABELS.SAVE_CHANGES }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Tab Content: Redsys -->
+  <div *ngIf="activeTab === AppConstants.CONFIGURATION.TABS.REDSYS" class="space-y-12" @fadeIn>
+    <div class="bg-white rounded-[2.5rem] shadow-[0_20px_60px_rgba(0,0,0,0.03)] border border-slate-100 overflow-hidden">
+      <div class="p-8 sm:p-10 border-b border-slate-50 bg-slate-50/30">
+        <h2 class="text-xl font-black text-slate-800 tracking-tight">Pagaments</h2>
+        <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mt-2">{{ AppConstants.CONFIGURATION.LABELS.REDSYS_TITLE }}</p>
+      </div>
+
+      <div class="p-8 sm:p-10 space-y-10">
+        <div class="grid grid-cols-1 gap-8">
+            <!-- URL -->
+            <div class="space-y-3 group/field">
+                <label class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] transition-colors group-focus-within/field:text-primary">
+                  {{ AppConstants.CONFIGURATION.LABELS.REDSYS_URL }}
+                </label>
+                <div class="relative">
+                  <input type="text" [(ngModel)]="settings.redsys_url" class="w-full h-14 bg-slate-50 border border-slate-100 rounded-2xl px-6 font-bold text-slate-800 focus:ring-4 focus:ring-primary/5 focus:border-primary outline-none transition-all shadow-inner" placeholder="https://sis-t.redsys.es:25443/sis/realizarPago">
+                  <mat-icon class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-300 pointer-events-none">link</mat-icon>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Merchant Code -->
+                <div class="space-y-3 group/field">
+                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] transition-colors group-focus-within/field:text-primary">
+                      {{ AppConstants.CONFIGURATION.LABELS.REDSYS_CODE }}
+                    </label>
+                    <div class="relative">
+                      <input type="text" [(ngModel)]="settings.redsys_merchant_code" class="w-full h-14 bg-slate-50 border border-slate-100 rounded-2xl px-6 font-bold text-slate-800 focus:ring-4 focus:ring-primary/5 focus:border-primary outline-none transition-all shadow-inner">
+                      <mat-icon class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-300 pointer-events-none">store</mat-icon>
+                    </div>
+                </div>
+
+                <!-- Terminal -->
+                <div class="space-y-3 group/field">
+                    <label class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] transition-colors group-focus-within/field:text-primary">
+                      {{ AppConstants.CONFIGURATION.LABELS.REDSYS_TERMINAL }}
+                    </label>
+                    <div class="relative">
+                      <input type="text" [(ngModel)]="settings.redsys_terminal" class="w-full h-14 bg-slate-50 border border-slate-100 rounded-2xl px-6 font-bold text-slate-800 focus:ring-4 focus:ring-primary/5 focus:border-primary outline-none transition-all shadow-inner">
+                      <mat-icon class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-300 pointer-events-none">point_of_sale</mat-icon>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Key -->
+            <div class="space-y-3 group/field">
+                <label class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] transition-colors group-focus-within/field:text-primary">
+                  {{ AppConstants.CONFIGURATION.LABELS.REDSYS_KEY }}
+                </label>
+                <div class="relative">
+                  <input type="text" [(ngModel)]="settings.redsys_key" class="w-full h-14 bg-slate-50 border border-slate-100 rounded-2xl px-6 font-bold text-slate-800 focus:ring-4 focus:ring-primary/5 focus:border-primary outline-none transition-all shadow-inner font-mono text-sm">
+                  <mat-icon class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-300 pointer-events-none">vpn_key</mat-icon>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex justify-end pt-4">
+          <button
+            (click)="saveSettings()"
+            [disabled]="saving"
+            class="w-full sm:w-auto px-12 py-5 bg-gradient-to-r from-slate-900 to-slate-800 text-white rounded-2xl sm:rounded-[2rem] font-black uppercase tracking-[0.2em] text-[10px] sm:text-xs hover:from-primary hover:to-primary-dark transition-all duration-500 shadow-2xl shadow-slate-900/20 active:scale-95 flex items-center justify-center gap-4 group"
+          >
+            <span *ngIf="saving" class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+             <mat-icon *ngIf="!saving" class="group-hover:rotate-12 transition-transform">save_as</mat-icon>
             {{ saving ? AppConstants.CONFIGURATION.LABELS.SAVING : AppConstants.CONFIGURATION.LABELS.SAVE_CHANGES }}
           </button>
         </div>

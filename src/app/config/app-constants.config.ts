@@ -61,6 +61,7 @@ export const AppConstants = {
       IMAGES: 'imatges',
       ORDERS: 'comandes',
       STATUS: 'estat',
+      REDSYS: 'pagaments',
       CONFIG: 'config',
     },
     LABELS: {
@@ -69,6 +70,7 @@ export const AppConstants = {
       IMAGES_TAB: 'Imatges Menú',
       ORDERS_TAB: 'Comandes i Preus',
       STATUS_TAB: "Estat de l'App",
+      REDSYS_TAB: 'Pagaments (Redsys)',
       CONFIG_TAB: 'Configuració',
       IMAGES_TITLE: 'Imatges dels Menús Mensuals',
       IMAGES_DESC: 'Puja les imatges dels menús perquè els usuaris les puguin consultar.',
@@ -97,6 +99,12 @@ export const AppConstants = {
       APP_INACTIVE_DESC: "L'aplicació està en manteniment",
       MAINTENANCE_TITLE: 'Estem en manteniment',
       MAINTENANCE_DESC: "Estem realitzant algunes millores al sistema per oferir-te un millor servei. Torna a intentar-ho d'aquí a una estona.",
+      REDSYS_TITLE: 'Configuració de Passarel·la Redsys',
+      REDSYS_DESC: 'Configura les claus i paràmetres de connexió amb Redsys.',
+      REDSYS_URL: 'URL de l\'Entorn (Proves/Real)',
+      REDSYS_CODE: 'Codi de Comerç (FUC)',
+      REDSYS_TERMINAL: 'Terminal',
+      REDSYS_KEY: 'Clau Secreta (SHA-256)',
       MAINTENANCE_FOOTER: 'Gràcies per la teva paciència',
       ADMIN_DASHBOARD: {
         TITLE: 'Panell de Control',

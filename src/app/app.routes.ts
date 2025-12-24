@@ -23,6 +23,8 @@ export const routes: Routes = [
   { path: 'admin', component:  OrdersDashboardComponent, canActivate: [AuthGuard]}, // Ruta para la sección de historial de pedidos (admin)
   { path: 'history', component: OrderHistoryComponent, canActivate: [AuthGuard] }, // Ruta para la sección de historial
   { path: 'profile', component: UserCardComponent, canActivate: [AuthGuard] }, // Ruta para la sección de perfil
+  { path: 'payment/top-up', loadComponent: () => import('./views/payment/top-up/top-up.component').then(m => m.TopUpComponent), canActivate: [AuthGuard] },
+  { path: 'payment/result', loadComponent: () => import('./views/payment/result/payment-result.component').then(m => m.PaymentResultComponent), canActivate: [AuthGuard] },
 
   // Subrutas para el admin
   { path: 'admin/daily', component:  OrdersDashboardComponent}, // Ruta para la sección de historial de pedidos (admin)

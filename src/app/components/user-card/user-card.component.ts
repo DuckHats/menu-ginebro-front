@@ -69,6 +69,10 @@ export class UserCardComponent implements OnInit {
     this.activeTab = tab;
   }
 
+  goToTopUp() {
+    this.router.navigate(['/payment/top-up']);
+  }
+
   toggleSidebar() {
     this.sidebarService.toggle();
   }
