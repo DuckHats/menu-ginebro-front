@@ -6,7 +6,14 @@ export const AppConstants = {
     1: 'Primer plat',
     2: 'Segon plat',
     3: 'Postres',
-  },  // Order status
+  },
+  // User types
+  USER_TYPES: {
+    1: 'Administrador',
+    2: 'Alumne',
+    3: 'Cuiner',
+  },
+  // Order status
   ORDER_STATUS: {
     PENDING: { value: 1, label: 'Pendent' },
     IN_PREPARATION: { value: 2, label: 'En preparació' },
@@ -160,6 +167,8 @@ export const AppConstants = {
             NAME: 'Nom',
             LAST_NAME: 'Cognoms',
             EMAIL: 'Email',
+            ROLE: 'Rol',
+            BALANCE: 'Balanç',
             STATUS: 'Estat',
           },
           ACTIVE: 'Actiu',

@@ -229,6 +229,7 @@ export class OrdersDashboardComponent implements OnInit {
           email: user.email,
           status: user.status,
           user_type_id: user.user_type_id,
+          balance: user.balance,
         }));
       },
       error: (err) => {
@@ -543,5 +544,10 @@ export class OrdersDashboardComponent implements OnInit {
     if (student.user_type_id == 1 || student.user_type_id == 3) return true;
 
     return false;
+  }
+
+  getRoleName(typeId: number | undefined | null): string {
+    const id = typeId || 2;
+    return (AppConstants.USER_TYPES as any)[id] || 'Alumne';
   }
 }
