@@ -10,6 +10,10 @@ import { LogoutComponent } from './components/Auth/logout/logout.component';
 import { StudentRegistrationComponent } from './views/student-registration/student-registration.component';
 import { PublicGuard } from './guards/public.guard';
 import { NavigationConfig } from './config/navigation.config';
+import { StudentGuard } from './guards/student.guard';
+import { TopUpComponent } from './views/payment/top-up/top-up.component';
+import { PaymentResultComponent } from './views/payment/result/payment-result.component';
+import { MaintenanceComponent } from './views/maintenance/maintenance.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent, canActivate: [PublicGuard] },
@@ -23,15 +27,15 @@ export const routes: Routes = [
   { path: 'admin', component:  OrdersDashboardComponent, canActivate: [AuthGuard]}, // Ruta para la sección de historial de pedidos (admin)
   { path: 'history', component: OrderHistoryComponent, canActivate: [AuthGuard] }, // Ruta para la sección de historial
   { path: 'profile', component: UserCardComponent, canActivate: [AuthGuard] }, // Ruta para la sección de perfil
-  { path: 'payment/top-up', loadComponent: () => import('./views/payment/top-up/top-up.component').then(m => m.TopUpComponent), canActivate: [AuthGuard] },
-  { path: 'payment/result', loadComponent: () => import('./views/payment/result/payment-result.component').then(m => m.PaymentResultComponent), canActivate: [AuthGuard] },
+  { path: 'payment/top-up', component: TopUpComponent, canActivate: [AuthGuard, StudentGuard] },
+  { path: 'payment/result', component: PaymentResultComponent, canActivate: [AuthGuard, StudentGuard] },
 
   // Subrutas para el admin
   { path: 'admin/daily', component:  OrdersDashboardComponent}, // Ruta para la sección de historial de pedidos (admin)
   { path: 'admin/monthly', component:  OrdersDashboardComponent}, // Ruta para la sección de historial de pedidos (admin)
   { path: 'admin/anual', component:  OrdersDashboardComponent}, // Ruta para la sección de historial de pedidos (admin)
   { path: 'admin/image', component:  OrdersDashboardComponent}, // Ruta para la sección de historial de pedidos (admin)
-  { path: NavigationConfig.MAINTENANCE, loadComponent: () => import('./views/maintenance/maintenance.component').then(m => m.MaintenanceComponent) },
+  { path: NavigationConfig.MAINTENANCE, component: MaintenanceComponent },
   
   {path: '**', redirectTo: ''}, // Redirigir cualquier ruta no reconocida a la raíz
 ];
