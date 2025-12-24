@@ -8,4 +8,6 @@ export const ErrorMessages = {
     'Error en eliminar el registre. Si us plau, torna-ho a provar més tard.',
   LOGIN_FAILED: "S'ha produït un error al iniciar sessió.",
   INVALID_CREDENTIALS: 'Usuari o contrasenya incorrectes.',
+  ACCESS_DENIED: 'Accés denegat',
+  INVALID_DOMAIN: "Només es permet l'accés amb comptes de @ginebro.cat",
 };

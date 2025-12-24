@@ -19,9 +19,12 @@
     <div class="p-6 sm:p-8 flex items-center justify-between overflow-hidden transition-all duration-500">
       <div class="flex items-center" [ngClass]="isSidebarCollapsed ? 'justify-center w-full' : 'gap-4'">
         <div class="relative group/avatar">
-          <div class="rounded-2xl bg-gradient-to-br from-primary to-primary-dark text-white flex-shrink-0 flex items-center justify-center shadow-lg shadow-primary/20 transition-all duration-500 group-hover/sidebar:rotate-3"
+          <div class="rounded-2xl bg-gradient-to-br from-primary to-primary-dark text-white flex-shrink-0 flex items-center justify-center shadow-lg shadow-primary/20 transition-all duration-500 group-hover/sidebar:rotate-3 overflow-hidden"
                [ngClass]="isSidebarCollapsed ? 'w-12 h-12' : 'w-14 h-14'">
-            <mat-icon class="transition-transform duration-500 group-hover/avatar:scale-110" [ngClass]="isSidebarCollapsed ? 'scale-90' : 'scale-110'">person</mat-icon>
+            <img *ngIf="student.avatar; else defaultSidebarIcon" [src]="student.avatar" alt="Sidebar User Avatar" class="w-full h-full object-cover">
+            <ng-template #defaultSidebarIcon>
+              <mat-icon class="transition-transform duration-500 group-hover/avatar:scale-110" [ngClass]="isSidebarCollapsed ? 'scale-90' : 'scale-110'">person</mat-icon>
+            </ng-template>
           </div>
           <div *ngIf="!isSidebarCollapsed" class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-white rounded-full"></div>
         </div>
@@ -178,11 +181,11 @@
               
               <div class="relative z-10 space-y-10">
                 <div class="flex flex-col items-center text-center space-y-4">
-                  <div class="w-20 h-20 rounded-3xl bg-white/10 flex items-center justify-center backdrop-blur-md shadow-inner border border-white/10 relative">
-                    <mat-icon class="text-4xl text-white">verified</mat-icon>
-                    <div class="absolute -top-2 -right-2 w-6 h-6 bg-primary rounded-full border-4 border-slate-900 flex items-center justify-center">
-                      <div class="w-1.5 h-1.5 bg-white rounded-full animate-ping"></div>
-                    </div>
+                  <div class="w-20 h-20 rounded-3xl bg-white/10 flex items-center justify-center backdrop-blur-md shadow-inner border border-white/10 relative overflow-hidden">
+                    <img *ngIf="student.avatar; else defaultIcon" [src]="student.avatar" alt="User Avatar" class="w-full h-full object-cover">
+                    <ng-template #defaultIcon>
+                      <mat-icon class="text-4xl text-white">verified</mat-icon>
+                    </ng-template>
                   </div>
                   <div>
                     <p class="font-black text-xl tracking-tight">Actiu</p>
