@@ -14,6 +14,7 @@ import { StudentGuard } from './guards/student.guard';
 import { TopUpComponent } from './views/payment/top-up/top-up.component';
 import { PaymentResultComponent } from './views/payment/result/payment-result.component';
 import { MaintenanceComponent } from './views/maintenance/maintenance.component';
+import { TransactionHistoryComponent } from './views/transaction-history/transaction-history.component';
 
 export const routes: Routes = [
   { path: NavigationConfig.LOGIN, component: LoginComponent, canActivate: [PublicGuard] },
@@ -35,6 +36,8 @@ export const routes: Routes = [
   { path: NavigationConfig.ADMIN_MONTHLY, component:  OrdersDashboardComponent}, // Ruta para la sección de historial de pedidos (admin)
   { path: NavigationConfig.ADMIN_ANUAL, component:  OrdersDashboardComponent}, // Ruta para la sección de historial de pedidos (admin)
   { path: NavigationConfig.ADMIN_IMAGE, component:  OrdersDashboardComponent}, // Ruta para la sección de historial de pedidos (admin)
+  { path: NavigationConfig.ADMIN_TRANSACTIONS, component: TransactionHistoryComponent, canActivate: [AuthGuard], data: { isAdmin: true } },
+  { path: NavigationConfig.TRANSACTIONS, component: TransactionHistoryComponent, canActivate: [AuthGuard] },
   { path: NavigationConfig.MAINTENANCE, component: MaintenanceComponent },
   
   {path: '**', redirectTo: ''}, // Redirigir cualquier ruta no reconocida a la raíz

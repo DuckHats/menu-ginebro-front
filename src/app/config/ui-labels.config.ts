@@ -115,5 +115,21 @@ export const UILabels = {
       BACK: 'Tornar enrere',
       CONFIRM: 'SÍ, CONFIRMAR'
     }
+  },
+  // Transactions Page
+  TRANSACTIONS: {
+    TITLE: 'Historial de Transaccions',
+    ADMIN_TITLE: 'Gestió de Transaccions',
+    DATE: 'Data',
+    DESCRIPTION: 'Descripció',
+    TYPE: 'Tipus',
+    AMOUNT: 'Import',
+    STATUS: 'Estat',
+    NO_TRANSACTIONS: 'No s\'han trobat transaccions.',
+    TYPES: {
+      TOPUP: 'Recàrrega',
+      ORDER: 'Comanda',
+      CORRECTION: 'Correció'
+    }
   }
 };

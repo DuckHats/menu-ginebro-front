@@ -168,6 +168,49 @@
             {{ AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.LABELS.USERS }}
           </span>
         </button>
+
+        <!-- TRANSACTIONS -->
+        <button
+          *ngIf="admintype === 1"
+          (click)="
+            setActiveTab(
+              AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS
+                .TRANSACTIONS
+            )
+          "
+          class="flex items-center rounded-2xl text-[15px] font-semibold transition-all duration-300 whitespace-nowrap group relative overflow-hidden h-12"
+          [ngClass]="[
+            activeTab ===
+            AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.TRANSACTIONS
+              ? 'bg-primary-light/50 text-primary-dark'
+              : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900',
+            isSidebarCollapsed ? 'lg:justify-center w-full px-0' : 'px-4 gap-3'
+          ]"
+        >
+          <div
+            *ngIf="
+              activeTab ===
+              AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS
+                .TRANSACTIONS
+            "
+            class="absolute left-0 top-1/4 bottom-1/4 w-1 bg-primary rounded-r-lg hidden lg:block"
+          ></div>
+          <mat-icon
+            class="group-hover:scale-110 transition-transform flex-shrink-0"
+            >history</mat-icon
+          >
+          <span
+            class="transition-all duration-300 whitespace-nowrap"
+            [ngClass]="
+              isSidebarCollapsed ? 'opacity-0 w-0' : 'opacity-100 w-auto'
+            "
+          >
+            {{
+              AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.LABELS
+                .TRANSACTIONS
+            }}
+          </span>
+        </button>
       </nav>
     </div>
   </aside>
@@ -211,6 +254,17 @@
               >
                 {{
                   AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.USERS.TITLE
+                }}
+              </span>
+              <span
+                *ngSwitchCase="
+                  AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS
+                    .TRANSACTIONS
+                "
+              >
+                {{
+                  AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.LABELS
+                    .TRANSACTIONS
                 }}
               </span>
             </ng-container>
@@ -301,7 +355,10 @@
           <mat-form-field
             *ngIf="
               activeTab !==
-              AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.USERS
+                AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.USERS &&
+              activeTab !==
+                AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS
+                  .TRANSACTIONS
             "
             appearance="outline"
             class="admin-datepicker-field"
@@ -1218,6 +1275,16 @@
             </div>
           </div>
         </div>
+      </div>
+
+      <!-- TRANSACTIONS -->
+      <div
+        *ngSwitchCase="
+          AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.TRANSACTIONS
+        "
+        class="animate-fade-in"
+      >
+        <app-transaction-history [isAdmin]="true"></app-transaction-history>
       </div>
     </div>
   </main>

@@ -127,11 +127,13 @@ export const AppConstants = {
           ORDERS: 'ordres',
           MENUS: 'menus',
           USERS: 'usuaris',
+          TRANSACTIONS: 'transaccions',
         },
         LABELS: {
           ORDERS: 'Ordres',
           MENUS: 'Menús',
           USERS: 'Usuaris',
+          TRANSACTIONS: 'Transaccions',
         },
         ORDERS: {
           TITLE: 'Gestió d\'Ordres',

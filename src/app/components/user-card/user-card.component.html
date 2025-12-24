@@ -147,6 +147,32 @@
           >Configuració</span
         >
       </button>
+
+      <!-- Transactions -->
+      <button
+        *ngIf="student.user_type_id === 2"
+        (click)="setActiveTab('transactions')"
+        [class.active]="activeTab === 'transactions'"
+        class="nav-item relative flex items-center rounded-2xl text-[14px] font-black text-slate-400 transition-all duration-300 hover:bg-slate-50 hover:text-slate-600 group [&.active]:bg-emerald-50 [&.active]:text-emerald-600 overflow-hidden h-14"
+        [ngClass]="
+          isSidebarCollapsed ? 'justify-center w-full px-0' : 'px-5 gap-4'
+        "
+      >
+        <mat-icon
+          [ngClass]="
+            activeTab === 'transactions' ? 'text-emerald-500' : 'text-slate-300'
+          "
+          class="transition-all duration-300 group-hover:scale-110 flex-shrink-0"
+          >receipt_long</mat-icon
+        >
+        <span
+          class="transition-all duration-300 whitespace-nowrap uppercase tracking-widest text-[11px]"
+          [ngClass]="
+            isSidebarCollapsed ? 'opacity-0 w-0' : 'opacity-100 w-auto'
+          "
+          >Transaccions</span
+        >
+      </button>
     </nav>
 
     <!-- Sidebar Footer -->
@@ -569,12 +595,19 @@
         </div>
       </div>
 
-      <!-- Config Tab (Admin only) -->
       <div
         *ngIf="activeTab === 'config' && student.user_type_id == 1"
         class="animate-fade-in"
       >
         <app-admin-configuration></app-admin-configuration>
+      </div>
+
+      <!-- Transactions Tab -->
+      <div
+        *ngIf="activeTab === 'transactions' && student.user_type_id === 2"
+        class="animate-fade-in"
+      >
+        <app-transaction-history></app-transaction-history>
       </div>
     </div>
   </main>

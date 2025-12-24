@@ -1,0 +1,68 @@
+import { Component, OnInit, Input } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { TransactionService, Transaction } from '../../Services/Transaction/transaction.service';
+import { UILabels } from '../../config/ui-labels.config';
+import { MatIconModule } from '@angular/material/icon';
+import { animate, style, transition, trigger } from '@angular/animations';
+
+@Component({
+  selector: 'app-transaction-history',
+  standalone: true,
+  imports: [CommonModule, MatIconModule],
+  templateUrl: './transaction-history.component.html',
+  animations: [
+    trigger('fadeInUp', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(10px)' }),
+        animate('400ms ease-out', style({ opacity: 1, transform: 'translateY(0)' })),
+      ]),
+    ]),
+  ],
+})
+export class TransactionHistoryComponent implements OnInit {
+  @Input() isAdmin: boolean = false;
+  
+  UILabels = UILabels;
+  transactions: Transaction[] = [];
+  loading = true;
+
+  constructor(private transactionService: TransactionService) {}
+
+  ngOnInit(): void {
+    this.loadTransactions();
+  }
+
+  loadTransactions(): void {
+    const stream$ = this.isAdmin 
+      ? this.transactionService.getAdminTransactions() 
+      : this.transactionService.getTransactions();
+
+    stream$.subscribe({
+      next: (res) => {
+        this.transactions = res.data || [];
+        this.loading = false;
+      },
+      error: () => {
+        this.loading = false;
+      }
+    });
+  }
+
+  getTypeLabel(type: string): string {
+    switch (type) {
+      case 'topup': return UILabels.TRANSACTIONS.TYPES.TOPUP;
+      case 'order': return UILabels.TRANSACTIONS.TYPES.ORDER;
+      case 'correction': return UILabels.TRANSACTIONS.TYPES.CORRECTION;
+      default: return type;
+    }
+  }
+
+  getStatusClass(status: string): string {
+    switch (status) {
+      case 'completed': return 'bg-emerald-100 text-emerald-700';
+      case 'pending': return 'bg-amber-100 text-amber-700';
+      case 'failed': return 'bg-rose-100 text-rose-700';
+      default: return 'bg-slate-100 text-slate-700';
+    }
+  }
+}

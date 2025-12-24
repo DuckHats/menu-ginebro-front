@@ -21,4 +21,6 @@ export const NavigationConfig = {
   PAYMENT_TOP_UP: 'payment/top-up',
   PAYMENT_RESULT: 'payment/result',
   ADMIN_CONFIG: 'admin/config',
+  TRANSACTIONS: 'profile/transactions',
+  ADMIN_TRANSACTIONS: 'admin/transactions',
 };

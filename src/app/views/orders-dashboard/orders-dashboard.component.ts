@@ -21,6 +21,7 @@ import { Messages } from '../../config/messages.config';
 import { SidebarService } from '../../Services/Sidebar/sidebar.service';
 import { AppConstants } from '../../config/app-constants.config';
 import { ConsoleMessages } from '../../config/console-messages.config';
+import { TransactionHistoryComponent } from '../transaction-history/transaction-history.component';
 import { animate, style, transition, trigger } from '@angular/animations';
 
 @Component({
@@ -37,6 +38,7 @@ import { animate, style, transition, trigger } from '@angular/animations';
     MatInputModule,
     MatFormFieldModule,
     DragDropModule,
+    TransactionHistoryComponent
   ],
 
 
