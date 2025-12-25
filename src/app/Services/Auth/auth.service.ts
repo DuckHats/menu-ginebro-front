@@ -18,13 +18,11 @@ export class AuthService extends BaseService {
     return this.http.get('/sanctum/csrf-cookie');
   }
 
-
   login(credentials: { user: string; password: string }): Observable<any> {
     return this.getCsrfCookie().pipe(
       switchMap(() => this.post('login', credentials))
     );
   }
-
 
   register(credentials: {
     name: string;
@@ -57,10 +55,11 @@ export class AuthService extends BaseService {
     );
   }
 
-  checkAuth(): Observable<User> {
+  checkAuth(force: boolean = false): Observable<User> {
     const currentTime = new Date().getTime();
 
     if (
+      !force &&
       this.cachedUser &&
       currentTime - this.cachedTimestamp < this.authExpiryTime
     ) {
