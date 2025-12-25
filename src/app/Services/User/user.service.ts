@@ -12,15 +12,19 @@ export class UserService {
   private baseUrl = `${API_CONFIG.baseUrl}/users`;
   private cachedUser: User | null = null;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   getCsrfCookie(): Observable<any> {
     return this.http.get('/sanctum/csrf-cookie');
   }
 
-
-  getUsers(): Observable<any> {
-    return this.http.get<{ status: number; data: User[] }>(this.baseUrl);
+  getUsers(params?: {
+    page?: number;
+    per_page?: number;
+    sort_by?: string;
+    sort_order?: string;
+  }): Observable<any> {
+    return this.http.get<any>(this.baseUrl, { params });
   }
 
   getUserById(id: number): Observable<User> {

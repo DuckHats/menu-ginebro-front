@@ -13,9 +13,13 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { DragDropModule, CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
+import {
+  DragDropModule,
+  CdkDragDrop,
+  moveItemInArray,
+  transferArrayItem,
+} from '@angular/cdk/drag-drop';
 import { BulkUploadModalComponent } from '../../components/bulk-upload-modal/bulk-upload-modal.component';
-
 
 import { Messages } from '../../config/messages.config';
 import { SidebarService } from '../../Services/Sidebar/sidebar.service';
@@ -38,32 +42,34 @@ import { animate, style, transition, trigger } from '@angular/animations';
     MatInputModule,
     MatFormFieldModule,
     DragDropModule,
-    TransactionHistoryComponent
+    TransactionHistoryComponent,
   ],
-
 
   animations: [
     trigger('fadeIn', [
       transition(':enter', [
         style({ opacity: 0, transform: 'translateY(10px)' }),
-        animate('400ms ease-out', style({ opacity: 1, transform: 'translateY(0)' })),
+        animate(
+          '400ms ease-out',
+          style({ opacity: 1, transform: 'translateY(0)' })
+        ),
       ]),
     ]),
   ],
 })
 export class OrdersDashboardComponent implements OnInit {
   AppConstants = AppConstants;
-  activeTab: string = AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.ORDERS;
+  activeTab: string =
+    AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.ORDERS;
   // Keep this as a Date object so Angular Material datepicker formats correctly
   selectedDate: Date = new Date();
   weeklyMenus: { date: string; menus: MenuItem[] }[] = [];
   selectedExportFormat = 'json';
-  
+
   // Kitchen View Toggles
   ordersViewMode: 'table' | 'kanban' = 'table';
   kanbanColumns: { status: number; label: string; orders: Order[] }[] = [];
   isSidebarCollapsed = false;
-
 
   students: Student[] = [];
   orders: Order[] = [];
@@ -91,7 +97,7 @@ export class OrdersDashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.admintype = this.userService.getLocalUser()?.user_type_id || 1;
-    this.sidebarService.isCollapsed$.subscribe(collapsed => {
+    this.sidebarService.isCollapsed$.subscribe((collapsed) => {
       this.isSidebarCollapsed = collapsed;
     });
     this.loadAllData();
@@ -99,6 +105,8 @@ export class OrdersDashboardComponent implements OnInit {
 
   setActiveTab(tab: string): void {
     this.activeTab = tab;
+    this.userPage = 1;
+    this.orderPage = 1;
     this.loadAllData();
   }
 
@@ -107,11 +115,20 @@ export class OrdersDashboardComponent implements OnInit {
   }
 
   loadAllData(): void {
-    if (this.activeTab === AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.MENUS) {
+    if (
+      this.activeTab ===
+      AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.MENUS
+    ) {
       this.loadMenusWeek();
-    } else if (this.activeTab === AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.ORDERS) {
+    } else if (
+      this.activeTab ===
+      AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.ORDERS
+    ) {
       this.loadOrders(this.formatDate(this.selectedDate));
-    } else if (this.activeTab === AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.USERS) {
+    } else if (
+      this.activeTab ===
+      AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.USERS
+    ) {
       this.loadUsers();
     }
   }
@@ -203,17 +220,29 @@ export class OrdersDashboardComponent implements OnInit {
 
   loadOrders(date: string): void {
     this.loadingOrders = true;
-    this.ordersService.getByDate(date).subscribe({
+    const params = {
+      page: this.orderPage,
+      per_page: this.orderPerPage,
+      sort_by: this.orderSortBy,
+      sort_order: this.orderSortOrder,
+    };
+
+    this.ordersService.getByDate(date, params).subscribe({
       next: (response: any) => {
-        let orders = response.data || [];
-        if (Array.isArray(orders) && Array.isArray(orders[0])) {
-          orders = orders.flat();
+        const orders = response.data || [];
+        this.orders =
+          Array.isArray(orders) && Array.isArray(orders[0])
+            ? orders.flat()
+            : orders;
+
+        if (response.meta) {
+          this.orderTotalPages = response.meta.last_page;
+          this.orderTotalItems = response.meta.total;
         }
-        this.orders = orders;
+
         this.updateKanbanColumns();
         this.loadingOrders = false;
       },
-
       error: (err) => {
         console.error(ConsoleMessages.ERRORS.FETCHING_ORDERS, err);
         this.loadingOrders = false;
@@ -221,10 +250,56 @@ export class OrdersDashboardComponent implements OnInit {
     });
   }
 
+  // Order Pagination & Sorting
+  orderPage = 1;
+  orderPerPage = 50;
+  orderSortBy = 'created_at';
+  orderSortOrder = 'desc';
+  orderTotalPages = 1;
+  orderTotalItems = 0;
+
+  changeOrderPage(page: number): void {
+    this.orderPage = page;
+    this.loadOrders(this.formatDate(this.selectedDate));
+  }
+
+  sortOrders(column: string): void {
+    if (this.orderSortBy === column) {
+      this.orderSortOrder = this.orderSortOrder === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.orderSortBy = column;
+      this.orderSortOrder = 'asc';
+    }
+    this.loadOrders(this.formatDate(this.selectedDate));
+  }
+
+  getOrderPages(): number[] {
+    const pages = [];
+    for (let i = 1; i <= this.orderTotalPages; i++) {
+      pages.push(i);
+    }
+    return pages;
+  }
+
+  // Pagination & Sorting State
+  userPage = 1;
+  userPerPage = 15;
+  userSortBy = 'created_at';
+  userSortOrder = 'desc';
+  userTotalPages = 1;
+  userTotalItems = 0;
+
   loadUsers(): void {
-    this.userService.getUsers().subscribe({
-      next: (users: any) => {
-        this.students = users.data.map((user: any) => ({
+    const params = {
+      page: this.userPage,
+      per_page: this.userPerPage,
+      sort_by: this.userSortBy,
+      sort_order: this.userSortOrder,
+    };
+
+    this.usersService.getAll(params).subscribe({
+      next: (response: any) => {
+        this.students = response.data.map((user: any) => ({
           id: user.id,
           name: user.name,
           lastName: user.last_name,
@@ -233,11 +308,39 @@ export class OrdersDashboardComponent implements OnInit {
           user_type_id: user.user_type_id,
           balance: user.balance,
         }));
+
+        if (response.meta) {
+          this.userTotalPages = response.meta.last_page;
+          this.userTotalItems = response.meta.total;
+        }
       },
       error: (err) => {
         console.error(ConsoleMessages.ERRORS.LOADING_USERS, err);
       },
     });
+  }
+
+  changeUserPage(page: number): void {
+    this.userPage = page;
+    this.loadUsers();
+  }
+
+  sortUsers(column: string): void {
+    if (this.userSortBy === column) {
+      this.userSortOrder = this.userSortOrder === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.userSortBy = column;
+      this.userSortOrder = 'asc';
+    }
+    this.loadUsers();
+  }
+
+  getPages(): number[] {
+    const pages = [];
+    for (let i = 1; i <= this.userTotalPages; i++) {
+      pages.push(i);
+    }
+    return pages;
   }
 
   exportOrdersData(): void {
@@ -313,6 +416,7 @@ export class OrdersDashboardComponent implements OnInit {
         // fallback: try to parse string to Date
         this.selectedDate = new Date(value);
       }
+      this.orderPage = 1; // Reset page on date change
       this.loadAllData();
     }
   }
@@ -322,23 +426,27 @@ export class OrdersDashboardComponent implements OnInit {
       { id: 1, label: 'Pendent' },
       { id: 2, label: 'En preparació' },
       { id: 3, label: 'Entregat' },
-      { id: 4, label: 'No recollit' }
+      { id: 4, label: 'No recollit' },
     ];
 
-    this.kanbanColumns = statuses.map(s => ({
+    this.kanbanColumns = statuses.map((s) => ({
       status: s.id,
       label: s.label,
-      orders: this.orders.filter(o => o.orderStatus.id === s.id)
+      orders: this.orders.filter((o) => o.order_status_id === s.id),
     }));
   }
 
   onDrop(event: CdkDragDrop<Order[]>): void {
     if (event.previousContainer === event.container) {
-      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+      moveItemInArray(
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex
+      );
     } else {
       const order = event.previousContainer.data[event.previousIndex];
       const newStatusId = Number(event.container.id.replace('status-', ''));
-      
+
       transferArrayItem(
         event.previousContainer.data,
         event.container.data,
@@ -347,14 +455,13 @@ export class OrdersDashboardComponent implements OnInit {
       );
 
       // Update backend
-      order.orderStatus.id = newStatusId;
+      order.order_status_id = newStatusId;
       this.onStatusChange(order);
     }
   }
 
-
   onStatusChange(order: Order): void {
-    this.ordersService.updateStatus(order.id, order.orderStatus.id).subscribe({
+    this.ordersService.updateStatus(order.id, order.order_status_id).subscribe({
       next: () => {
         this.alertService.show(
           'success',
@@ -377,6 +484,7 @@ export class OrdersDashboardComponent implements OnInit {
     const current = new Date(this.selectedDate);
     current.setDate(current.getDate() + offset * 7);
     this.selectedDate = current;
+    this.orderPage = 1; // Reset page
     this.loadMenusWeek();
   }
 
@@ -384,6 +492,7 @@ export class OrdersDashboardComponent implements OnInit {
     const current = new Date(this.selectedDate);
     current.setDate(current.getDate() + offset);
     this.selectedDate = current;
+    this.orderPage = 1; // Reset page
     this.loadOrders(this.formatDate(this.selectedDate));
   }
 

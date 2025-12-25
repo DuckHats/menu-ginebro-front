@@ -45,9 +45,19 @@
         <thead>
           <tr class="bg-slate-50/50 border-b border-slate-100">
             <th
-              class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest"
+              (click)="sort('created_at')"
+              class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest cursor-pointer hover:text-primary transition-colors"
             >
-              {{ UILabels.TRANSACTIONS.DATE }}
+              <div class="flex items-center gap-2">
+                {{ UILabels.TRANSACTIONS.DATE }}
+                <mat-icon
+                  class="text-xs w-4 h-4"
+                  *ngIf="sortBy === 'created_at'"
+                  >{{
+                    sortOrder === "asc" ? "expand_less" : "expand_more"
+                  }}</mat-icon
+                >
+              </div>
             </th>
             <th
               *ngIf="isAdmin"
@@ -66,9 +76,15 @@
               {{ UILabels.TRANSACTIONS.TYPE }}
             </th>
             <th
-              class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest"
+              (click)="sort('amount')"
+              class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest cursor-pointer hover:text-primary transition-colors"
             >
-              {{ UILabels.TRANSACTIONS.AMOUNT }}
+              <div class="flex items-center gap-2">
+                {{ UILabels.TRANSACTIONS.AMOUNT }}
+                <mat-icon class="text-xs w-4 h-4" *ngIf="sortBy === 'amount'">{{
+                  sortOrder === "asc" ? "expand_less" : "expand_more"
+                }}</mat-icon>
+              </div>
             </th>
             <th
               class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest"
@@ -129,6 +145,56 @@
           </tr>
         </tbody>
       </table>
+    </div>
+
+    <!-- Pagination Footer -->
+    <div
+      class="px-6 py-4 bg-slate-50/50 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4"
+    >
+      <p class="text-xs text-slate-500 font-bold uppercase tracking-wider">
+        Mostrant
+        <span class="text-slate-900 font-black">{{ transactions.length }}</span>
+        de
+        <span class="text-slate-900 font-black">{{ totalItems }}</span>
+        transaccions
+      </p>
+
+      <div class="flex items-center gap-2">
+        <button
+          (click)="changePage(page - 1)"
+          [disabled]="page === 1"
+          class="p-2 rounded-xl border border-slate-200 bg-white text-slate-400 hover:text-primary hover:border-primary transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
+        >
+          <mat-icon class="text-lg w-5 h-5 flex items-center justify-center"
+            >chevron_left</mat-icon
+          >
+        </button>
+
+        <div class="flex items-center gap-1">
+          <button
+            *ngFor="let p of getPages()"
+            (click)="changePage(p)"
+            class="w-10 h-10 rounded-xl text-[10px] font-black uppercase transition-all shadow-sm"
+            [ngClass]="
+              page === p
+                ? 'bg-primary text-white shadow-primary/20'
+                : 'bg-white border border-slate-200 text-slate-600 hover:border-primary hover:text-primary'
+            "
+          >
+            {{ p }}
+          </button>
+        </div>
+
+        <button
+          (click)="changePage(page + 1)"
+          [disabled]="page === totalPages"
+          class="p-2 rounded-xl border border-slate-200 bg-white text-slate-400 hover:text-primary hover:border-primary transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
+        >
+          <mat-icon class="text-lg w-5 h-5 flex items-center justify-center"
+            >chevron_right</mat-icon
+          >
+        </button>
+      </div>
     </div>
   </div>
 </div>

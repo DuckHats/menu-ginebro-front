@@ -495,12 +495,24 @@
               <thead>
                 <tr class="bg-slate-50/50">
                   <th
-                    class="px-6 py-4 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100"
+                    (click)="sortOrders('user_id')"
+                    class="px-6 py-4 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100 cursor-pointer hover:bg-slate-100 transition-colors"
                   >
-                    {{
-                      AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.ORDERS
-                        .TABLE.USER
-                    }}
+                    <div class="flex items-center gap-2">
+                      {{
+                        AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.ORDERS
+                          .TABLE.USER
+                      }}
+                      <mat-icon
+                        class="text-xs w-4 h-4"
+                        *ngIf="orderSortBy === 'user_id'"
+                        >{{
+                          orderSortOrder === "asc"
+                            ? "expand_less"
+                            : "expand_more"
+                        }}</mat-icon
+                      >
+                    </div>
                   </th>
                   <th
                     class="px-6 py-4 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100"
@@ -568,11 +580,11 @@
                   <td class="px-6 py-4">
                     <div class="flex flex-col">
                       <span class="font-bold text-slate-800"
-                        >{{ order.userData.name }}
-                        {{ order.userData.last_name }}</span
+                        >{{ order.userData?.name }}
+                        {{ order.userData?.last_name }}</span
                       >
                       <span class="text-xs text-slate-400">{{
-                        order.userData.email
+                        order.userData?.email
                       }}</span>
                     </div>
                   </td>
@@ -580,7 +592,7 @@
                     <span
                       class="px-2.5 py-1 rounded-lg text-xs font-bold bg-slate-100 text-slate-600 uppercase"
                     >
-                      {{ order.orderType.name }}
+                      {{ order.orderType?.name }}
                     </span>
                   </td>
                   <td class="px-6 py-4">
@@ -593,13 +605,13 @@
                     </span>
                   </td>
                   <td class="px-6 py-4 text-slate-600">
-                    {{ order.orderDetail.option1 || "—" }}
+                    {{ order.orderDetail?.option1 || "—" }}
                   </td>
                   <td class="px-6 py-4 text-slate-600">
-                    {{ order.orderDetail.option2 || "—" }}
+                    {{ order.orderDetail?.option2 || "—" }}
                   </td>
                   <td class="px-6 py-4 text-slate-600">
-                    {{ order.orderDetail.option3 || "—" }}
+                    {{ order.orderDetail?.option3 || "—" }}
                   </td>
                   <td class="px-6 py-4">
                     <div class="flex items-center gap-2">
@@ -607,17 +619,17 @@
                         class="w-2 h-2 rounded-full"
                         [ngClass]="{
                           'bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.5)]':
-                            order.orderStatus.id === 1,
+                            order.orderStatus?.id === 1,
                           'bg-primary shadow-[0_0_8px_rgba(0,156,166,0.5)]':
-                            order.orderStatus.id === 2,
+                            order.orderStatus?.id === 2,
                           'bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.5)]':
-                            order.orderStatus.id === 3,
+                            order.orderStatus?.id === 3,
                           'bg-rose-400 shadow-[0_0_8px_rgba(251,113,133,0.5)]':
-                            order.orderStatus.id === 4
+                            order.orderStatus?.id === 4
                         }"
                       ></div>
                       <select
-                        [(ngModel)]="order.orderStatus.id"
+                        [(ngModel)]="order.order_status_id"
                         (change)="onStatusChange(order)"
                         class="bg-transparent border-none text-xs font-bold text-slate-700 focus:ring-0 cursor-pointer p-0"
                       >
@@ -645,6 +657,56 @@
                 </tr>
               </tbody>
             </table>
+
+            <!-- Pagination Footer -->
+            <div
+              class="px-6 py-4 bg-slate-50/50 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4"
+            >
+              <p class="text-sm text-slate-500 font-medium">
+                Mostrant
+                <span class="text-slate-900 font-bold">{{
+                  orders.length
+                }}</span>
+                de
+                <span class="text-slate-900 font-bold">{{
+                  orderTotalItems
+                }}</span>
+                comandes
+              </p>
+
+              <div class="flex items-center gap-2">
+                <button
+                  (click)="changeOrderPage(orderPage - 1)"
+                  [disabled]="orderPage === 1"
+                  class="p-2 rounded-xl border border-slate-200 bg-white text-slate-400 hover:text-primary hover:border-primary transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <mat-icon>chevron_left</mat-icon>
+                </button>
+
+                <div class="flex items-center gap-1">
+                  <button
+                    *ngFor="let page of getOrderPages()"
+                    (click)="changeOrderPage(page)"
+                    class="w-10 h-10 rounded-xl text-sm font-bold transition-all"
+                    [ngClass]="
+                      orderPage === page
+                        ? 'bg-primary text-white shadow-lg shadow-primary/20'
+                        : 'bg-white border border-slate-200 text-slate-600 hover:border-primary hover:text-primary'
+                    "
+                  >
+                    {{ page }}
+                  </button>
+                </div>
+
+                <button
+                  (click)="changeOrderPage(orderPage + 1)"
+                  [disabled]="orderPage === orderTotalPages"
+                  class="p-2 rounded-xl border border-slate-200 bg-white text-slate-400 hover:text-primary hover:border-primary transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <mat-icon>chevron_right</mat-icon>
+                </button>
+              </div>
+            </div>
             <div *ngIf="orders.length === 0" class="p-12 text-center">
               <mat-icon class="text-slate-200 text-5xl w-12 h-12 mb-4"
                 >receipt_long</mat-icon
@@ -669,17 +731,17 @@
               <div class="flex justify-between items-start">
                 <div class="flex flex-col">
                   <span class="font-bold text-slate-800 text-lg"
-                    >{{ order.userData.name }}
-                    {{ order.userData.last_name }}</span
+                    >{{ order.userData?.name }}
+                    {{ order.userData?.last_name }}</span
                   >
                   <span class="text-sm text-slate-400">{{
-                    order.userData.email
+                    order.userData?.email
                   }}</span>
                 </div>
                 <span
                   class="px-2.5 py-1 rounded-lg text-[10px] font-black bg-slate-100 text-slate-600 uppercase tracking-wider"
                 >
-                  {{ order.orderType.name }}
+                  {{ order.orderType?.name }}
                 </span>
               </div>
 
@@ -722,7 +784,7 @@
                       .TABLE.FIRST_DISH
                   }}</span>
                   <span class="text-slate-700 font-semibold text-right">{{
-                    order.orderDetail.option1 || "—"
+                    order.orderDetail?.option1 || "—"
                   }}</span>
                 </div>
                 <div class="flex justify-between text-sm">
@@ -731,7 +793,7 @@
                       .TABLE.SECOND_DISH
                   }}</span>
                   <span class="text-slate-700 font-semibold text-right">{{
-                    order.orderDetail.option2 || "—"
+                    order.orderDetail?.option2 || "—"
                   }}</span>
                 </div>
                 <div class="flex justify-between text-sm">
@@ -740,14 +802,14 @@
                       .TABLE.DESSERT
                   }}</span>
                   <span class="text-slate-700 font-semibold text-right">{{
-                    order.orderDetail.option3 || "—"
+                    order.orderDetail?.option3 || "—"
                   }}</span>
                 </div>
               </div>
 
               <div class="pt-2">
                 <select
-                  [(ngModel)]="order.orderStatus.id"
+                  [(ngModel)]="order.order_status_id"
                   (change)="onStatusChange(order)"
                   class="w-full bg-slate-100 border-none rounded-xl px-4 py-2.5 text-sm font-bold text-slate-700 outline-none focus:ring-2 focus:ring-primary/20"
                 >
@@ -827,11 +889,11 @@
                     <div class="flex flex-col">
                       <span
                         class="font-bold text-slate-800 text-sm leading-tight"
-                        >{{ order.userData.name }}
-                        {{ order.userData.last_name }}</span
+                        >{{ order.userData?.name }}
+                        {{ order.userData?.last_name }}</span
                       >
                       <span class="text-[10px] text-slate-400">{{
-                        order.userData.email
+                        order.userData?.email
                       }}</span>
                     </div>
                     <div class="flex flex-col items-end gap-1">
@@ -847,7 +909,7 @@
                       <span
                         class="px-1.5 py-0.5 rounded-md text-[9px] font-black bg-slate-100 text-slate-500 uppercase tracking-tighter"
                       >
-                        {{ order.orderType.name }}
+                        {{ order.orderType?.name }}
                       </span>
                     </div>
                   </div>
@@ -866,8 +928,10 @@
                     >
                   </div>
 
-                  <!-- Dishes -->
-                  <div class="space-y-1.5 pt-2 border-t border-slate-50">
+                  <div
+                    class="space-y-1.5 pt-2 border-t border-slate-50"
+                    *ngIf="order.orderDetail"
+                  >
                     <div
                       class="flex items-center gap-2 text-[11px]"
                       *ngIf="order.orderDetail.option1"
@@ -1067,28 +1131,58 @@
             <thead>
               <tr class="bg-slate-50/50">
                 <th
-                  class="px-6 py-4 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100"
+                  (click)="sortUsers('id')"
+                  class="px-6 py-4 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100 cursor-pointer hover:bg-slate-100 transition-colors"
                 >
-                  {{
-                    AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.USERS
-                      .TABLE.ID
-                  }}
+                  <div class="flex items-center gap-2">
+                    {{
+                      AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.USERS
+                        .TABLE.ID
+                    }}
+                    <mat-icon
+                      class="text-xs w-4 h-4"
+                      *ngIf="userSortBy === 'id'"
+                      >{{
+                        userSortOrder === "asc" ? "expand_less" : "expand_more"
+                      }}</mat-icon
+                    >
+                  </div>
                 </th>
                 <th
-                  class="px-6 py-4 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100"
+                  (click)="sortUsers('name')"
+                  class="px-6 py-4 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100 cursor-pointer hover:bg-slate-100 transition-colors"
                 >
-                  {{
-                    AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.USERS
-                      .TABLE.NAME
-                  }}
+                  <div class="flex items-center gap-2">
+                    {{
+                      AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.USERS
+                        .TABLE.NAME
+                    }}
+                    <mat-icon
+                      class="text-xs w-4 h-4"
+                      *ngIf="userSortBy === 'name'"
+                      >{{
+                        userSortOrder === "asc" ? "expand_less" : "expand_more"
+                      }}</mat-icon
+                    >
+                  </div>
                 </th>
                 <th
-                  class="px-6 py-4 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100"
+                  (click)="sortUsers('email')"
+                  class="px-6 py-4 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100 cursor-pointer hover:bg-slate-100 transition-colors"
                 >
-                  {{
-                    AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.USERS
-                      .TABLE.EMAIL
-                  }}
+                  <div class="flex items-center gap-2">
+                    {{
+                      AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.USERS
+                        .TABLE.EMAIL
+                    }}
+                    <mat-icon
+                      class="text-xs w-4 h-4"
+                      *ngIf="userSortBy === 'email'"
+                      >{{
+                        userSortOrder === "asc" ? "expand_less" : "expand_more"
+                      }}</mat-icon
+                    >
+                  </div>
                 </th>
                 <th
                   class="px-6 py-4 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100"
@@ -1099,12 +1193,22 @@
                   }}
                 </th>
                 <th
-                  class="px-6 py-4 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100"
+                  (click)="sortUsers('balance')"
+                  class="px-6 py-4 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100 cursor-pointer hover:bg-slate-100 transition-colors"
                 >
-                  {{
-                    AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.USERS
-                      .TABLE.BALANCE
-                  }}
+                  <div class="flex items-center gap-2">
+                    {{
+                      AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.USERS
+                        .TABLE.BALANCE
+                    }}
+                    <mat-icon
+                      class="text-xs w-4 h-4"
+                      *ngIf="userSortBy === 'balance'"
+                      >{{
+                        userSortOrder === "asc" ? "expand_less" : "expand_more"
+                      }}</mat-icon
+                    >
+                  </div>
                 </th>
                 <th
                   class="px-6 py-4 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100 text-right"
@@ -1191,6 +1295,54 @@
               </tr>
             </tbody>
           </table>
+
+          <!-- Pagination Footer -->
+          <div
+            class="px-6 py-4 bg-slate-50/50 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4"
+          >
+            <p class="text-sm text-slate-500 font-medium">
+              Mostrant
+              <span class="text-slate-900 font-bold">{{
+                students.length
+              }}</span>
+              de
+              <span class="text-slate-900 font-bold">{{ userTotalItems }}</span>
+              usuaris
+            </p>
+
+            <div class="flex items-center gap-2">
+              <button
+                (click)="changeUserPage(userPage - 1)"
+                [disabled]="userPage === 1"
+                class="p-2 rounded-xl border border-slate-200 bg-white text-slate-400 hover:text-primary hover:border-primary transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <mat-icon>chevron_left</mat-icon>
+              </button>
+
+              <div class="flex items-center gap-1">
+                <button
+                  *ngFor="let page of getPages()"
+                  (click)="changeUserPage(page)"
+                  class="w-10 h-10 rounded-xl text-sm font-bold transition-all"
+                  [ngClass]="
+                    userPage === page
+                      ? 'bg-primary text-white shadow-lg shadow-primary/20'
+                      : 'bg-white border border-slate-200 text-slate-600 hover:border-primary hover:text-primary'
+                  "
+                >
+                  {{ page }}
+                </button>
+              </div>
+
+              <button
+                (click)="changeUserPage(userPage + 1)"
+                [disabled]="userPage === userTotalPages"
+                class="p-2 rounded-xl border border-slate-200 bg-white text-slate-400 hover:text-primary hover:border-primary transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <mat-icon>chevron_right</mat-icon>
+              </button>
+            </div>
+          </div>
         </div>
 
         <!-- Mobile Cards -->

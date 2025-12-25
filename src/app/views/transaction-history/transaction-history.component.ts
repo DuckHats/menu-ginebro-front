@@ -1,6 +1,9 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TransactionService, Transaction } from '../../Services/Transaction/transaction.service';
+import {
+  TransactionService,
+  Transaction,
+} from '../../Services/Transaction/transaction.service';
 import { UILabels } from '../../config/ui-labels.config';
 import { MatIconModule } from '@angular/material/icon';
 import { animate, style, transition, trigger } from '@angular/animations';
@@ -14,17 +17,28 @@ import { animate, style, transition, trigger } from '@angular/animations';
     trigger('fadeInUp', [
       transition(':enter', [
         style({ opacity: 0, transform: 'translateY(10px)' }),
-        animate('400ms ease-out', style({ opacity: 1, transform: 'translateY(0)' })),
+        animate(
+          '400ms ease-out',
+          style({ opacity: 1, transform: 'translateY(0)' })
+        ),
       ]),
     ]),
   ],
 })
 export class TransactionHistoryComponent implements OnInit {
   @Input() isAdmin: boolean = false;
-  
+
   UILabels = UILabels;
   transactions: Transaction[] = [];
   loading = true;
+
+  // Pagination & Sorting State
+  page = 1;
+  perPage = 15;
+  sortBy = 'created_at';
+  sortOrder = 'desc';
+  totalPages = 1;
+  totalItems = 0;
 
   constructor(private transactionService: TransactionService) {}
 
@@ -33,36 +47,77 @@ export class TransactionHistoryComponent implements OnInit {
   }
 
   loadTransactions(): void {
-    const stream$ = this.isAdmin 
-      ? this.transactionService.getAdminTransactions() 
-      : this.transactionService.getTransactions();
+    this.loading = true;
+    const params = {
+      page: this.page,
+      per_page: this.perPage,
+      sort_by: this.sortBy,
+      sort_order: this.sortOrder,
+    };
+
+    const stream$ = this.isAdmin
+      ? this.transactionService.getAdminTransactions(params)
+      : this.transactionService.getTransactions(params);
 
     stream$.subscribe({
-      next: (res) => {
+      next: (res: any) => {
         this.transactions = res.data || [];
+        this.totalPages = res.meta?.last_page || 1;
+        this.totalItems = res.meta?.total || 0;
         this.loading = false;
       },
       error: () => {
         this.loading = false;
-      }
+      },
     });
+  }
+
+  changePage(page: number): void {
+    this.page = page;
+    this.loadTransactions();
+  }
+
+  sort(column: string): void {
+    if (this.sortBy === column) {
+      this.sortOrder = this.sortOrder === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.sortBy = column;
+      this.sortOrder = 'asc';
+    }
+    this.loadTransactions();
+  }
+
+  getPages(): number[] {
+    const pages = [];
+    for (let i = 1; i <= this.totalPages; i++) {
+      pages.push(i);
+    }
+    return pages;
   }
 
   getTypeLabel(type: string): string {
     switch (type) {
-      case 'topup': return UILabels.TRANSACTIONS.TYPES.TOPUP;
-      case 'order': return UILabels.TRANSACTIONS.TYPES.ORDER;
-      case 'correction': return UILabels.TRANSACTIONS.TYPES.CORRECTION;
-      default: return type;
+      case 'topup':
+        return UILabels.TRANSACTIONS.TYPES.TOPUP;
+      case 'order':
+        return UILabels.TRANSACTIONS.TYPES.ORDER;
+      case 'correction':
+        return UILabels.TRANSACTIONS.TYPES.CORRECTION;
+      default:
+        return type;
     }
   }
 
   getStatusClass(status: string): string {
     switch (status) {
-      case 'completed': return 'bg-emerald-100 text-emerald-700';
-      case 'pending': return 'bg-amber-100 text-amber-700';
-      case 'failed': return 'bg-rose-100 text-rose-700';
-      default: return 'bg-slate-100 text-slate-700';
+      case 'completed':
+        return 'bg-emerald-100 text-emerald-700';
+      case 'pending':
+        return 'bg-amber-100 text-amber-700';
+      case 'failed':
+        return 'bg-rose-100 text-rose-700';
+      default:
+        return 'bg-slate-100 text-slate-700';
     }
   }
 }

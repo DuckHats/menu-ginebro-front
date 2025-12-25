@@ -13,9 +13,28 @@ export class OrdersService {
 
   constructor(private http: HttpClient) {}
 
-  getByDate(date: string): Observable<any> {
+  getAll(params?: {
+    page?: number;
+    per_page?: number;
+    sort_by?: string;
+    sort_order?: string;
+  }): Observable<any> {
     return this.http
-      .get<any>(`${this.apiUrlByDate}/${date}`)
+      .get<any>(this.apiUrl, { params })
+      .pipe(catchError(this.handleError));
+  }
+
+  getByDate(
+    date: string,
+    params?: {
+      page?: number;
+      per_page?: number;
+      sort_by?: string;
+      sort_order?: string;
+    }
+  ): Observable<any> {
+    return this.http
+      .get<any>(`${this.apiUrlByDate}/${date}`, { params })
       .pipe(catchError(this.handleError));
   }
 

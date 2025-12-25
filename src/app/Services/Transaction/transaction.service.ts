@@ -21,24 +21,36 @@ export interface Transaction {
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class TransactionService {
   private apiUrl = `${API_CONFIG.baseUrl}/transactions`;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   /**
    * Get transactions for the current user.
    */
-  getTransactions(): Observable<{ status: string; data: Transaction[] }> {
-    return this.http.get<{ status: string; data: Transaction[] }>(this.apiUrl);
+  getTransactions(params?: {
+    page?: number;
+    per_page?: number;
+    sort_by?: string;
+    sort_order?: string;
+  }): Observable<any> {
+    return this.http.get<any>(this.apiUrl, { params });
   }
 
   /**
    * Get all transactions (Admin only).
    */
-  getAdminTransactions(): Observable<{ status: string; data: Transaction[] }> {
-    return this.http.get<{ status: string; data: Transaction[] }>(`${API_CONFIG.baseUrl}/admin/transactions`);
+  getAdminTransactions(params?: {
+    page?: number;
+    per_page?: number;
+    sort_by?: string;
+    sort_order?: string;
+  }): Observable<any> {
+    return this.http.get<any>(`${API_CONFIG.baseUrl}/admin/transactions`, {
+      params,
+    });
   }
 }
