@@ -103,10 +103,33 @@ export const UILabels = {
       MENU_TYPE: 'Tipus de Menú',
       OPTIONS: 'Opcions triades',
       OWN_TUPPER: 'Amb tàper propi',
+      SUBTOTAL: 'Preu menú',
+      TUPPER_SURCHARGE: 'Suplement tàper',
+      PRICE: 'Preu total',
+      BALANCE: 'El teu saldo',
+      REMAINING_BALANCE: 'Saldo restant',
+      INSUFFICIENT_FUNDS: 'Saldo insuficient',
+      RECHARGE: 'RECARREGAR SALDO',
       QUESTION_1: 'Estàs segur/a que vols confirmar aquesta selecció?',
       QUESTION_2: 'Ara pots tornar enrere per fer canvis però després no podràs modificar res.',
       BACK: 'Tornar enrere',
       CONFIRM: 'SÍ, CONFIRMAR'
+    }
+  },
+  // Transactions Page
+  TRANSACTIONS: {
+    TITLE: 'Historial de Transaccions',
+    ADMIN_TITLE: 'Gestió de Transaccions',
+    DATE: 'Data',
+    DESCRIPTION: 'Descripció',
+    TYPE: 'Tipus',
+    AMOUNT: 'Import',
+    STATUS: 'Estat',
+    NO_TRANSACTIONS: 'No s\'han trobat transaccions.',
+    TYPES: {
+      TOPUP: 'Recàrrega',
+      ORDER: 'Comanda',
+      CORRECTION: 'Correció'
     }
   }
 };

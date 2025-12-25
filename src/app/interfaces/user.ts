@@ -11,5 +11,5 @@ export interface User {
   remember_token?: string;
   allergies?: Allergy[];
   custom_allergies?: string;
-  avatar?: string;
+  balance: number;
 }

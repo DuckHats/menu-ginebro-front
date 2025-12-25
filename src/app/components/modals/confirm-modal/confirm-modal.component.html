@@ -1,56 +1,191 @@
-<div class="fixed inset-0 z-[9999] flex items-center justify-center p-6 animate-fadeIn" @fadeIn>
+<div
+  class="fixed inset-0 z-[9999] flex items-center justify-center p-6 animate-fadeIn"
+  @fadeIn
+>
   <!-- Backdrop -->
-  <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-md" (click)="onCancel()"></div>
-  
+  <div
+    class="absolute inset-0 bg-slate-900/40 backdrop-blur-md"
+    (click)="onCancel()"
+  ></div>
+
   <!-- Modal Card -->
-  <div class="relative bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl border border-slate-100 overflow-hidden">
+  <div
+    class="relative bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl border border-slate-100 overflow-hidden"
+  >
     <div class="p-10 space-y-8">
       <div class="flex items-center gap-4 border-b border-slate-100 pb-6">
-        <div class="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center text-primary">
+        <div
+          class="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center text-primary"
+        >
           <mat-icon>verified</mat-icon>
         </div>
-        <h2 class="text-2xl font-bold text-slate-800">{{ UILabels.MODALS.CONFIRM.TITLE }}</h2>
+        <h2 class="text-2xl font-bold text-slate-800">
+          {{ UILabels.MODALS.CONFIRM.TITLE }}
+        </h2>
       </div>
 
       <!-- Order Summary -->
       <div class="space-y-6">
-        <div class="bg-slate-50 rounded-3xl p-6 space-y-4 border border-slate-100">
+        <div
+          class="bg-slate-50 rounded-3xl p-6 space-y-4 border border-slate-100"
+        >
           <div class="flex justify-between items-center text-sm">
-            <span class="text-slate-400 font-bold uppercase tracking-widest text-[10px]">{{ UILabels.MODALS.CONFIRM.DATE }}</span>
-            <span class="text-slate-700 font-bold">{{ selectedDate | date:'fullDate':'':'ca' }}</span>
+            <span
+              class="text-slate-400 font-bold uppercase tracking-widest text-[10px]"
+              >{{ UILabels.MODALS.CONFIRM.DATE }}</span
+            >
+            <span class="text-slate-700 font-bold">{{
+              selectedDate | date : "fullDate" : "" : "ca"
+            }}</span>
           </div>
           <div class="flex justify-between items-center text-sm">
-            <span class="text-slate-400 font-bold uppercase tracking-widest text-[10px]">{{ UILabels.MODALS.CONFIRM.MENU_TYPE }}</span>
+            <span
+              class="text-slate-400 font-bold uppercase tracking-widest text-[10px]"
+              >{{ UILabels.MODALS.CONFIRM.MENU_TYPE }}</span
+            >
             <span class="text-primary font-bold">{{ menuTypeName }}</span>
           </div>
-          <div class="flex justify-between items-center text-sm pt-2 border-t border-slate-200">
-            <span class="text-slate-400 font-bold uppercase tracking-widest text-[10px]">{{ UILabels.MODALS.CONFIRM.OPTIONS }}</span>
+          <div
+            class="flex justify-between items-center text-sm pt-2 border-t border-slate-200"
+          >
+            <span
+              class="text-slate-400 font-bold uppercase tracking-widest text-[10px]"
+              >{{ UILabels.MODALS.CONFIRM.OPTIONS }}</span
+            >
             <div class="text-right flex flex-col gap-1">
-              <span *ngFor="let opt of selectedOptions" class="text-slate-700 font-medium text-sm">{{ opt }}</span>
+              <span
+                *ngFor="let opt of selectedOptions"
+                class="text-slate-700 font-medium text-sm"
+                >{{ opt }}</span
+              >
             </div>
           </div>
-          <div *ngIf="taperSelected" class="flex items-center gap-2 text-primary font-bold text-xs bg-primary/5 p-2 rounded-lg justify-center border border-primary/10">
+          <div
+            *ngIf="taperSelected"
+            class="flex items-center gap-2 text-primary font-bold text-xs bg-primary/5 p-2 rounded-lg justify-center border border-primary/10"
+          >
             <mat-icon class="text-sm w-4 h-4">takeout_dining</mat-icon>
             {{ UILabels.MODALS.CONFIRM.OWN_TUPPER }}
           </div>
         </div>
 
-        <p class="text-slate-500 text-sm text-center px-4">
+        <!-- Price Summary -->
+        <div
+          class="bg-slate-50 rounded-3xl p-6 border border-slate-100 flex flex-col gap-3"
+        >
+          <!-- Breakdown: Menu Price -->
+          <div class="flex justify-between items-center text-sm">
+            <span
+              class="text-slate-400 font-bold uppercase tracking-widest text-[10px]"
+            >
+              {{ UILabels.MODALS.CONFIRM.SUBTOTAL }}
+            </span>
+            <span class="text-slate-700 font-semibold">
+              {{ basePrice | currency : "EUR" }}
+            </span>
+          </div>
+
+          <!-- Breakdown: Tupper Surcharge -->
+          <div
+            *ngIf="taperSurcharge > 0"
+            class="flex justify-between items-center text-sm"
+          >
+            <span
+              class="text-slate-400 font-bold uppercase tracking-widest text-[10px]"
+            >
+              {{ UILabels.MODALS.CONFIRM.TUPPER_SURCHARGE }}
+            </span>
+            <span class="text-slate-700 font-semibold">
+              + {{ taperSurcharge | currency : "EUR" }}
+            </span>
+          </div>
+
+          <!-- Total Price (Highlighted) -->
+          <div
+            class="flex justify-between items-center pt-3 mt-1 border-t border-slate-200"
+          >
+            <span
+              class="text-slate-400 font-bold uppercase tracking-widest text-[10px]"
+            >
+              {{ UILabels.MODALS.CONFIRM.PRICE }}
+            </span>
+            <span class="text-xl font-black text-slate-800">
+              {{ price | currency : "EUR" }}
+            </span>
+          </div>
+
+          <!-- Balance Info -->
+          <div
+            class="flex justify-between items-center text-[10px] pt-3 border-t border-dashed border-slate-300"
+          >
+            <span class="text-slate-400 font-bold uppercase tracking-widest">
+              {{ UILabels.MODALS.CONFIRM.BALANCE }}
+            </span>
+            <span class="text-slate-600 font-bold">
+              {{ userBalance | currency : "EUR" }}
+            </span>
+          </div>
+
+          <!-- Remaining Balance -->
+          <div class="flex justify-between items-center text-xs">
+            <span
+              class="text-slate-400 font-bold uppercase tracking-widest text-[10px]"
+            >
+              {{ UILabels.MODALS.CONFIRM.REMAINING_BALANCE }}
+            </span>
+            <span
+              [class.text-rose-500]="!hasEnoughBalance"
+              [class.text-emerald-500]="hasEnoughBalance"
+              class="font-black"
+            >
+              {{ remainingBalance | currency : "EUR" }}
+            </span>
+          </div>
+        </div>
+
+        <p
+          *ngIf="hasEnoughBalance"
+          class="text-slate-500 text-sm text-center px-4"
+        >
           {{ UILabels.MODALS.CONFIRM.QUESTION_1 }}
           <br />
           {{ UILabels.MODALS.CONFIRM.QUESTION_2 }}
         </p>
+
+        <div
+          *ngIf="!hasEnoughBalance"
+          class="bg-rose-50 p-4 rounded-2xl border border-rose-100 flex items-center gap-3 text-rose-600"
+        >
+          <mat-icon>warning</mat-icon>
+          <span class="text-xs font-bold">{{
+            UILabels.MODALS.CONFIRM.INSUFFICIENT_FUNDS
+          }}</span>
+        </div>
       </div>
 
       <!-- Buttons -->
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <button (click)="onCancel()" 
-                class="w-full py-4 rounded-2xl font-bold text-slate-500 hover:bg-slate-50 transition-all border-2 border-transparent">
+        <button
+          (click)="onCancel()"
+          class="w-full py-4 rounded-2xl font-bold text-slate-500 hover:bg-slate-50 transition-all border-2 border-transparent"
+        >
           {{ UILabels.MODALS.CONFIRM.BACK }}
         </button>
-        <button (click)="onConfirm()" 
-                class="w-full bg-primary hover:bg-primary-dark text-white py-4 rounded-2xl font-bold shadow-lg shadow-primary/20 transition-all hover:scale-[1.02] active:scale-[0.98]">
+
+        <button
+          *ngIf="hasEnoughBalance"
+          (click)="onConfirm()"
+          class="w-full bg-primary hover:bg-primary-dark text-white py-4 rounded-2xl font-bold shadow-lg shadow-primary/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
+        >
           {{ UILabels.MODALS.CONFIRM.CONFIRM }}
+        </button>
+
+        <button
+          *ngIf="!hasEnoughBalance"
+          (click)="onRecharge()"
+          class="w-full bg-rose-500 hover:bg-rose-600 text-white py-4 rounded-2xl font-bold shadow-lg shadow-rose-200 transition-all hover:scale-[1.02] active:scale-[0.98]"
+        >
+          {{ UILabels.MODALS.CONFIRM.RECHARGE }}
         </button>
       </div>
     </div>

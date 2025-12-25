@@ -11,9 +11,10 @@ import { Router } from '@angular/router';
 import { Messages } from '../../config/messages.config';
 import { AppConstants } from '../../config/app-constants.config';
 import { ConsoleMessages } from '../../config/console-messages.config';
-
 import { ConfigurationService } from '../../Services/Admin/configuration/configuration.service';
+import { AuthService } from '../../Services/Auth/auth.service';
 import { ImageService } from '../../Services/Admin/image/image.service';
+import { NavigationConfig } from '../../config/navigation.config';
 import { IntroModalComponent } from '../../components/modals/intro-modal/intro-modal.component';
 import { ConfirmModalComponent } from '../../components/modals/confirm-modal/confirm-modal.component';
 import { MenuOptionCardComponent } from '../../components/shared/menu-option-card/menu-option-card.component';
@@ -27,18 +28,21 @@ import { UILabels } from '../../config/ui-labels.config';
   styleUrls: ['./menu-selection.component.css'],
   standalone: true,
   imports: [
-    CommonModule, 
-    WeeklyCalendarComponent, 
+    CommonModule,
+    WeeklyCalendarComponent,
     MatIconModule,
     IntroModalComponent,
     ConfirmModalComponent,
-    MenuOptionCardComponent
+    MenuOptionCardComponent,
   ],
   animations: [
     trigger('fadeIn', [
       transition(':enter', [
         style({ opacity: 0, transform: 'translateY(10px)' }),
-        animate('400ms ease-out', style({ opacity: 1, transform: 'translateY(0)' })),
+        animate(
+          '400ms ease-out',
+          style({ opacity: 1, transform: 'translateY(0)' })
+        ),
       ]),
     ]),
   ],
@@ -50,7 +54,7 @@ export default class MenuSelectionComponent implements OnInit {
   menuSections: MenuSection[] = [];
   taperSelected = false;
   selectedDate: Date = new Date();
-  
+
   // Validation state
   isRestricted = false;
   restrictionReason = '';
@@ -60,7 +64,20 @@ export default class MenuSelectionComponent implements OnInit {
   configLoading = true;
   disabledDates: string[] = [];
   userOrders: any[] = [];
-  
+  userBalance = 0;
+
+  prices = {
+    menu_price: 0,
+    taper_price: 0,
+    half_menu_first_price: 0,
+    half_menu_second_price: 0,
+  };
+
+  orderPrice = 0;
+  orderBasePrice = 0;
+  orderTaperSurcharge = 0;
+  hasEnoughBalance = true;
+
   // Modal state
   showIntroModal = false;
   showConfirmModal = false;
@@ -76,6 +93,7 @@ export default class MenuSelectionComponent implements OnInit {
     private route: Router,
     private menusService: MenusService,
     private configService: ConfigurationService,
+    private authService: AuthService,
     private imageService: ImageService
   ) {}
 
@@ -84,7 +102,7 @@ export default class MenuSelectionComponent implements OnInit {
     this.loadConfigs();
     this.loadImages();
     this.loadMenuFromBackend();
-    
+
     // Check if we should show intro modal (e.g., first time this session)
     const hasSeenIntro = sessionStorage.getItem('menu_intro_seen');
     if (!hasSeenIntro) {
@@ -102,14 +120,30 @@ export default class MenuSelectionComponent implements OnInit {
       next: (res) => {
         if (res.status === 'success') {
           this.orderDeadlineTime = res.data.order_deadline_time || '10:00';
-          this.orderDeadlineDaysAhead = Number(res.data.order_deadline_days_ahead ?? 1);
+          this.orderDeadlineDaysAhead = Number(
+            res.data.order_deadline_days_ahead ?? 1
+          );
+          this.prices = {
+            menu_price: parseFloat(res.data.menu_price) || 0,
+            taper_price: parseFloat(res.data.taper_price) || 0,
+            half_menu_first_price:
+              parseFloat(res.data.half_menu_first_price) || 0,
+            half_menu_second_price:
+              parseFloat(res.data.half_menu_second_price) || 0,
+          };
         }
         this.configLoading = false;
         this.loadUserOrders();
       },
       error: () => {
         this.configLoading = false;
-      }
+      },
+    });
+
+    this.authService.checkAuth().subscribe({
+      next: (user) => {
+        this.userBalance = user.balance || 0;
+      },
     });
   }
 
@@ -122,7 +156,7 @@ export default class MenuSelectionComponent implements OnInit {
         this.userOrders = res.data || [];
         this.calculateDisabledDatesForCurrentWeek();
         this.checkAvailability();
-      }
+      },
     });
   }
 
@@ -133,7 +167,7 @@ export default class MenuSelectionComponent implements OnInit {
           this.allImages = res.data || [];
           this.updateActiveImage();
         }
-      }
+      },
     });
   }
 
@@ -144,11 +178,12 @@ export default class MenuSelectionComponent implements OnInit {
     }
 
     const formatted = this.formatDate(this.selectedDate);
-    
+
     // An image is active if formatted date is between start_date and end_date (inclusive)
-    this.activeMenuImage = this.allImages.find(img => {
-      return formatted >= img.start_date && formatted <= img.end_date;
-    }) || null;
+    this.activeMenuImage =
+      this.allImages.find((img) => {
+        return formatted >= img.start_date && formatted <= img.end_date;
+      }) || null;
   }
 
   onWeekChanged(monday: Date): void {
@@ -175,8 +210,8 @@ export default class MenuSelectionComponent implements OnInit {
       const formatted = this.formatDate(d);
 
       // 1. Check if order exists
-      const hasOrder = this.userOrders.some(o => o.order_date === formatted);
-      
+      const hasOrder = this.userOrders.some((o) => o.order_date === formatted);
+
       // 2. Check deadline logic
       const isDeadlinePassed = this.isDateDeadlinePassed(d);
 
@@ -189,7 +224,11 @@ export default class MenuSelectionComponent implements OnInit {
   isDateDeadlinePassed(date: Date): boolean {
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const dateMidnight = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    const dateMidnight = new Date(
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate()
+    );
 
     if (dateMidnight < today) return true;
 
@@ -237,18 +276,20 @@ export default class MenuSelectionComponent implements OnInit {
     if (!this.selectedDate) return;
 
     const formattedDate = this.formatDate(this.selectedDate);
-    
+
     // Reset state
     this.isRestricted = false;
     this.restrictionReason = '';
     this.orderExists = false;
 
     // 1. Check existing order from local data
-    const hasOrder = this.userOrders.some(o => o.order_date === formattedDate);
+    const hasOrder = this.userOrders.some(
+      (o) => o.order_date === formattedDate
+    );
     if (hasOrder) {
       this.isRestricted = true;
       this.orderExists = true;
-      this.restrictionReason = "Ja tens una comanda per aquest dia";
+      this.restrictionReason = 'Ja tens una comanda per aquest dia';
     } else {
       // 2. Check Deadline logic
       this.validateDeadline();
@@ -266,23 +307,42 @@ export default class MenuSelectionComponent implements OnInit {
     if (this.isRestricted) {
       if (this.orderDeadlineDaysAhead === 0) {
         const now = new Date();
-        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-        const selectedDateMidnight = new Date(this.selectedDate.getFullYear(), this.selectedDate.getMonth(), this.selectedDate.getDate());
-        
+        const today = new Date(
+          now.getFullYear(),
+          now.getMonth(),
+          now.getDate()
+        );
+        const selectedDateMidnight = new Date(
+          this.selectedDate.getFullYear(),
+          this.selectedDate.getMonth(),
+          this.selectedDate.getDate()
+        );
+
         if (selectedDateMidnight.getTime() === today.getTime()) {
-          this.restrictionReason = "L'hora límit per demanar per avui ha passat";
+          this.restrictionReason =
+            "L'hora límit per demanar per avui ha passat";
         } else {
-          this.restrictionReason = "No es poden fer comandes per a dies passats";
+          this.restrictionReason =
+            'No es poden fer comandes per a dies passats';
         }
       } else {
         const now = new Date();
-        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-        const selectedDateMidnight = new Date(this.selectedDate.getFullYear(), this.selectedDate.getMonth(), this.selectedDate.getDate());
-        
+        const today = new Date(
+          now.getFullYear(),
+          now.getMonth(),
+          now.getDate()
+        );
+        const selectedDateMidnight = new Date(
+          this.selectedDate.getFullYear(),
+          this.selectedDate.getMonth(),
+          this.selectedDate.getDate()
+        );
+
         if (selectedDateMidnight < today) {
-           this.restrictionReason = "No es poden fer comandes per a dies passats";
+          this.restrictionReason =
+            'No es poden fer comandes per a dies passats';
         } else {
-           this.restrictionReason = `Cal demanar amb ${this.orderDeadlineDaysAhead} dia/es d'antelació`;
+          this.restrictionReason = `Cal demanar amb ${this.orderDeadlineDaysAhead} dia/es d'antelació`;
         }
       }
     }
@@ -358,7 +418,12 @@ export default class MenuSelectionComponent implements OnInit {
     const selectedDateCopy = toLocalMidnight(this.selectedDate);
 
     if (this.isDateDeadlinePassed(selectedDateCopy)) {
-      this.alertService.show('error', this.restrictionReason || "La data seleccionada no és vàlida segons l'antelació configurada.", '');
+      this.alertService.show(
+        'error',
+        this.restrictionReason ||
+          "La data seleccionada no és vàlida segons l'antelació configurada.",
+        ''
+      );
       return;
     }
 
@@ -376,8 +441,84 @@ export default class MenuSelectionComponent implements OnInit {
       return;
     }
 
-    // Show confirmation modal instead of submitting directly
-    this.showConfirmModal = true;
+    // Fetch latest balance before showing the modal to ensure it's up to date
+    this.authService.checkAuth(true).subscribe({
+      next: (user) => {
+        this.userBalance = user.balance || 0;
+
+        const price = this.calculateOrderPrice();
+        this.orderPrice = price;
+
+        // Detailed breakdown
+        this.orderBasePrice = this.calculateBasePrice();
+        this.orderTaperSurcharge = this.taperSelected
+          ? this.prices.taper_price
+          : 0;
+
+        console.log('Price calculation (refreshed):', {
+          orderPrice: this.orderPrice,
+          basePrice: this.orderBasePrice,
+          taperSurcharge: this.orderTaperSurcharge,
+          userBalance: this.userBalance,
+        });
+
+        this.hasEnoughBalance = this.userBalance >= this.orderPrice;
+
+        // Show confirmation modal
+        this.showConfirmModal = true;
+      },
+      error: (err) => {
+        console.error('Error refreshing balance before confirmation:', err);
+        this.alertService.show(
+          'error',
+          'Error en actualitzar el saldo. Per favor, torna-ho a intentar.',
+          ''
+        );
+      },
+    });
+  }
+
+  calculateBasePrice(): number {
+    const selectedType = this.getSelectedMenuTypeName();
+    let basePrice = 0;
+
+    if (
+      selectedType.includes('Primer plat') &&
+      selectedType.includes('Segon plat')
+    ) {
+      basePrice = this.prices.menu_price;
+    } else if (selectedType.includes('Primer plat')) {
+      basePrice = this.prices.half_menu_first_price;
+    } else if (selectedType.includes('Segon plat')) {
+      basePrice = this.prices.half_menu_second_price;
+    }
+    return basePrice;
+  }
+
+  calculateOrderPrice(): number {
+    const selectedType = this.getSelectedMenuTypeName();
+    let basePrice = 0;
+
+    if (
+      selectedType.includes('Primer plat') &&
+      selectedType.includes('Segon plat')
+    ) {
+      basePrice = this.prices.menu_price;
+    } else if (selectedType.includes('Primer plat')) {
+      basePrice = this.prices.half_menu_first_price;
+    } else if (selectedType.includes('Segon plat')) {
+      basePrice = this.prices.half_menu_second_price;
+    }
+
+    const taperSurcharge = this.taperSelected ? this.prices.taper_price : 0;
+    return Math.round((basePrice + taperSurcharge) * 100) / 100;
+  }
+
+  onRecharge(): void {
+    this.showConfirmModal = false;
+    this.route.navigate([NavigationConfig.PAYMENT_TOP_UP], {
+      queryParams: { amount: this.orderPrice },
+    });
   }
 
   cancelConfirmation(): void {
@@ -426,11 +567,7 @@ export default class MenuSelectionComponent implements OnInit {
     this.ordersService.createOrder(payload).subscribe({
       next: (response) => {
         this.showConfirmModal = false;
-        this.alertService.show(
-          'success',
-          Messages.ORDERS.ORDER_SUCCESS,
-          ''
-        );
+        this.alertService.show('success', Messages.ORDERS.ORDER_SUCCESS, '');
         this.route.navigate(['/history']);
       },
       error: (err) => {
@@ -442,15 +579,15 @@ export default class MenuSelectionComponent implements OnInit {
 
   getSelectedOptionsSummary(): string[] {
     const options: string[] = [];
-    this.filteredMenuSections().forEach(section => {
-      const selected = section.options.find(o => o.selected);
+    this.filteredMenuSections().forEach((section) => {
+      const selected = section.options.find((o) => o.selected);
       if (selected) options.push(selected.name);
     });
     return options;
   }
 
   getSelectedMenuTypeName(): string {
-    return this.menuTypes.find(t => t.selected)?.name || '';
+    return this.menuTypes.find((t) => t.selected)?.name || '';
   }
 
   hasSelectedMenuType(): boolean {
@@ -493,7 +630,7 @@ export default class MenuSelectionComponent implements OnInit {
 
   downloadActiveImage(): void {
     if (!this.activeMenuImage) return;
-    
+
     this.imageService.downloadImage(this.activeMenuImage.path).subscribe({
       next: (blob) => {
         const url = window.URL.createObjectURL(blob);
@@ -502,7 +639,7 @@ export default class MenuSelectionComponent implements OnInit {
         link.download = `menu-${this.formatDate(this.selectedDate)}.jpg`;
         document.body.appendChild(link);
         link.click();
-        
+
         // Cleanup
         document.body.removeChild(link);
         window.URL.revokeObjectURL(url);
@@ -510,7 +647,7 @@ export default class MenuSelectionComponent implements OnInit {
       error: (err) => {
         console.error('Error downloading image', err);
         this.alertService.show('error', 'Error en descarregar la imatge', '');
-      }
+      },
     });
   }
 }

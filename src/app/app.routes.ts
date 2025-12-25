@@ -10,26 +10,35 @@ import { LogoutComponent } from './components/Auth/logout/logout.component';
 import { StudentRegistrationComponent } from './views/student-registration/student-registration.component';
 import { PublicGuard } from './guards/public.guard';
 import { NavigationConfig } from './config/navigation.config';
+import { StudentGuard } from './guards/student.guard';
+import { TopUpComponent } from './views/payment/top-up/top-up.component';
+import { PaymentResultComponent } from './views/payment/result/payment-result.component';
+import { MaintenanceComponent } from './views/maintenance/maintenance.component';
+import { TransactionHistoryComponent } from './views/transaction-history/transaction-history.component';
 
 export const routes: Routes = [
-  { path: 'login', component: LoginComponent, canActivate: [PublicGuard] },
-  { path: 'forgotpassword', component: ForgotPasswordComponent, canActivate: [PublicGuard] },
-  { path: 'reset-password', component: ForgotPasswordComponent},
-  { path: 'register', component: StudentRegistrationComponent, canActivate: [PublicGuard] },
-  { path: 'logout', component: LogoutComponent, canActivate: [AuthGuard]  },
-  { path: '', redirectTo: 'menu-selection', pathMatch: 'full' }, // Redirigir raíz a selección de menú
-  { path: 'menu-selection', component: MenuSelectionComponent, canActivate: [AuthGuard] }, // Ruta para el menú
-  { path: 'food', redirectTo: 'menu-selection', pathMatch: 'full' }, 
-  { path: 'admin', component:  OrdersDashboardComponent, canActivate: [AuthGuard]}, // Ruta para la sección de historial de pedidos (admin)
-  { path: 'history', component: OrderHistoryComponent, canActivate: [AuthGuard] }, // Ruta para la sección de historial
-  { path: 'profile', component: UserCardComponent, canActivate: [AuthGuard] }, // Ruta para la sección de perfil
+  { path: NavigationConfig.LOGIN, component: LoginComponent, canActivate: [PublicGuard] },
+  { path: NavigationConfig.FORGOT_PASSWORD, component: ForgotPasswordComponent, canActivate: [PublicGuard] },
+  { path: NavigationConfig.RESET_PASSWORD, component: ForgotPasswordComponent},
+  { path: NavigationConfig.REGISTER, component: StudentRegistrationComponent, canActivate: [PublicGuard] },
+  { path: NavigationConfig.LOGOUT, component: LogoutComponent, canActivate: [AuthGuard]  },
+  { path: NavigationConfig.HOME, redirectTo: NavigationConfig.MENU_SELECTION, pathMatch: 'full' }, // Redirigir raíz a selección de menú
+  { path: NavigationConfig.MENU_SELECTION, component: MenuSelectionComponent, canActivate: [AuthGuard] }, // Ruta para el menú
+  { path: NavigationConfig.FOOD, redirectTo: NavigationConfig.MENU_SELECTION, pathMatch: 'full' }, 
+  { path: NavigationConfig.ADMIN, component:  OrdersDashboardComponent, canActivate: [AuthGuard]}, // Ruta para la sección de historial de pedidos (admin)
+  { path: NavigationConfig.HISTORY, component: OrderHistoryComponent, canActivate: [AuthGuard] }, // Ruta para la sección de historial
+  { path: NavigationConfig.PROFILE, component: UserCardComponent, canActivate: [AuthGuard] }, // Ruta para la sección de perfil
+  { path: NavigationConfig.PAYMENT_TOP_UP, component: TopUpComponent, canActivate: [AuthGuard, StudentGuard] },
+  { path: NavigationConfig.PAYMENT_RESULT, component: PaymentResultComponent, canActivate: [AuthGuard, StudentGuard] },
 
   // Subrutas para el admin
-  { path: 'admin/daily', component:  OrdersDashboardComponent}, // Ruta para la sección de historial de pedidos (admin)
-  { path: 'admin/monthly', component:  OrdersDashboardComponent}, // Ruta para la sección de historial de pedidos (admin)
-  { path: 'admin/anual', component:  OrdersDashboardComponent}, // Ruta para la sección de historial de pedidos (admin)
-  { path: 'admin/image', component:  OrdersDashboardComponent}, // Ruta para la sección de historial de pedidos (admin)
-  { path: NavigationConfig.MAINTENANCE, loadComponent: () => import('./views/maintenance/maintenance.component').then(m => m.MaintenanceComponent) },
+  { path: NavigationConfig.ADMIN_DAILY, component:  OrdersDashboardComponent}, // Ruta para la sección de historial de pedidos (admin)
+  { path: NavigationConfig.ADMIN_MONTHLY, component:  OrdersDashboardComponent}, // Ruta para la sección de historial de pedidos (admin)
+  { path: NavigationConfig.ADMIN_ANUAL, component:  OrdersDashboardComponent}, // Ruta para la sección de historial de pedidos (admin)
+  { path: NavigationConfig.ADMIN_IMAGE, component:  OrdersDashboardComponent}, // Ruta para la sección de historial de pedidos (admin)
+  { path: NavigationConfig.ADMIN_TRANSACTIONS, component: TransactionHistoryComponent, canActivate: [AuthGuard], data: { isAdmin: true } },
+  { path: NavigationConfig.TRANSACTIONS, component: TransactionHistoryComponent, canActivate: [AuthGuard] },
+  { path: NavigationConfig.MAINTENANCE, component: MaintenanceComponent },
   
   {path: '**', redirectTo: ''}, // Redirigir cualquier ruta no reconocida a la raíz
 ];
