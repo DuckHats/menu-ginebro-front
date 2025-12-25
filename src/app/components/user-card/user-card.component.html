@@ -29,14 +29,22 @@
       >
         <div class="relative group/avatar">
           <div
-            class="rounded-2xl bg-gradient-to-br from-primary to-primary-dark text-white flex-shrink-0 flex items-center justify-center shadow-lg shadow-primary/20 transition-all duration-500 group-hover/sidebar:rotate-3"
+            class="rounded-2xl bg-gradient-to-br from-primary to-primary-dark text-white flex-shrink-0 flex items-center justify-center shadow-lg shadow-primary/20 transition-all duration-500 group-hover/sidebar:rotate-3 overflow-hidden"
             [ngClass]="isSidebarCollapsed ? 'w-12 h-12' : 'w-14 h-14'"
           >
-            <mat-icon
-              class="transition-transform duration-500 group-hover/avatar:scale-110"
-              [ngClass]="isSidebarCollapsed ? 'scale-90' : 'scale-110'"
-              >person</mat-icon
-            >
+            <img
+              *ngIf="student.avatar; else defaultSidebarIcon"
+              [src]="student.avatar"
+              alt="Sidebar User Avatar"
+              class="w-full h-full object-cover"
+            />
+            <ng-template #defaultSidebarIcon>
+              <mat-icon
+                class="transition-transform duration-500 group-hover/avatar:scale-110"
+                [ngClass]="isSidebarCollapsed ? 'scale-90' : 'scale-110'"
+                >person</mat-icon
+              >
+            </ng-template>
           </div>
           <div
             *ngIf="!isSidebarCollapsed"
@@ -387,12 +395,17 @@
               <div class="relative z-10 space-y-10">
                 <div class="flex flex-col items-center text-center space-y-4">
                   <div
-                    class="w-20 h-20 rounded-3xl bg-white/10 flex items-center justify-center backdrop-blur-md shadow-inner border border-white/10 relative"
+                    class="w-20 h-20 rounded-3xl bg-white/10 flex items-center justify-center backdrop-blur-md shadow-inner border border-white/10 relative overflow-hidden"
                   >
-                    <mat-icon class="text-4xl text-white">verified</mat-icon>
-                    <div
-                      class="absolute -top-2 -right-2 w-6 h-6 bg-primary rounded-full border-4 border-slate-900 flex items-center justify-center"
-                    ></div>
+                    <img
+                      *ngIf="student.avatar; else defaultIcon"
+                      [src]="student.avatar"
+                      alt="User Avatar"
+                      class="w-full h-full object-cover"
+                    />
+                    <ng-template #defaultIcon>
+                      <mat-icon class="text-4xl text-white">verified</mat-icon>
+                    </ng-template>
                   </div>
                   <div>
                     <p class="font-black text-xl tracking-tight">Actiu</p>
@@ -500,46 +513,55 @@
             (ngSubmit)="saveAllergies()"
             class="p-8 sm:p-12 space-y-12"
           >
-            <!-- Common Allergies Grid -->
-            <div class="space-y-6">
-              <p
-                class="text-[10px] font-black text-slate-400 uppercase tracking-widest text-center sm:text-left"
-              >
-                Tria les teves al·lèrgies comunes
-              </p>
-              <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-                <button
-                  type="button"
+            <!-- Common Allergies List (Descriptive 2-column layout) -->
+            <div class="space-y-10">
+              <div class="space-y-4">
+                <div class="flex items-center gap-3">
+                  <mat-icon class="text-amber-500">warning_amber</mat-icon>
+                  <h3 class="text-xl font-black text-slate-800 tracking-tight">
+                    Al·lèrgies e intoleràncies
+                  </h3>
+                </div>
+                <p
+                  class="text-sm font-medium text-slate-500 leading-relaxed max-w-2xl"
+                >
+                  Selecciona les al·lèrgies o intoleràncies alimentàries que
+                  tens. Les receptes que continguin aquests ingredients seran
+                  filtrades per a tu.
+                </p>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10">
+                <div
                   *ngFor="let allergy of allergies"
                   (click)="toggleAllergy(allergy.id)"
-                  class="group relative p-4 sm:p-6 rounded-2xl sm:rounded-3xl border-2 transition-all duration-300 flex flex-col items-center justify-center gap-3 text-center overflow-hidden h-full"
-                  [ngClass]="
-                    isAllergySelected(allergy.id)
-                      ? 'bg-primary/5 border-primary shadow-lg shadow-primary/5'
-                      : 'bg-white border-slate-50 hover:border-slate-200'
-                  "
+                  class="flex items-start gap-5 group cursor-pointer"
                 >
-                  <div
-                    class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center transition-all duration-500"
-                    [ngClass]="
-                      isAllergySelected(allergy.id)
-                        ? 'bg-primary text-white scale-110'
-                        : 'bg-slate-50 text-slate-400 group-hover:bg-slate-100'
-                    "
-                  >
-                    <mat-icon class="text-xl">check_circle</mat-icon>
+                  <div class="relative mt-1">
+                    <div
+                      class="w-7 h-7 rounded-lg border-2 transition-all duration-300 flex items-center justify-center active:scale-95"
+                      [ngClass]="
+                        isAllergySelected(allergy.id)
+                          ? 'bg-primary border-primary shadow-lg shadow-primary/20'
+                          : 'bg-white border-slate-200 group-hover:border-slate-300'
+                      "
+                    ></div>
                   </div>
-                  <span
-                    class="font-black text-[11px] sm:text-xs uppercase tracking-tight leading-tight"
-                    [ngClass]="
-                      isAllergySelected(allergy.id)
-                        ? 'text-primary'
-                        : 'text-slate-600'
-                    "
-                  >
-                    {{ allergy.name }}
-                  </span>
-                </button>
+                  <div class="space-y-1 overflow-hidden">
+                    <h4
+                      class="font-black text-slate-800 leading-none transition-colors group-hover:text-primary"
+                    >
+                      {{ allergy.name }}
+                    </h4>
+                    <p
+                      class="text-xs font-medium text-slate-400 leading-snug group-hover:text-slate-500 transition-colors"
+                    >
+                      {{
+                        allergy.description || "Sense descripció disponible."
+                      }}
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -595,6 +617,7 @@
         </div>
       </div>
 
+      <!-- Config Tab (Admin only) -->
       <div
         *ngIf="activeTab === 'config' && student.user_type_id == 1"
         class="animate-fade-in"

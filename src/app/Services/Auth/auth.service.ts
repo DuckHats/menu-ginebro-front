@@ -14,8 +14,13 @@ export class AuthService extends BaseService {
   private authExpiryTime: number = 10 * 60 * 1000;
   private cachedTimestamp = 0;
 
+
   getCsrfCookie(): Observable<any> {
     return this.http.get('/sanctum/csrf-cookie');
+  }
+
+  getGoogleAuthUrl(): string {
+    return `${this.baseUrl}/auth/google`;
   }
 
   login(credentials: { user: string; password: string }): Observable<any> {

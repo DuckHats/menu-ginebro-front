@@ -64,6 +64,17 @@
 
         <!-- Links -->
         <div class="flex flex-col gap-4 pt-4">
+          <!-- Google Sign In -->
+          <a
+            [href]="googleAuthUrl"
+            class="w-full bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 py-3.5 rounded-2xl font-bold transition-all flex items-center justify-center gap-3 group"
+          >
+            <img src="https://www.svgrepo.com/show/475656/google-color.svg" class="w-5 h-5" alt="Google" />
+            <span>Accedir amb Google</span>
+          </a>
+
+          <div class="h-px bg-slate-100 w-full"></div>
+
           <button type="button" (click)="forgotPassword()" class="text-sm font-bold text-primary hover:text-primary-dark transition-colors">
             {{ UILabels.LOGIN.FORGOT_PASSWORD_LINK }}
           </button>
