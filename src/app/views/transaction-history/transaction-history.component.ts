@@ -4,6 +4,7 @@ import {
   TransactionService,
   Transaction,
 } from '../../Services/Transaction/transaction.service';
+import { ConfigurationService } from '../../Services/Admin/configuration/configuration.service';
 import { UILabels } from '../../config/ui-labels.config';
 import { MatIconModule } from '@angular/material/icon';
 import { animate, style, transition, trigger } from '@angular/animations';
@@ -40,10 +41,31 @@ export class TransactionHistoryComponent implements OnInit {
   totalPages = 1;
   totalItems = 0;
 
-  constructor(private transactionService: TransactionService) {}
+  constructor(
+    private transactionService: TransactionService,
+    private configService: ConfigurationService
+  ) {}
 
   ngOnInit(): void {
-    this.loadTransactions();
+    if (this.isAdmin) {
+      this.loadPaginationSettings();
+    } else {
+      this.loadTransactions();
+    }
+  }
+
+  loadPaginationSettings(): void {
+    this.configService.getConfigurations().subscribe({
+      next: (res) => {
+        if (res.status === 'success' && res.data?.transaction_per_page) {
+          this.perPage = parseInt(res.data.transaction_per_page);
+        }
+        this.loadTransactions();
+      },
+      error: () => {
+        this.loadTransactions();
+      },
+    });
   }
 
   loadTransactions(): void {

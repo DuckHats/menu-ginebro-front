@@ -22,6 +22,7 @@ import {
 import { BulkUploadModalComponent } from '../../components/bulk-upload-modal/bulk-upload-modal.component';
 
 import { Messages } from '../../config/messages.config';
+import { ConfigurationService } from '../../Services/Admin/configuration/configuration.service';
 import { SidebarService } from '../../Services/Sidebar/sidebar.service';
 import { AppConstants } from '../../config/app-constants.config';
 import { ConsoleMessages } from '../../config/console-messages.config';
@@ -92,15 +93,35 @@ export class OrdersDashboardComponent implements OnInit {
     private alertService: AlertService,
     private userService: UserService,
     private dialog: MatDialog,
-    private sidebarService: SidebarService
-  ) { }
+    private sidebarService: SidebarService,
+    private configService: ConfigurationService
+  ) {}
 
   ngOnInit(): void {
     this.admintype = this.userService.getLocalUser()?.user_type_id || 1;
     this.sidebarService.isCollapsed$.subscribe((collapsed) => {
       this.isSidebarCollapsed = collapsed;
     });
-    this.loadAllData();
+    this.loadPaginationSettings();
+  }
+
+  loadPaginationSettings(): void {
+    this.configService.getConfigurations().subscribe({
+      next: (res) => {
+        if (res.status === 'success' && res.data) {
+          if (res.data.order_per_page) {
+            this.orderPerPage = parseInt(res.data.order_per_page);
+          }
+          if (res.data.user_per_page) {
+            this.userPerPage = parseInt(res.data.user_per_page);
+          }
+        }
+        this.loadAllData();
+      },
+      error: () => {
+        this.loadAllData();
+      },
+    });
   }
 
   setActiveTab(tab: string): void {

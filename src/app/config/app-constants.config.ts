@@ -71,6 +71,7 @@ export const AppConstants = {
       STATUS: 'estat',
       REDSYS: 'pagaments',
       CONFIG: 'config',
+      PAGINATION: 'paginacio',
     },
     LABELS: {
       TITLE: 'Configuració del Sistema',
@@ -81,8 +82,10 @@ export const AppConstants = {
       STATUS_TAB: "Estat de l'App",
       REDSYS_TAB: 'Pagaments (Redsys)',
       CONFIG_TAB: 'Configuració',
+      PAGINATION_TAB: 'Paginació',
       IMAGES_TITLE: 'Imatges dels Menús Mensuals',
-      IMAGES_DESC: 'Puja les imatges dels menús perquè els usuaris les puguin consultar.',
+      IMAGES_DESC:
+        'Puja les imatges dels menús perquè els usuaris les puguin consultar.',
       IMG_START_DATE: 'Inici visibilitat',
       IMG_END_DATE: 'Final visibilitat',
       NEW_IMG_START: 'Nova Data Inici',
@@ -94,9 +97,11 @@ export const AppConstants = {
       UPLOADING: 'Pujant...',
       ORDERS_TITLE: 'Configuració de Comandes',
       DEADLINE_TIME: 'Hora límit de comanda',
-      DEADLINE_TIME_DESC: "Si els dies d'antelació són 0, aquesta hora s'aplica per a comandes del mateix dia. Si és major que 0, l'hora s'ignora ja que prevalen els dies d'antelació.",
+      DEADLINE_TIME_DESC:
+        "Si els dies d'antelació són 0, aquesta hora s'aplica per a comandes del mateix dia. Si és major que 0, l'hora s'ignora ja que prevalen els dies d'antelació.",
       DAYS_AHEAD: "Dies d'antelació",
-      DAYS_AHEAD_DESC: "Quants dies abans s'ha de tancar la comanda. Si és 0, es pot demanar per al mateix dia fins a l'hora límit.",
+      DAYS_AHEAD_DESC:
+        "Quants dies abans s'ha de tancar la comanda. Si és 0, es pot demanar per al mateix dia fins a l'hora límit.",
       MENU_PRICE: 'Preu Menú Complet (€)',
       MENU_PRICE_DESC: 'Preu per tiquet de menú complet.',
       TAPER_PRICE: 'Preu Tupper (€)',
@@ -108,19 +113,27 @@ export const AppConstants = {
       SAVE_CHANGES: 'Guardar Canvis',
       SAVING: 'Guardant...',
       APP_STATUS_TITLE: "Estat de l'Aplicació",
-      APP_STATUS_DESC: "Si desactives l'aplicació, els usuaris veuran una pàgina de manteniment.",
+      APP_STATUS_DESC:
+        "Si desactives l'aplicació, els usuaris veuran una pàgina de manteniment.",
       APP_ACTIVE: 'Aplicació Activa',
       APP_ACTIVE_DESC: "L'aplicació està funcionant normalment",
       APP_INACTIVE_DESC: "L'aplicació està en manteniment",
       MAINTENANCE_TITLE: 'Estem en manteniment',
-      MAINTENANCE_DESC: "Estem realitzant algunes millores al sistema per oferir-te un millor servei. Torna a intentar-ho d'aquí a una estona.",
+      MAINTENANCE_DESC:
+        "Estem realitzant algunes millores al sistema per oferir-te un millor servei. Torna a intentar-ho d'aquí a una estona.",
       REDSYS_TITLE: 'Configuració de Passarel·la Redsys',
       REDSYS_DESC: 'Configura les claus i paràmetres de connexió amb Redsys.',
-      REDSYS_URL: 'URL de l\'Entorn (Proves/Real)',
+      REDSYS_URL: "URL de l'Entorn (Proves/Real)",
       REDSYS_CODE: 'Codi de Comerç (FUC)',
       REDSYS_TERMINAL: 'Terminal',
       REDSYS_KEY: 'Clau Secreta (SHA-256)',
       MAINTENANCE_FOOTER: 'Gràcies per la teva paciència',
+      PAGINATION_TITLE: 'Configuració de Paginació',
+      PAGINATION_DESC:
+        'Configura el nombre de registres que es mostren per pàgina a cada secció.',
+      ORDERS_PER_PAGE: 'Comandes per pàgina',
+      USERS_PER_PAGE: 'Usuaris per pàgina',
+      TRANSACTIONS_PER_PAGE: 'Transaccions per pàgina',
       ADMIN_DASHBOARD: {
         TITLE: 'Panell de Control',
         TABS: {
@@ -136,7 +149,7 @@ export const AppConstants = {
           TRANSACTIONS: 'Transaccions',
         },
         ORDERS: {
-          TITLE: 'Gestió d\'Ordres',
+          TITLE: "Gestió d'Ordres",
           EXPORT: 'Exportar',
           PREVIOUS_DAY: 'Dia anterior',
           NEXT_DAY: 'Dia següent',
@@ -152,7 +165,7 @@ export const AppConstants = {
             STATUS: 'Estat',
             TUPPER: 'Tupper',
           },
-          NO_ORDERS: 'No s\'han trobat ordres per a la data seleccionada.',
+          NO_ORDERS: "No s'han trobat ordres per a la data seleccionada.",
         },
         MENUS: {
           TITLE: 'Gestió de Menús',
@@ -162,7 +175,7 @@ export const AppConstants = {
           NO_MENUS: 'No hi han menús per a la data seleccionada',
         },
         USERS: {
-          TITLE: 'Gestió d\'Usuaris',
+          TITLE: "Gestió d'Usuaris",
           IMPORT: 'Importar usuaris',
           TABLE: {
             ID: 'ID',
@@ -176,8 +189,8 @@ export const AppConstants = {
           ACTIVE: 'Actiu',
           INACTIVE: 'Inactiu',
         },
-      }
-    }
+      },
+    },
   },
   // Payment constants
   TOP_UP: {
@@ -204,6 +217,6 @@ export const AppConstants = {
       LIMIT_WARNING: 'El límit màxim per transacció és de 150,00€',
       ADD_BALANCE_BUTTON: 'Afegir al saldo',
       PROCESSING: 'Processant...',
-    }
-  }
+    },
+  },
 } as const;

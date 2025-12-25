@@ -87,6 +87,20 @@
         AppConstants.CONFIGURATION.LABELS.REDSYS_TAB
       }}</span>
     </button>
+    <button
+      (click)="setActiveTab(AppConstants.CONFIGURATION.TABS.PAGINATION)"
+      class="px-6 sm:px-8 py-3 rounded-full font-black text-[10px] sm:text-xs uppercase tracking-widest transition-all duration-300 flex items-center gap-3"
+      [ngClass]="
+        activeTab === AppConstants.CONFIGURATION.TABS.PAGINATION
+          ? 'bg-white text-primary shadow-lg shadow-primary/5'
+          : 'text-slate-400 hover:text-slate-600'
+      "
+    >
+      <mat-icon class="text-lg">format_list_numbered</mat-icon>
+      <span class="hidden sm:inline">{{
+        AppConstants.CONFIGURATION.LABELS.PAGINATION_TAB
+      }}</span>
+    </button>
   </div>
 
   <!-- Tab Content: Imatges -->
@@ -587,6 +601,115 @@
               *ngIf="!saving"
               class="group-hover:rotate-12 transition-transform"
               >save_as</mat-icon
+            >
+            {{
+              saving
+                ? AppConstants.CONFIGURATION.LABELS.SAVING
+                : AppConstants.CONFIGURATION.LABELS.SAVE_CHANGES
+            }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab Content: Paginació -->
+  <div
+    *ngIf="activeTab === AppConstants.CONFIGURATION.TABS.PAGINATION"
+    class="space-y-12"
+    @fadeIn
+  >
+    <div
+      class="bg-white rounded-[2.5rem] shadow-[0_20px_60px_rgba(0,0,0,0.03)] border border-slate-100 overflow-hidden"
+    >
+      <div class="p-8 sm:p-10 border-b border-slate-50 bg-slate-50/30">
+        <h2 class="text-xl font-black text-slate-800 tracking-tight">
+          {{ AppConstants.CONFIGURATION.LABELS.PAGINATION_TITLE }}
+        </h2>
+        <p
+          class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mt-2"
+        >
+          {{ AppConstants.CONFIGURATION.LABELS.PAGINATION_DESC }}
+        </p>
+      </div>
+
+      <div class="p-8 sm:p-10 space-y-10">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+          <!-- Orders Per Page -->
+          <div class="space-y-3 group/field">
+            <label
+              class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] transition-colors group-focus-within/field:text-primary"
+            >
+              {{ AppConstants.CONFIGURATION.LABELS.ORDERS_PER_PAGE }}
+            </label>
+            <div class="relative">
+              <input
+                type="number"
+                [(ngModel)]="settings.order_per_page"
+                class="w-full h-14 bg-slate-50 border border-slate-100 rounded-2xl px-6 font-black text-slate-800 focus:ring-4 focus:ring-primary/5 focus:border-primary outline-none transition-all shadow-inner"
+              />
+              <mat-icon
+                class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-300 pointer-events-none"
+                >receipt_long</mat-icon
+              >
+            </div>
+          </div>
+
+          <!-- Users Per Page -->
+          <div class="space-y-3 group/field">
+            <label
+              class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] transition-colors group-focus-within/field:text-primary"
+            >
+              {{ AppConstants.CONFIGURATION.LABELS.USERS_PER_PAGE }}
+            </label>
+            <div class="relative">
+              <input
+                type="number"
+                [(ngModel)]="settings.user_per_page"
+                class="w-full h-14 bg-slate-50 border border-slate-100 rounded-2xl px-6 font-black text-slate-800 focus:ring-4 focus:ring-primary/5 focus:border-primary outline-none transition-all shadow-inner"
+              />
+              <mat-icon
+                class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-300 pointer-events-none"
+                >people</mat-icon
+              >
+            </div>
+          </div>
+
+          <!-- Transactions Per Page -->
+          <div class="space-y-3 group/field">
+            <label
+              class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] transition-colors group-focus-within/field:text-primary"
+            >
+              {{ AppConstants.CONFIGURATION.LABELS.TRANSACTIONS_PER_PAGE }}
+            </label>
+            <div class="relative">
+              <input
+                type="number"
+                [(ngModel)]="settings.transaction_per_page"
+                class="w-full h-14 bg-slate-50 border border-slate-100 rounded-2xl px-6 font-black text-slate-800 focus:ring-4 focus:ring-primary/5 focus:border-primary outline-none transition-all shadow-inner"
+              />
+              <mat-icon
+                class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-300 pointer-events-none"
+                >history</mat-icon
+              >
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-8 flex justify-end">
+          <button
+            (click)="saveSettings()"
+            [disabled]="saving"
+            class="w-full sm:w-auto px-12 py-5 bg-gradient-to-r from-slate-900 to-slate-800 text-white rounded-2xl sm:rounded-[2rem] font-black uppercase tracking-[0.2em] text-[10px] sm:text-xs hover:from-primary hover:to-primary-dark transition-all duration-500 shadow-2xl shadow-slate-900/20 active:scale-95 flex items-center justify-center gap-4 group"
+          >
+            <span
+              *ngIf="saving"
+              class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"
+            ></span>
+            <mat-icon
+              *ngIf="!saving"
+              class="group-hover:rotate-12 transition-transform"
+              >save</mat-icon
             >
             {{
               saving
