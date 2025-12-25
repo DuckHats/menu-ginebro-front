@@ -14,6 +14,20 @@
         }}
       </h2>
     </div>
+
+    <!-- Search Bar (Admin Only) -->
+    <div *ngIf="isAdmin" class="flex-grow max-w-md relative">
+      <mat-icon class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+        >search</mat-icon
+      >
+      <input
+        type="text"
+        [(ngModel)]="search"
+        (ngModelChange)="onSearch()"
+        [placeholder]="'Cerca per usuari, descripció, estat...'"
+        class="w-full h-12 pl-12 pr-4 bg-white border border-slate-200 rounded-2xl text-sm font-medium text-slate-700 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all shadow-sm"
+      />
+    </div>
   </header>
 
   <div
@@ -61,14 +75,30 @@
             </th>
             <th
               *ngIf="isAdmin"
-              class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest"
+              (click)="sort('user')"
+              class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest cursor-pointer hover:text-primary transition-colors"
             >
-              Usuari
+              <div class="flex items-center gap-2">
+                Usuari
+                <mat-icon class="text-xs w-4 h-4" *ngIf="sortBy === 'user'">{{
+                  sortOrder === "asc" ? "expand_less" : "expand_more"
+                }}</mat-icon>
+              </div>
             </th>
             <th
-              class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest"
+              (click)="sort('description')"
+              class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest cursor-pointer hover:text-primary transition-colors"
             >
-              {{ UILabels.TRANSACTIONS.DESCRIPTION }}
+              <div class="flex items-center gap-2">
+                {{ UILabels.TRANSACTIONS.DESCRIPTION }}
+                <mat-icon
+                  class="text-xs w-4 h-4"
+                  *ngIf="sortBy === 'description'"
+                  >{{
+                    sortOrder === "asc" ? "expand_less" : "expand_more"
+                  }}</mat-icon
+                >
+              </div>
             </th>
             <th
               class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest"
@@ -87,9 +117,15 @@
               </div>
             </th>
             <th
-              class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest"
+              (click)="sort('status')"
+              class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest cursor-pointer hover:text-primary transition-colors"
             >
-              {{ UILabels.TRANSACTIONS.STATUS }}
+              <div class="flex items-center gap-2">
+                {{ UILabels.TRANSACTIONS.STATUS }}
+                <mat-icon class="text-xs w-4 h-4" *ngIf="sortBy === 'status'">{{
+                  sortOrder === "asc" ? "expand_less" : "expand_more"
+                }}</mat-icon>
+              </div>
             </th>
           </tr>
         </thead>

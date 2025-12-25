@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { FormsModule } from '@angular/forms'; // <-- import FormsModule here
 import { Student } from '../../interfaces/student';
 import { Order, MenuItem } from '../../interfaces/order-history';
@@ -58,7 +60,7 @@ import { animate, style, transition, trigger } from '@angular/animations';
     ]),
   ],
 })
-export class OrdersDashboardComponent implements OnInit {
+export class OrdersDashboardComponent implements OnInit, OnDestroy {
   AppConstants = AppConstants;
   activeTab: string =
     AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.ORDERS;
@@ -86,6 +88,10 @@ export class OrdersDashboardComponent implements OnInit {
   // Status options for the select dropdown
   statusOptions = AppConstants.ORDER_STATUS_OPTIONS;
 
+  private orderSearch$ = new Subject<string>();
+  private userSearch$ = new Subject<string>();
+  private destroy$ = new Subject<void>();
+
   constructor(
     private usersService: UsersService,
     private ordersService: OrdersService,
@@ -103,6 +109,28 @@ export class OrdersDashboardComponent implements OnInit {
       this.isSidebarCollapsed = collapsed;
     });
     this.loadPaginationSettings();
+    this.setupReactiveSearch();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  private setupReactiveSearch(): void {
+    this.orderSearch$
+      .pipe(debounceTime(400), distinctUntilChanged(), takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.orderPage = 1;
+        this.loadOrders(this.formatDate(this.selectedDate));
+      });
+
+    this.userSearch$
+      .pipe(debounceTime(400), distinctUntilChanged(), takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.userPage = 1;
+        this.loadUsers();
+      });
   }
 
   loadPaginationSettings(): void {
@@ -246,6 +274,7 @@ export class OrdersDashboardComponent implements OnInit {
       per_page: this.orderPerPage,
       sort_by: this.orderSortBy,
       sort_order: this.orderSortOrder,
+      search: this.orderSearch,
     };
 
     this.ordersService.getByDate(date, params).subscribe({
@@ -278,6 +307,11 @@ export class OrdersDashboardComponent implements OnInit {
   orderSortOrder = 'desc';
   orderTotalPages = 1;
   orderTotalItems = 0;
+  orderSearch = '';
+
+  onOrderSearch(): void {
+    this.orderSearch$.next(this.orderSearch);
+  }
 
   changeOrderPage(page: number): void {
     this.orderPage = page;
@@ -309,6 +343,11 @@ export class OrdersDashboardComponent implements OnInit {
   userSortOrder = 'desc';
   userTotalPages = 1;
   userTotalItems = 0;
+  userSearch = '';
+
+  onUserSearch(): void {
+    this.userSearch$.next(this.userSearch);
+  }
 
   loadUsers(): void {
     const params = {
@@ -316,6 +355,7 @@ export class OrdersDashboardComponent implements OnInit {
       per_page: this.userPerPage,
       sort_by: this.userSortBy,
       sort_order: this.userSortOrder,
+      search: this.userSearch,
     };
 
     this.usersService.getAll(params).subscribe({

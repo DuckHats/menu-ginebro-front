@@ -36,6 +36,7 @@ export class TransactionService {
     per_page?: number;
     sort_by?: string;
     sort_order?: string;
+    search?: string;
   }): Observable<any> {
     return this.http.get<any>(this.apiUrl, { params });
   }
@@ -48,6 +49,7 @@ export class TransactionService {
     per_page?: number;
     sort_by?: string;
     sort_order?: string;
+    search?: string;
   }): Observable<any> {
     return this.http.get<any>(`${API_CONFIG.baseUrl}/admin/transactions`, {
       params,

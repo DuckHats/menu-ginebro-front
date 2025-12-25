@@ -23,6 +23,7 @@ export class UserService {
     per_page?: number;
     sort_by?: string;
     sort_order?: string;
+    search?: string;
   }): Observable<any> {
     return this.http.get<any>(this.baseUrl, { params });
   }

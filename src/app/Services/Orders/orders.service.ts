@@ -18,6 +18,7 @@ export class OrdersService {
     per_page?: number;
     sort_by?: string;
     sort_order?: string;
+    search?: string;
   }): Observable<any> {
     return this.http
       .get<any>(this.apiUrl, { params })
@@ -31,6 +32,7 @@ export class OrdersService {
       per_page?: number;
       sort_by?: string;
       sort_order?: string;
+      search?: string;
     }
   ): Observable<any> {
     return this.http

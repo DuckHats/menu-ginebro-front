@@ -1,5 +1,8 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import {
   TransactionService,
   Transaction,
@@ -12,7 +15,7 @@ import { animate, style, transition, trigger } from '@angular/animations';
 @Component({
   selector: 'app-transaction-history',
   standalone: true,
-  imports: [CommonModule, MatIconModule],
+  imports: [CommonModule, MatIconModule, FormsModule],
   templateUrl: './transaction-history.component.html',
   animations: [
     trigger('fadeInUp', [
@@ -26,7 +29,7 @@ import { animate, style, transition, trigger } from '@angular/animations';
     ]),
   ],
 })
-export class TransactionHistoryComponent implements OnInit {
+export class TransactionHistoryComponent implements OnInit, OnDestroy {
   @Input() isAdmin: boolean = false;
 
   UILabels = UILabels;
@@ -40,6 +43,14 @@ export class TransactionHistoryComponent implements OnInit {
   sortOrder = 'desc';
   totalPages = 1;
   totalItems = 0;
+  search = '';
+
+  private search$ = new Subject<string>();
+  private destroy$ = new Subject<void>();
+
+  onSearch(): void {
+    this.search$.next(this.search);
+  }
 
   constructor(
     private transactionService: TransactionService,
@@ -52,6 +63,21 @@ export class TransactionHistoryComponent implements OnInit {
     } else {
       this.loadTransactions();
     }
+    this.setupReactiveSearch();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  private setupReactiveSearch(): void {
+    this.search$
+      .pipe(debounceTime(400), distinctUntilChanged(), takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.page = 1;
+        this.loadTransactions();
+      });
   }
 
   loadPaginationSettings(): void {
@@ -75,6 +101,7 @@ export class TransactionHistoryComponent implements OnInit {
       per_page: this.perPage,
       sort_by: this.sortBy,
       sort_order: this.sortOrder,
+      search: this.search,
     };
 
     const stream$ = this.isAdmin

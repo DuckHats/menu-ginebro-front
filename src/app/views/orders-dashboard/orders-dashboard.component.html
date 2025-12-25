@@ -412,6 +412,48 @@
               <span class="text-xs font-bold hidden md:inline">Kanban</span>
             </button>
           </div>
+
+          <!-- Global Search (Orders) -->
+          <div
+            *ngIf="
+              activeTab ===
+              AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.ORDERS
+            "
+            class="flex-grow max-w-md relative"
+          >
+            <mat-icon
+              class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+              >search</mat-icon
+            >
+            <input
+              type="text"
+              [(ngModel)]="orderSearch"
+              (ngModelChange)="onOrderSearch()"
+              [placeholder]="'Cerca comandes per nom, email o data...'"
+              class="w-full h-12 pl-12 pr-4 bg-white border border-slate-200 rounded-2xl text-sm font-medium text-slate-700 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all shadow-sm"
+            />
+          </div>
+
+          <!-- Global Search (Users) -->
+          <div
+            *ngIf="
+              activeTab ===
+              AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.TABS.USERS
+            "
+            class="flex-grow max-w-md relative"
+          >
+            <mat-icon
+              class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
+              >search</mat-icon
+            >
+            <input
+              type="text"
+              [(ngModel)]="userSearch"
+              (ngModelChange)="onUserSearch()"
+              [placeholder]="'Cerca usuaris per nom o email...'"
+              class="w-full h-12 pl-12 pr-4 bg-white border border-slate-200 rounded-2xl text-sm font-medium text-slate-700 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all shadow-sm"
+            />
+          </div>
         </div>
 
         <!-- RIGHT: Export/Import Controls -->
@@ -495,7 +537,7 @@
               <thead>
                 <tr class="bg-slate-50/50">
                   <th
-                    (click)="sortOrders('user_id')"
+                    (click)="sortOrders('user')"
                     class="px-6 py-4 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100 cursor-pointer hover:bg-slate-100 transition-colors"
                   >
                     <div class="flex items-center gap-2">
@@ -505,7 +547,7 @@
                       }}
                       <mat-icon
                         class="text-xs w-4 h-4"
-                        *ngIf="orderSortBy === 'user_id'"
+                        *ngIf="orderSortBy === 'user'"
                         >{{
                           orderSortOrder === "asc"
                             ? "expand_less"
@@ -515,28 +557,64 @@
                     </div>
                   </th>
                   <th
-                    class="px-6 py-4 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100"
+                    (click)="sortOrders('type')"
+                    class="px-6 py-4 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100 cursor-pointer hover:bg-slate-100 transition-colors"
                   >
-                    {{
-                      AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.ORDERS
-                        .TABLE.TYPE
-                    }}
+                    <div class="flex items-center gap-2">
+                      {{
+                        AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.ORDERS
+                          .TABLE.TYPE
+                      }}
+                      <mat-icon
+                        class="text-xs w-4 h-4"
+                        *ngIf="orderSortBy === 'type'"
+                        >{{
+                          orderSortOrder === "asc"
+                            ? "expand_less"
+                            : "expand_more"
+                        }}</mat-icon
+                      >
+                    </div>
                   </th>
                   <th
-                    class="px-6 py-4 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100"
+                    (click)="sortOrders('allergies')"
+                    class="px-6 py-4 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100 cursor-pointer hover:bg-slate-100 transition-colors"
                   >
-                    {{
-                      AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.ORDERS
-                        .TABLE.ALLERGIES
-                    }}
+                    <div class="flex items-center gap-2">
+                      {{
+                        AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.ORDERS
+                          .TABLE.ALLERGIES
+                      }}
+                      <mat-icon
+                        class="text-xs w-4 h-4"
+                        *ngIf="orderSortBy === 'allergies'"
+                        >{{
+                          orderSortOrder === "asc"
+                            ? "expand_less"
+                            : "expand_more"
+                        }}</mat-icon
+                      >
+                    </div>
                   </th>
                   <th
-                    class="px-6 py-4 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100"
+                    (click)="sortOrders('plates')"
+                    class="px-6 py-4 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100 cursor-pointer hover:bg-slate-100 transition-colors"
                   >
-                    {{
-                      AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.ORDERS
-                        .TABLE.FIRST_DISH
-                    }}
+                    <div class="flex items-center gap-2">
+                      {{
+                        AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.ORDERS
+                          .TABLE.FIRST_DISH
+                      }}
+                      <mat-icon
+                        class="text-xs w-4 h-4"
+                        *ngIf="orderSortBy === 'plates'"
+                        >{{
+                          orderSortOrder === "asc"
+                            ? "expand_less"
+                            : "expand_more"
+                        }}</mat-icon
+                      >
+                    </div>
                   </th>
                   <th
                     class="px-6 py-4 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100"
@@ -555,12 +633,24 @@
                     }}
                   </th>
                   <th
-                    class="px-6 py-4 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100"
+                    (click)="sortOrders('status')"
+                    class="px-6 py-4 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100 cursor-pointer hover:bg-slate-100 transition-colors"
                   >
-                    {{
-                      AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.ORDERS
-                        .TABLE.STATUS
-                    }}
+                    <div class="flex items-center gap-2">
+                      {{
+                        AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.ORDERS
+                          .TABLE.STATUS
+                      }}
+                      <mat-icon
+                        class="text-xs w-4 h-4"
+                        *ngIf="orderSortBy === 'status'"
+                        >{{
+                          orderSortOrder === "asc"
+                            ? "expand_less"
+                            : "expand_more"
+                        }}</mat-icon
+                      >
+                    </div>
                   </th>
                   <th
                     class="px-6 py-4 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100"
@@ -1211,12 +1301,22 @@
                   </div>
                 </th>
                 <th
-                  class="px-6 py-4 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100 text-right"
+                  (click)="sortUsers('status')"
+                  class="px-6 py-4 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100 text-right cursor-pointer hover:bg-slate-100 transition-colors"
                 >
-                  {{
-                    AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.USERS
-                      .TABLE.STATUS
-                  }}
+                  <div class="flex items-center justify-end gap-2">
+                    {{
+                      AppConstants.CONFIGURATION.LABELS.ADMIN_DASHBOARD.USERS
+                        .TABLE.STATUS
+                    }}
+                    <mat-icon
+                      class="text-xs w-4 h-4"
+                      *ngIf="userSortBy === 'status'"
+                      >{{
+                        userSortOrder === "asc" ? "expand_less" : "expand_more"
+                      }}</mat-icon
+                    >
+                  </div>
                 </th>
               </tr>
             </thead>
