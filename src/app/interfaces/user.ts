@@ -1,4 +1,4 @@
-import { Allergy } from "./allergy";
+import { Allergy } from './allergy';
 
 export interface User {
   id: number;
@@ -12,4 +12,5 @@ export interface User {
   allergies?: Allergy[];
   custom_allergies?: string;
   balance: number;
+  avatar?: string;
 }
