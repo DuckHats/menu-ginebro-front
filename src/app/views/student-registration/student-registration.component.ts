@@ -12,6 +12,7 @@ import { Router } from '@angular/router';
 import { NavigationConfig } from '../../config/navigation.config';
 import { IconComponent } from '../../components/icon/icon.component';
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { ErrorMessages } from '../../config/errors.config';
 import { OtpInputComponent } from '../../components/otp-input/otp-input.component';
 import { PasswordStrengthComponent } from '../../components/password-strength/password-strength.component';
 import { Messages } from '../../config/messages.config';
@@ -31,13 +32,16 @@ import { animate, style, transition, trigger } from '@angular/animations';
     ReactiveFormsModule,
     OtpInputComponent,
     PasswordStrengthComponent,
-    MatIconModule
+    MatIconModule,
   ],
   animations: [
     trigger('fadeIn', [
       transition(':enter', [
         style({ opacity: 0, transform: 'translateY(10px)' }),
-        animate('400ms ease-out', style({ opacity: 1, transform: 'translateY(0)' })),
+        animate(
+          '400ms ease-out',
+          style({ opacity: 1, transform: 'translateY(0)' })
+        ),
       ]),
     ]),
   ],
@@ -108,11 +112,17 @@ export class StudentRegistrationComponent {
       },
       error: (err) => {
         this.isSubmitting = false;
-        this.alertService.show(
-          'error',
-          Messages.REGISTRATION.CODE_SEND_ERROR,
-          ''
-        );
+        let errorMessage = Messages.REGISTRATION.CODE_SEND_ERROR;
+
+        if (
+          err.error &&
+          err.error.error &&
+          err.error.error.code === 'EMAIL_ALREADY_REGISTERED'
+        ) {
+          errorMessage = ErrorMessages.EMAIL_ALREADY_REGISTERED;
+        }
+
+        this.alertService.show('error', errorMessage, '');
         console.error(err);
       },
     });
@@ -162,11 +172,18 @@ export class StudentRegistrationComponent {
         this.isSubmitting = false;
       },
       error: (err) => {
-        this.alertService.show(
-          'error',
-          Messages.GENERIC.ERROR,
-          Messages.REGISTRATION.REGISTRATION_FAILED
-        );
+        let errorMessage = Messages.REGISTRATION.REGISTRATION_FAILED;
+
+        if (err.error && err.error.error) {
+          const errorCode = err.error.error.code;
+          if (errorCode === 'INVALID_VERIFICATION_CODE') {
+            errorMessage = ErrorMessages.INVALID_VERIFICATION_CODE;
+          } else if (errorCode === 'USER_ALREADY_EXISTS') {
+            errorMessage = ErrorMessages.USER_ALREADY_EXISTS;
+          }
+        }
+
+        this.alertService.show('error', Messages.GENERIC.ERROR, errorMessage);
         console.error(err);
         this.isSubmitting = false;
       },

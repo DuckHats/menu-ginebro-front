@@ -10,4 +10,10 @@ export const ErrorMessages = {
   INVALID_CREDENTIALS: 'Usuari o contrasenya incorrectes.',
   ACCESS_DENIED: 'Accés denegat',
   INVALID_DOMAIN: "Només es permet l'accés amb comptes de @ginebro.cat",
+  ACCOUNT_INACTIVE:
+    "El teu compte està desactivat o banejat. Posa't en contacte amb l'administrador.",
+  EMAIL_ALREADY_REGISTERED: 'Aquest correu electrònic ja està registrat.',
+  INVALID_VERIFICATION_CODE:
+    'El codi de verificació és incorrecte o ha expirat.',
+  USER_ALREADY_EXISTS: 'Aquest usuari ja existeix.',
 };
