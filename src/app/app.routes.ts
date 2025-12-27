@@ -114,5 +114,5 @@ export const routes: Routes = [
   },
   { path: NavigationConfig.MAINTENANCE, component: MaintenanceComponent },
 
-  { path: '**', redirectTo: '' }, // Redirigir cualquier ruta no reconocida a la raíz
+  { path: '**', redirectTo: NavigationConfig.MENU_SELECTION }, // Redirigir cualquier ruta no reconocida a la raíz
 ];

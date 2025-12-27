@@ -65,7 +65,7 @@ export const UILabels = {
   HISTORY: {
     TITLE: 'Historial de Comandes',
     BACK_TO_MENU: 'Tornar al menú',
-    NO_ORDERS: 'No tens comandes a l\'historial.',
+    NO_ORDERS: "No tens comandes a l'historial.",
   },
 
   // Welcome Page
@@ -82,20 +82,22 @@ export const UILabels = {
     SELECT_DAY: 'Selecciona el dia',
     MENU_TYPE_TITLE: 'Tipus de menú',
     RESTRICTED_DATE_TITLE: 'Data no disponible',
-    EMPTY_STATE: 'Tria un tipus de menú per començar a configurar la teva reserva',
+    EMPTY_STATE:
+      'Tria un tipus de menú per començar a configurar la teva reserva',
     DOWNLOAD_BUTTON: 'Descarregar Menú',
     CONFIRM_BUTTON: 'Confirmar Selecció',
     TAPER_YES: 'Portaré Tàper',
     TAPER_NO: 'No portaré Tàper',
-    CONFIRM: 'Confirmar'
+    CONFIRM: 'Confirmar',
   },
 
   // Modals
   MODALS: {
     INTRO: {
       TITLE: 'Benvingut/da al Menjador!',
-      DESCRIPTION: 'Tria el teu menú diari de forma fàcil i ràpida. Recorda revisar les hores de tall i antelació per assegurar la teva comanda.',
-      BUTTON: 'Començar ara'
+      DESCRIPTION:
+        'Tria el teu menú diari de forma fàcil i ràpida. Recorda revisar les alèrgies per assegurar la teva comanda.',
+      BUTTON: 'Començar ara',
     },
     CONFIRM: {
       TITLE: 'Confirmar comanda',
@@ -111,10 +113,11 @@ export const UILabels = {
       INSUFFICIENT_FUNDS: 'Saldo insuficient',
       RECHARGE: 'RECARREGAR SALDO',
       QUESTION_1: 'Estàs segur/a que vols confirmar aquesta selecció?',
-      QUESTION_2: 'Ara pots tornar enrere per fer canvis però després no podràs modificar res.',
+      QUESTION_2:
+        'Ara pots tornar enrere per fer canvis però després no podràs modificar res.',
       BACK: 'Tornar enrere',
-      CONFIRM: 'SÍ, CONFIRMAR'
-    }
+      CONFIRM: 'SÍ, CONFIRMAR',
+    },
   },
   // Transactions Page
   TRANSACTIONS: {
@@ -125,11 +128,11 @@ export const UILabels = {
     TYPE: 'Tipus',
     AMOUNT: 'Import',
     STATUS: 'Estat',
-    NO_TRANSACTIONS: 'No s\'han trobat transaccions.',
+    NO_TRANSACTIONS: "No s'han trobat transaccions.",
     TYPES: {
       TOPUP: 'Recàrrega',
       ORDER: 'Comanda',
-      CORRECTION: 'Correció'
-    }
-  }
+      CORRECTION: 'Correció',
+    },
+  },
 };
