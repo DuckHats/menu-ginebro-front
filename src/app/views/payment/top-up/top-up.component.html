@@ -1,0 +1,305 @@
+<div class="min-h-screen bg-slate-50 pb-20 pt-24 px-4 sm:px-6">
+  <div class="max-w-md mx-auto space-y-6">
+    <!-- Back Button -->
+    <button
+      (click)="goBack()"
+      class="flex items-center gap-2 text-slate-500 hover:text-slate-800 transition-colors"
+    >
+      <mat-icon>arrow_back</mat-icon>
+      <span class="font-medium">{{
+        AppConstants.TOP_UP.LABELS.BACK_BUTTON
+      }}</span>
+    </button>
+
+    <div
+      class="bg-white rounded-[2rem] shadow-xl shadow-slate-200/50 p-6 sm:p-8 space-y-6 relative overflow-hidden"
+    >
+      <!-- Mode Toggle -->
+      <div class="flex bg-slate-100 p-1.5 rounded-2xl">
+        <button
+          (click)="setMode(AppConstants.TOP_UP.MODES.DIRECT)"
+          class="flex-1 py-3 rounded-xl font-bold text-sm transition-all"
+          [ngClass]="
+            topUpMode === AppConstants.TOP_UP.MODES.DIRECT
+              ? 'bg-white text-primary shadow-sm'
+              : 'text-slate-500 hover:text-slate-700'
+          "
+        >
+          {{ AppConstants.TOP_UP.LABELS.DIRECT_MODE_TITLE }}
+        </button>
+        <button
+          (click)="setMode(AppConstants.TOP_UP.MODES.PACKS)"
+          class="flex-1 py-3 rounded-xl font-bold text-sm transition-all"
+          [ngClass]="
+            topUpMode === AppConstants.TOP_UP.MODES.PACKS
+              ? 'bg-white text-primary shadow-sm'
+              : 'text-slate-500 hover:text-slate-700'
+          "
+        >
+          {{ AppConstants.TOP_UP.LABELS.PACKS_MODE_TITLE }}
+        </button>
+      </div>
+
+      <!-- Header -->
+      <div class="space-y-2 text-center">
+        <h1 class="text-2xl font-black text-slate-800 tracking-tight">
+          {{ AppConstants.TOP_UP.LABELS.TITLE }}
+        </h1>
+        <p
+          class="text-slate-500 text-sm"
+          *ngIf="topUpMode === AppConstants.TOP_UP.MODES.DIRECT"
+        >
+          {{ AppConstants.TOP_UP.LABELS.DIRECT_MODE_DESC }}
+        </p>
+        <p
+          class="text-slate-500 text-sm"
+          *ngIf="topUpMode === AppConstants.TOP_UP.MODES.PACKS"
+        >
+          {{ AppConstants.TOP_UP.LABELS.PACKS_MODE_DESC }}
+        </p>
+      </div>
+
+      <!-- DIRECT MODE -->
+      <div
+        *ngIf="topUpMode === AppConstants.TOP_UP.MODES.DIRECT"
+        class="space-y-6"
+        @fadeIn
+      >
+        <!-- Amount Selection Grid -->
+        <div class="grid grid-cols-2 gap-4">
+          <button
+            *ngFor="let amount of predefinedAmounts"
+            (click)="selectAmount(amount)"
+            [class.ring-2]="selectedAmount === amount && !isCustomAmount"
+            [class.ring-primary]="selectedAmount === amount && !isCustomAmount"
+            [class.bg-slate-50]="selectedAmount !== amount"
+            [class.bg-primary-50]="selectedAmount === amount && !isCustomAmount"
+            class="p-4 rounded-2xl border border-slate-200 hover:border-primary/30 transition-all duration-300 flex flex-col items-center justify-center gap-1 group"
+          >
+            <span
+              class="text-xl font-black"
+              [class.text-primary]="
+                selectedAmount === amount && !isCustomAmount
+              "
+              [class.text-slate-700]="selectedAmount !== amount"
+              >{{ amount }}€</span
+            >
+          </button>
+        </div>
+
+        <!-- Custom Amount Input -->
+        <div class="relative">
+          <div
+            class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none"
+          >
+            <span class="text-slate-400 font-bold">€</span>
+          </div>
+          <input
+            type="number"
+            [formControl]="customAmountControl"
+            (focus)="onCustomAmountFocus()"
+            [placeholder]="AppConstants.TOP_UP.LABELS.CUSTOM_AMOUNT_PLACEHOLDER"
+            class="w-full pl-10 pr-4 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all font-bold text-lg text-slate-800"
+          />
+        </div>
+      </div>
+
+      <!-- PACKS MODE -->
+      <div
+        *ngIf="topUpMode === AppConstants.TOP_UP.MODES.PACKS"
+        class="space-y-4"
+        @fadeIn
+      >
+        <!-- Pack Item Wrapper -->
+        <div class="space-y-3">
+          <!-- Full Menu -->
+          <div
+            class="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100"
+          >
+            <div class="flex flex-col">
+              <span class="font-bold text-slate-800">{{
+                AppConstants.TOP_UP.LABELS.FULL_MENU_LABEL
+              }}</span>
+              <span class="text-xs text-slate-400"
+                >{{ prices.menu_price | currency : "EUR" }} /
+                {{ AppConstants.TOP_UP.LABELS.UNIT }}</span
+              >
+            </div>
+            <div class="flex items-center gap-3">
+              <button
+                (click)="updateQuantity('full_menu', -1)"
+                class="w-8 h-8 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-500 hover:text-primary transition-colors"
+              >
+                <mat-icon class="text-lg">remove</mat-icon>
+              </button>
+              <span class="w-6 text-center font-black text-slate-800">{{
+                quantities.full_menu
+              }}</span>
+              <button
+                (click)="updateQuantity('full_menu', 1)"
+                class="w-8 h-8 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-500 hover:text-primary transition-colors"
+              >
+                <mat-icon class="text-lg">add</mat-icon>
+              </button>
+            </div>
+          </div>
+
+          <!-- Taper -->
+          <div
+            class="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100"
+          >
+            <div class="flex flex-col">
+              <span class="font-bold text-slate-800">{{
+                AppConstants.TOP_UP.LABELS.TAPER_LABEL
+              }}</span>
+              <span class="text-xs text-slate-400"
+                >{{ prices.taper_price | currency : "EUR" }} /
+                {{ AppConstants.TOP_UP.LABELS.UNIT }}</span
+              >
+            </div>
+            <div class="flex items-center gap-3">
+              <button
+                (click)="updateQuantity('taper', -1)"
+                class="w-8 h-8 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-500 hover:text-primary transition-colors"
+              >
+                <mat-icon class="text-lg">remove</mat-icon>
+              </button>
+              <span class="w-6 text-center font-black text-slate-800">{{
+                quantities.taper
+              }}</span>
+              <button
+                (click)="updateQuantity('taper', 1)"
+                class="w-8 h-8 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-500 hover:text-primary transition-colors"
+              >
+                <mat-icon class="text-lg">add</mat-icon>
+              </button>
+            </div>
+          </div>
+
+          <!-- Half Menu 1st -->
+          <div
+            class="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100"
+          >
+            <div class="flex flex-col">
+              <span class="font-bold text-slate-800">{{
+                AppConstants.TOP_UP.LABELS.HALF_MENU_FIRST_LABEL
+              }}</span>
+              <span class="text-xs text-slate-400"
+                >{{ prices.half_menu_first_price | currency : "EUR" }} /
+                {{ AppConstants.TOP_UP.LABELS.UNIT }}</span
+              >
+            </div>
+            <div class="flex items-center gap-3">
+              <button
+                (click)="updateQuantity('half_menu_first', -1)"
+                class="w-8 h-8 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-500 hover:text-primary transition-colors"
+              >
+                <mat-icon class="text-lg">remove</mat-icon>
+              </button>
+              <span class="w-6 text-center font-black text-slate-800">{{
+                quantities.half_menu_first
+              }}</span>
+              <button
+                (click)="updateQuantity('half_menu_first', 1)"
+                class="w-8 h-8 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-500 hover:text-primary transition-colors"
+              >
+                <mat-icon class="text-lg">add</mat-icon>
+              </button>
+            </div>
+          </div>
+
+          <!-- Half Menu 2nd -->
+          <div
+            class="flex items-center justify-between p-4 bg-slate-50 rounded-2xl border border-slate-100"
+          >
+            <div class="flex flex-col">
+              <span class="font-bold text-slate-800">{{
+                AppConstants.TOP_UP.LABELS.HALF_MENU_SECOND_LABEL
+              }}</span>
+              <span class="text-xs text-slate-400"
+                >{{ prices.half_menu_second_price | currency : "EUR" }} /
+                {{ AppConstants.TOP_UP.LABELS.UNIT }}</span
+              >
+            </div>
+            <div class="flex items-center gap-3">
+              <button
+                (click)="updateQuantity('half_menu_second', -1)"
+                class="w-8 h-8 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-500 hover:text-primary transition-colors"
+              >
+                <mat-icon class="text-lg">remove</mat-icon>
+              </button>
+              <span class="w-6 text-center font-black text-slate-800">{{
+                quantities.half_menu_second
+              }}</span>
+              <button
+                (click)="updateQuantity('half_menu_second', 1)"
+                class="w-8 h-8 rounded-full bg-white border border-slate-200 flex items-center justify-center text-slate-500 hover:text-primary transition-colors"
+              >
+                <mat-icon class="text-lg">add</mat-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Total Calculation -->
+      <div class="pt-4 border-t border-slate-100">
+        <div class="flex justify-between items-center mb-4">
+          <span
+            class="text-slate-500 font-bold uppercase tracking-widest text-xs"
+            >{{ AppConstants.TOP_UP.LABELS.TOTAL_LABEL }}</span
+          >
+          <span
+            class="text-2xl font-black text-slate-800"
+            [class.text-rose-500]="isExceedingLimit()"
+          >
+            {{ getCurrentAmount() | currency : "EUR" }}
+          </span>
+        </div>
+
+        <!-- Limit Warning -->
+        <div
+          *ngIf="isExceedingLimit()"
+          class="mb-4 p-3 bg-rose-50 rounded-xl border border-rose-100 flex items-center gap-2 text-rose-600"
+        >
+          <mat-icon class="text-sm">warning</mat-icon>
+          <span class="text-[10px] font-bold">{{
+            AppConstants.TOP_UP.LABELS.LIMIT_WARNING
+          }}</span>
+        </div>
+
+        <!-- Pay Button -->
+        <button
+          (click)="initiatePayment()"
+          [disabled]="!isValidAmount() || isLoading"
+          class="w-full bg-primary text-white py-4 rounded-2xl font-bold text-lg shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 hover:-translate-y-1 active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none transition-all duration-300 flex items-center justify-center gap-2"
+        >
+          <span *ngIf="!isLoading">{{
+            AppConstants.TOP_UP.LABELS.ADD_BALANCE_BUTTON
+          }}</span>
+          <span *ngIf="isLoading" class="flex items-center gap-2">
+            <div
+              class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"
+            ></div>
+            {{ AppConstants.TOP_UP.LABELS.PROCESSING }}
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Hidden Form for Redsys -->
+<form #redsysForm method="POST" [action]="redsysUrl" *ngIf="redsysParams">
+  <input
+    type="hidden"
+    name="Ds_SignatureVersion"
+    [value]="redsysParams.version"
+  />
+  <input
+    type="hidden"
+    name="Ds_MerchantParameters"
+    [value]="redsysParams.params"
+  />
+  <input type="hidden" name="Ds_Signature" [value]="redsysParams.signature" />
+</form>

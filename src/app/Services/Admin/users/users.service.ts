@@ -13,8 +13,15 @@ export class UsersService {
 
   constructor(private http: HttpClient) {}
 
-  getAll(): Observable<any[]> {
-    return this.http.get<any[]>(this.apiUrl).pipe(catchError(this.handleError));
+  getAll(params?: {
+    page?: number;
+    per_page?: number;
+    sort_by?: string;
+    sort_order?: string;
+  }): Observable<any> {
+    return this.http
+      .get<any>(this.apiUrl, { params })
+      .pipe(catchError(this.handleError));
   }
 
   getOne(id: number): Observable<any> {

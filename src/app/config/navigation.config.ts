@@ -1,14 +1,26 @@
 export const NavigationConfig = {
+  HOME: '',
+  FOOD: 'food',
+  MENU_SELECTION: 'menu-selection',
+  HISTORY: 'history',
+  PROFILE: 'profile',
+  
+  MAINTENANCE: 'maintenance',
+  
   LOGIN: 'login',
   LOGOUT: 'logout',
   FORGOT_PASSWORD: 'forgotpassword',
   REGISTER: 'register',
-
-  HOME: '',
+  RESET_PASSWORD: 'reset-password',
+  
   ADMIN: 'admin',
-  MENU: 'menu-selection',
-
-  PROFILE: 'profile',
+  ADMIN_DAILY: 'admin/daily',
+  ADMIN_MONTHLY: 'admin/monthly',
+  ADMIN_ANUAL: 'admin/anual',
+  ADMIN_IMAGE: 'admin/image',
+  PAYMENT_TOP_UP: 'payment/top-up',
+  PAYMENT_RESULT: 'payment/result',
   ADMIN_CONFIG: 'admin/config',
-  MAINTENANCE: 'maintenance',
+  TRANSACTIONS: 'profile/transactions',
+  ADMIN_TRANSACTIONS: 'admin/transactions',
 };

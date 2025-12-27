@@ -16,11 +16,11 @@ import { ImageUploadCardComponent } from '../../components/admin/image-upload-ca
   selector: 'app-admin-configuration',
   standalone: true,
   imports: [
-    CommonModule, 
-    FormsModule, 
+    CommonModule,
+    FormsModule,
     MatIconModule,
     ImageManagementCardComponent,
-    ImageUploadCardComponent
+    ImageUploadCardComponent,
   ],
   templateUrl: './admin-configuration.component.html',
   styleUrls: ['./admin-configuration.component.css'],
@@ -28,10 +28,13 @@ import { ImageUploadCardComponent } from '../../components/admin/image-upload-ca
     trigger('fadeIn', [
       transition(':enter', [
         style({ opacity: 0, transform: 'translateY(10px)' }),
-        animate('300ms ease-out', style({ opacity: 1, transform: 'translateY(0)' }))
-      ])
-    ])
-  ]
+        animate(
+          '300ms ease-out',
+          style({ opacity: 1, transform: 'translateY(0)' })
+        ),
+      ]),
+    ]),
+  ],
 })
 export class AdminConfigurationComponent implements OnInit {
   AppConstants = AppConstants;
@@ -40,14 +43,24 @@ export class AdminConfigurationComponent implements OnInit {
     order_deadline_time: '',
     order_deadline_days_ahead: '',
     menu_price: '',
-    app_active: '1'
+    taper_price: '',
+    half_menu_first_price: '',
+    half_menu_second_price: '',
+    app_active: '1',
+    redsys_url: '',
+    redsys_merchant_code: '',
+    redsys_terminal: '',
+    redsys_key: '',
+    order_per_page: '15',
+    user_per_page: '15',
+    transaction_per_page: '15',
   };
   loading = false;
   saving = false;
   uploading = false;
   newImageDates = {
     start_date: '',
-    end_date: ''
+    end_date: '',
   };
 
   images: any[] = [];
@@ -79,7 +92,7 @@ export class AdminConfigurationComponent implements OnInit {
       error: (err) => {
         this.alertService.show('error', Messages.CONFIGURATION.LOAD_ERROR, '');
         this.loading = false;
-      }
+      },
     });
   }
 
@@ -91,8 +104,12 @@ export class AdminConfigurationComponent implements OnInit {
         }
       },
       error: (err) => {
-        this.alertService.show('error', Messages.CONFIGURATION.IMAGES_LOAD_ERROR, '');
-      }
+        this.alertService.show(
+          'error',
+          Messages.CONFIGURATION.IMAGES_LOAD_ERROR,
+          ''
+        );
+      },
     });
   }
 
@@ -100,13 +117,17 @@ export class AdminConfigurationComponent implements OnInit {
     this.saving = true;
     this.configService.updateConfigurations(this.settings).subscribe({
       next: (res) => {
-        this.alertService.show('success', Messages.CONFIGURATION.SAVE_SUCCESS, '');
+        this.alertService.show(
+          'success',
+          Messages.CONFIGURATION.SAVE_SUCCESS,
+          ''
+        );
         this.saving = false;
       },
       error: (err) => {
         this.alertService.show('error', Messages.CONFIGURATION.SAVE_ERROR, '');
         this.saving = false;
-      }
+      },
     });
   }
 
@@ -114,18 +135,32 @@ export class AdminConfigurationComponent implements OnInit {
     const file = event.target.files[0];
     if (file) {
       this.uploading = true;
-      this.imageService.uploadImage(file, this.newImageDates.start_date, this.newImageDates.end_date).subscribe({
-        next: (res) => {
-          this.alertService.show('success', Messages.CONFIGURATION.IMAGE_UPLOAD_SUCCESS, '');
-          this.loadImages();
-          this.uploading = false;
-          this.newImageDates = { start_date: '', end_date: '' };
-        },
-        error: (err) => {
-          this.alertService.show('error', Messages.CONFIGURATION.IMAGE_UPLOAD_ERROR, '');
-          this.uploading = false;
-        }
-      });
+      this.imageService
+        .uploadImage(
+          file,
+          this.newImageDates.start_date,
+          this.newImageDates.end_date
+        )
+        .subscribe({
+          next: (res) => {
+            this.alertService.show(
+              'success',
+              Messages.CONFIGURATION.IMAGE_UPLOAD_SUCCESS,
+              ''
+            );
+            this.loadImages();
+            this.uploading = false;
+            this.newImageDates = { start_date: '', end_date: '' };
+          },
+          error: (err) => {
+            this.alertService.show(
+              'error',
+              Messages.CONFIGURATION.IMAGE_UPLOAD_ERROR,
+              ''
+            );
+            this.uploading = false;
+          },
+        });
     }
   }
 
@@ -133,12 +168,20 @@ export class AdminConfigurationComponent implements OnInit {
     if (confirm(Messages.CONFIGURATION.IMAGE_DELETE_CONFIRM)) {
       this.imageService.deleteImage(id).subscribe({
         next: (res) => {
-          this.alertService.show('success', Messages.CONFIGURATION.IMAGE_DELETE_SUCCESS, '');
+          this.alertService.show(
+            'success',
+            Messages.CONFIGURATION.IMAGE_DELETE_SUCCESS,
+            ''
+          );
           this.loadImages();
         },
         error: (err) => {
-          this.alertService.show('error', Messages.CONFIGURATION.IMAGE_DELETE_ERROR, '');
-        }
+          this.alertService.show(
+            'error',
+            Messages.CONFIGURATION.IMAGE_DELETE_ERROR,
+            ''
+          );
+        },
       });
     }
   }
@@ -149,14 +192,20 @@ export class AdminConfigurationComponent implements OnInit {
       return;
     }
 
-    this.imageService.updateImageDates(img.id, img.start_date, img.end_date).subscribe({
-      next: (res) => {
-        this.alertService.show('success', 'Dates actualitzades correctament', '');
-        this.loadImages();
-      },
-      error: (err) => {
-        this.alertService.show('error', 'Error en actualitzar les dates', '');
-      }
-    });
+    this.imageService
+      .updateImageDates(img.id, img.start_date, img.end_date)
+      .subscribe({
+        next: (res) => {
+          this.alertService.show(
+            'success',
+            'Dates actualitzades correctament',
+            ''
+          );
+          this.loadImages();
+        },
+        error: (err) => {
+          this.alertService.show('error', 'Error en actualitzar les dates', '');
+        },
+      });
   }
 }

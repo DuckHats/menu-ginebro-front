@@ -29,7 +29,10 @@ import { animate, style, transition, trigger } from '@angular/animations';
     trigger('fadeIn', [
       transition(':enter', [
         style({ opacity: 0, transform: 'translateY(10px)' }),
-        animate('400ms ease-out', style({ opacity: 1, transform: 'translateY(0)' })),
+        animate(
+          '400ms ease-out',
+          style({ opacity: 1, transform: 'translateY(0)' })
+        ),
       ]),
     ]),
   ],
@@ -58,7 +61,7 @@ export class LoginComponent {
   }
 
   ngOnInit(): void {
-    this.route.queryParams.subscribe(params => {
+    this.route.queryParams.subscribe((params) => {
       if (params['error']) {
         if (params['error'] === 'invalid_domain') {
           this.alertService.show(
@@ -66,13 +69,15 @@ export class LoginComponent {
             ErrorMessages.ACCESS_DENIED,
             ErrorMessages.INVALID_DOMAIN
           );
+        } else if (params['error'] === 'account_inactive') {
+          this.alertService.show('error', ErrorMessages.ACCOUNT_INACTIVE, '');
         }
-        
+
         // Clear the query parameters from the URL
         this.router.navigate([], {
           relativeTo: this.route,
           queryParams: {},
-          replaceUrl: true
+          replaceUrl: true,
         });
       }
     });
@@ -132,11 +137,18 @@ export class LoginComponent {
           }
         },
         error: (error) => {
-          this.alertService.show(
-            'error',
-            ErrorMessages.INVALID_CREDENTIALS,
-            ''
-          );
+          let errorMessage = ErrorMessages.INVALID_CREDENTIALS;
+
+          if (error.error && error.error.error) {
+            const errorCode = error.error.error.code;
+            if (errorCode === 'ACCOUNT_INACTIVE') {
+              errorMessage = ErrorMessages.ACCOUNT_INACTIVE;
+            } else if (errorCode === 'INVALID_CREDENTIALS') {
+              errorMessage = ErrorMessages.INVALID_CREDENTIALS;
+            }
+          }
+
+          this.alertService.show('error', errorMessage, '');
           console.error(error);
           this.resetForm();
         },

@@ -28,9 +28,19 @@ export class ConfirmModalComponent {
   @Input() menuTypeName: string = '';
   @Input() selectedOptions: string[] = [];
   @Input() taperSelected: boolean = false;
+  @Input() price: number = 0;
+  @Input() basePrice: number = 0;
+  @Input() taperSurcharge: number = 0;
+  @Input() hasEnoughBalance: boolean = true;
+  @Input() userBalance: number = 0;
+
+  get remainingBalance(): number {
+    return this.userBalance - this.price;
+  }
 
   @Output() confirm = new EventEmitter<void>();
   @Output() cancel = new EventEmitter<void>();
+  @Output() recharge = new EventEmitter<void>();
 
   onConfirm() {
     this.confirm.emit();
@@ -38,5 +48,9 @@ export class ConfirmModalComponent {
 
   onCancel() {
     this.cancel.emit();
+  }
+
+  onRecharge() {
+    this.recharge.emit();
   }
 }

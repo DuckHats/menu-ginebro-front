@@ -25,6 +25,8 @@ import { SidebarService } from '../../Services/Sidebar/sidebar.service';
 
 import { ViewEncapsulation } from '@angular/core';
 
+import { TransactionHistoryComponent } from '../../views/transaction-history/transaction-history.component';
+
 @Component({
   selector: 'app-user-card',
   templateUrl: './user-card.component.html',
@@ -38,14 +40,15 @@ import { ViewEncapsulation } from '@angular/core';
     FormsModule,
     MatSelectModule,
     MatFormFieldModule,
-    AdminConfigurationComponent
+    AdminConfigurationComponent,
+    TransactionHistoryComponent,
   ],
 })
 export class UserCardComponent implements OnInit {
   student!: User;
   profileForm: FormGroup;
   allergies: Allergy[] = [];
-  activeTab: 'profile' | 'allergies' | 'config' = 'profile';
+  activeTab: 'profile' | 'allergies' | 'config' | 'transactions' = 'profile';
   isSidebarCollapsed = false;
 
   avatarSvg: string = AssetsConfig.SVG.USER_AVATAR;
@@ -65,8 +68,16 @@ export class UserCardComponent implements OnInit {
     });
   }
 
-  setActiveTab(tab: 'profile' | 'allergies' | 'config') {
+  setActiveTab(tab: 'profile' | 'allergies' | 'config' | 'transactions') {
     this.activeTab = tab;
+  }
+
+  goToTopUp() {
+    this.router.navigate(['/payment/top-up']);
+  }
+
+  goToTransactions() {
+    this.router.navigate(['/profile/transactions']);
   }
 
   toggleSidebar() {
@@ -74,7 +85,7 @@ export class UserCardComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.sidebarService.isCollapsed$.subscribe(collapsed => {
+    this.sidebarService.isCollapsed$.subscribe((collapsed) => {
       this.isSidebarCollapsed = collapsed;
     });
     this.loadData();
@@ -141,20 +152,22 @@ export class UserCardComponent implements OnInit {
   }
 
   toggleAllergy(allergyId: number) {
-    const currentAllergies = this.profileForm.get('allergies')?.value as number[];
+    const currentAllergies = this.profileForm.get('allergies')
+      ?.value as number[];
     const index = currentAllergies.indexOf(allergyId);
-    
+
     if (index > -1) {
       currentAllergies.splice(index, 1);
     } else {
       currentAllergies.push(allergyId);
     }
-    
+
     this.profileForm.get('allergies')?.setValue([...currentAllergies]);
   }
 
   isAllergySelected(allergyId: number): boolean {
-    const currentAllergies = this.profileForm.get('allergies')?.value as number[];
+    const currentAllergies = this.profileForm.get('allergies')
+      ?.value as number[];
     return currentAllergies.includes(allergyId);
   }
 

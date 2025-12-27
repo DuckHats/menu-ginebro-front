@@ -77,6 +77,7 @@ export const Messages = {
     ALLERGIES_ERROR: "No s'han pogut guardar les al·lèrgies.",
     PROTECTED_USER_ERROR:
       'No es pot desactivar aquest usuari (Admin, Cuina o Usuari Actual).',
+    INSUFFICIENT_BALANCE: 'No tens prou saldo per fer aquesta comanda.',
   },
 
   // Configuration messages
@@ -90,6 +91,13 @@ export const Messages = {
     IMAGE_DELETE_CONFIRM: 'Estàs segur que vols eliminar aquesta imatge?',
     IMAGE_DELETE_SUCCESS: 'Imatge eliminada correctament',
     IMAGE_DELETE_ERROR: 'Error eliminant la imatge',
+  },
+
+  // Payment messages
+  PAYMENT: {
+    INITIATE_ERROR: "No s'ha pogut iniciar el pagament.",
+    REDSYS_REDIRECT_ERROR: "No s'ha pogut redirigir a la passarel·la de pagament.",
+    SERVER_CONNECTION_ERROR: "No s'ha pogut connectar amb el servidor.",
   },
 
   // Generic messages

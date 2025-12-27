@@ -7,15 +7,15 @@ export interface MenuItem {
 export interface Order {
   id: number;
   user_id: number;
-  userData: UserData;
+  userData?: UserData;
   order_date: string;
   allergies: string;
   has_tupper: number;
   order_type_id: number;
-  orderType: OrderType;
+  orderType?: OrderType;
   order_status_id: number;
-  orderStatus: OrderStatus;
-  orderDetail: OrderDetail;
+  orderStatus?: OrderStatus;
+  orderDetail?: OrderDetail;
   created_at: string;
   updated_at: string;
   tupper?: string;
