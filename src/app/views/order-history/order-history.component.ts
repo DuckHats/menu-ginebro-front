@@ -21,7 +21,10 @@ import { UILabels } from '../../config/ui-labels.config';
     trigger('fadeIn', [
       transition(':enter', [
         style({ opacity: 0, transform: 'translateY(10px)' }),
-        animate('400ms ease-out', style({ opacity: 1, transform: 'translateY(0)' })),
+        animate(
+          '400ms ease-out',
+          style({ opacity: 1, transform: 'translateY(0)' })
+        ),
       ]),
     ]),
   ],
@@ -58,8 +61,9 @@ export class OrderHistoryComponent implements OnInit {
 
   loadOrders(): void {
     this.ordersService.getByUser(this.userId).subscribe({
-      next: (response) => {
-        this.orders = (response.data || []).map((order: Order) => {
+      next: (response: any) => {
+        const orderData = response.data || [];
+        this.orders = orderData.map((order: Order) => {
           const menuItems: MenuItem[] = [];
           const type = order.orderType?.name?.toLowerCase() || '';
 

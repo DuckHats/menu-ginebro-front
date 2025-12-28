@@ -155,6 +155,32 @@
           >Configuració</span
         >
       </button>
+
+      <!-- Transactions -->
+      <button
+        *ngIf="student.user_type_id === 2"
+        (click)="setActiveTab('transactions')"
+        [class.active]="activeTab === 'transactions'"
+        class="nav-item relative flex items-center rounded-2xl text-[14px] font-black text-slate-400 transition-all duration-300 hover:bg-slate-50 hover:text-slate-600 group [&.active]:bg-emerald-50 [&.active]:text-emerald-600 overflow-hidden h-14"
+        [ngClass]="
+          isSidebarCollapsed ? 'justify-center w-full px-0' : 'px-5 gap-4'
+        "
+      >
+        <mat-icon
+          [ngClass]="
+            activeTab === 'transactions' ? 'text-emerald-500' : 'text-slate-300'
+          "
+          class="transition-all duration-300 group-hover:scale-110 flex-shrink-0"
+          >receipt_long</mat-icon
+        >
+        <span
+          class="transition-all duration-300 whitespace-nowrap uppercase tracking-widest text-[11px]"
+          [ngClass]="
+            isSidebarCollapsed ? 'opacity-0 w-0' : 'opacity-100 w-auto'
+          "
+          >Transaccions</span
+        >
+      </button>
     </nav>
 
     <!-- Sidebar Footer -->
@@ -337,13 +363,11 @@
                       <mat-icon>power_settings_new</mat-icon>
                     </div>
                     <div>
-                      <h3 class="font-black text-slate-800 text-sm">
-                        Sortida Segura
-                      </h3>
+                      <h3 class="font-black text-slate-800 text-sm">Sortir</h3>
                       <p
                         class="text-[10px] text-rose-300 font-black uppercase tracking-widest mt-1"
                       >
-                        Sessió
+                        Logout
                       </p>
                     </div>
                   </div>
@@ -371,7 +395,7 @@
               <div class="relative z-10 space-y-10">
                 <div class="flex flex-col items-center text-center space-y-4">
                   <div
-                    class="w-20 h-20 rounded-3xl bg-white/10 flex items-center justify-center backdrop-blur-md shadow-inner border border-white/10 relative overflow-hidden"
+                    class="w-20 h-20 rounded-full bg-white/10 flex items-center justify-center backdrop-blur-md shadow-inner border border-white/10 relative overflow-hidden"
                   >
                     <img
                       *ngIf="student.avatar; else defaultIcon"
@@ -379,10 +403,14 @@
                       alt="User Avatar"
                       class="w-full h-full object-cover"
                     />
+
                     <ng-template #defaultIcon>
-                      <mat-icon class="text-4xl text-white">verified</mat-icon>
+                      <mat-icon class="text-4xl text-white/70"
+                        >verified</mat-icon
+                      >
                     </ng-template>
                   </div>
+
                   <div>
                     <p class="font-black text-xl tracking-tight">Actiu</p>
                     <p
@@ -421,6 +449,28 @@
                     <span class="text-[11px] font-bold"
                       >Menjador escolar actiu</span
                     >
+                  </div>
+                </div>
+
+                <!-- Balance Section -->
+                <div *ngIf="student.user_type_id === 2">
+                  <div class="pt-6 border-t border-white/10">
+                    <div class="flex items-center justify-between mb-2">
+                      <span
+                        class="text-[10px] font-black uppercase tracking-widest text-slate-400"
+                        >Saldo acual</span
+                      >
+                      <span class="text-2xl font-black text-white">{{
+                        student.balance | currency : "EUR"
+                      }}</span>
+                    </div>
+                    <button
+                      (click)="goToTopUp()"
+                      class="w-full py-3 bg-primary text-white rounded-xl font-bold uppercase tracking-widest text-[10px] hover:bg-primary-dark transition-colors flex items-center justify-center gap-2"
+                    >
+                      <mat-icon class="text-sm">add_circle</mat-icon>
+                      Afegir Saldo
+                    </button>
                   </div>
                 </div>
               </div>
@@ -577,6 +627,14 @@
         class="animate-fade-in"
       >
         <app-admin-configuration></app-admin-configuration>
+      </div>
+
+      <!-- Transactions Tab -->
+      <div
+        *ngIf="activeTab === 'transactions' && student.user_type_id === 2"
+        class="animate-fade-in"
+      >
+        <app-transaction-history></app-transaction-history>
       </div>
     </div>
   </main>

@@ -6,4 +6,6 @@ export interface Student {
   password: string;
   status: number;
   user_type_id?: number | null;
+  balance?: number;
+  avatar?: string;
 }
