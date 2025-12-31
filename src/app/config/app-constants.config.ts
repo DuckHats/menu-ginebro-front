@@ -80,7 +80,7 @@ export const AppConstants = {
       SCHEDULES_TAB: 'Horaris',
       PRICES_TAB: 'Preus',
       STATUS_TAB: "Estat de l'App",
-      REDSYS_TAB: 'Pagaments (Redsys)',
+      REDSYS_TAB: 'Pagaments',
       CONFIG_TAB: 'Configuració',
       PAGINATION_TAB: 'Paginació',
       IMAGES_TITLE: 'Imatges dels Menús Mensuals',
